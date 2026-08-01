@@ -21,8 +21,11 @@
 SCRIPTS := ./scripts/kiro-ide-docs
 
 # 一次情報（取得済み changelog HTML）の置き場。網羅性チェックで使う。
+# 既定はリポジトリ内のスナップショット置き場（ローカル管理・.gitignore 対象）。
 # 未指定・不在ならチェックはスキップする（ネットワークに依存させない）。
-HTML_DIR ?= /tmp/kiro_pr
+# スナップショットを持たない環境（CI・クローン直後）ではスキップされ、
+# 「exit 0 = 網羅性を検証した」ではないことに注意する。
+HTML_DIR ?= kiro-ide-docs/06_embedded-docs
 
 # ------------------------------------------------------------
 # ヘルプ
@@ -85,6 +88,7 @@ check-kiro-ide-coverage:
 	    $(SCRIPTS)/check-coverage.py --html-dir "$(HTML_DIR)"; \
 	else \
 	    echo "⚠️  網羅性チェックをスキップ: $(HTML_DIR) に一次情報 HTML がありません"; \
+	    echo "   → これは「検証して合格した」ではありません（未検証です）"; \
 	    echo "   取得手順は 05_meta/10_version-update-guide.md を参照"; \
 	fi
 
