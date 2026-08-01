@@ -186,15 +186,15 @@ Kiro IDE と Kiro CLI は `~/.kiro/` の一部を共有しますが、**同名�
 ## 6️⃣ コミット前検証
 
 ```bash
-cd /home/katoh/projects/kiro-ide-docs
+cd <リポジトリのルート>
 
-# 執筆中の常用
+# 執筆中の常用（links / structure のみ。全チェックではありません）
 make check-kiro-ide-quick
 
 # 公開範囲の機械確認（ローカル管理対象が除外されているか。exit 0 必須）
 make check-kiro-ide-ignore
 
-# コミット前・公開前（検証体制の完成時に追加）
+# コミット前・公開前（exit 0 必須）
 make check-kiro-ide-all
 
 git status --short
