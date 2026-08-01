@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/editor/interface/)・[Codebase indexing](https://kiro.dev/docs/editor/codebase-indexing/)・[Source Control](https://kiro.dev/docs/editor/source-control/)・[Kiroignore](https://kiro.dev/docs/editor/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/editor/interface/)（公式ページ更新日: 2025-11-16）・[Codebase indexing](https://kiro.dev/docs/editor/codebase-indexing/)・[Source Control](https://kiro.dev/docs/editor/source-control/)・[Kiroignore](https://kiro.dev/docs/editor/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は

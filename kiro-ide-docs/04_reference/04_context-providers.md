@@ -2,7 +2,7 @@
 
 **チャットで `#` から呼び出せる参照元の一覧です。**
 
-- **一次情報**: [Chat（Context management）](https://kiro.dev/docs/chat/#context-providers)
+- **一次情報**: [Chat（Context management）](https://kiro.dev/docs/chat/#context-providers)（公式ページ更新日: 2026-06-25）
 - **収録件数**: **14種**
 
 > **これは何か**: Kiro はエディタで開いているファイルとその依存関係・構造を自動的に解析しますが、

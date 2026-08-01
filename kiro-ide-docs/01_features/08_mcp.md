@@ -2,7 +2,7 @@
 
 **外部のサーバに接続して、ツール・プロンプト・リソースを Kiro に追加する仕組みです。**
 
-- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
+- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-02-18）・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
 - **設定ファイル**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#8-mcp-サーバ定義--kirosettingsmcpjson)
 
 > **これは何か**: MCP は Kiro が外部サーバと通信して、専門的なツール・プロンプト・リソースにアクセスするためのプロトコルです。

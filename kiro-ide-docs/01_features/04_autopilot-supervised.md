@@ -2,7 +2,7 @@
 
 **エージェントの変更をいつレビューするかを決める2つのモードです。**
 
-- **一次情報**: [Autopilot](https://kiro.dev/docs/chat/autopilot/)・[Privacy and security（Autopilot versus supervised mode）](https://kiro.dev/docs/privacy-and-security/#autopilot-versus-supervised-mode)
+- **一次情報**: [Autopilot](https://kiro.dev/docs/chat/autopilot/)（公式ページ更新日: 2026-05-14）・[Privacy and security（Autopilot versus supervised mode）](https://kiro.dev/docs/privacy-and-security/#autopilot-versus-supervised-mode)
 
 > ⚠️ **最初に押さえること**: **Supervised モードはセキュリティ機構ではありません**（公式が警告として明記）。
 > **両モードでエージェントの権限は同一**で、違いは**レビューのタイミング**だけです。

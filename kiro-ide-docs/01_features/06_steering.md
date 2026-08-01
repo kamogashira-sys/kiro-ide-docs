@@ -2,7 +2,7 @@
 
 **チャットのたびに規約を説明せずに済むよう、Markdown ファイルで恒久的な文脈を渡す仕組みです。**
 
-- **一次情報**: [Steering](https://kiro.dev/docs/steering/)
+- **一次情報**: [Steering](https://kiro.dev/docs/steering/)（公式ページ更新日: 2026-02-18）
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#4-ステアリング--kirosteeringmd)
 
 > **これは何か**: ステアリングは Markdown ファイルを通じて、**ワークスペースについての持続的な知識**を

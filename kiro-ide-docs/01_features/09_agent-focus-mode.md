@@ -2,7 +2,7 @@
 
 **チャットを画面の中心に据えた、エージェント前提のレイアウトです。1.0 で導入されました。**
 
-- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/experimental/focus-mode/)・[Dockable chat](https://kiro.dev/docs/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/chat/chat-export/)
+- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/experimental/focus-mode/)（公式ページ更新日: 2026-06-25）・[Dockable chat](https://kiro.dev/docs/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/chat/chat-export/)
 - **導入バージョン**: **1.0**（2026-06-25）
 - **位置づけ**: **実験的機能**（公式の `Experimental features` セクションに分類）
 

@@ -2,7 +2,7 @@
 
 **アイデアを「要件・設計・タスク」という3つの成果物に落として実装する、Kiro の中核機能です。**
 
-- **一次情報**: [Specs](https://kiro.dev/docs/specs/)・[Feature Specs](https://kiro.dev/docs/specs/feature-specs/)・[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)・[Analyze Requirements](https://kiro.dev/docs/specs/analyze-requirements/)・[Bugfix Specs](https://kiro.dev/docs/specs/bugfix-specs/)・[Correctness](https://kiro.dev/docs/specs/correctness/)
+- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Feature Specs](https://kiro.dev/docs/specs/feature-specs/)・[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)・[Analyze Requirements](https://kiro.dev/docs/specs/analyze-requirements/)・[Bugfix Specs](https://kiro.dev/docs/specs/bugfix-specs/)・[Correctness](https://kiro.dev/docs/specs/correctness/)
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#3-仕様specs--kirospecs機能名)
 
 > **これは何か**: spec（仕様）は、機能追加やバグ修正の開発プロセスを**形式化した成果物**です。

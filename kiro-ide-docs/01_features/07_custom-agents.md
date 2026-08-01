@@ -2,7 +2,7 @@
 
 **目的に特化したエージェントを Markdown ファイル1枚で作り、チームで共有できます。1.0 で導入されました。**
 
-- **一次情報**: [Custom agents](https://kiro.dev/docs/custom-agents/)・[Switching agents](https://kiro.dev/docs/custom-agents/agent-selector/)
+- **一次情報**: [Custom agents](https://kiro.dev/docs/custom-agents/)（公式ページ更新日: 2026-07-01）・[Switching agents](https://kiro.dev/docs/custom-agents/agent-selector/)
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#6-カスタムエージェント--kiroagentsmd)
 - **導入バージョン**: **1.0**（2026-06-25）
 
