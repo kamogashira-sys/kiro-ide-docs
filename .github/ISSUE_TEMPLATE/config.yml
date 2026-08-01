@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🏠 Official Kiro Repository
+    url: https://github.com/kirodotdev/Kiro
+    about: For official Kiro IDE issues, bugs, and feature requests
+  - name: 📖 Official Kiro Documentation
+    url: https://kiro.dev/docs/
+    about: Official Kiro documentation (IDE / CLI / Web)
+  - name: 📣 Official Kiro Changelog
+    url: https://kiro.dev/changelog/ide/
+    about: Official release notes for Kiro IDE
+  - name: 🐱 Kiro CLI 版ドキュメント（姉妹サイト）
+    url: https://github.com/kamogashira-sys/q-cli-docs
+    about: 猫でもわかるKiro CLI アップデート情報

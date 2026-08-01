@@ -1,0 +1,67 @@
+name: 🚀 Feature Request
+description: Suggest new documentation or improvements
+title: "[Feature] "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement to our documentation!
+
+        **Important**: This is an unofficial documentation project. For official Kiro IDE feature requests, please use the [official repository](https://github.com/kirodotdev/Kiro/issues).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Description
+      description: What problem does this feature request solve?
+      placeholder: Describe the problem or gap in documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: What would you like to see added or changed?
+      placeholder: Describe your proposed solution
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Documentation Category
+      description: Which section does this request relate to?
+      options:
+        - 00_information (基本情報・公式サイト構造・情報源)
+        - 01_features (機能詳細ガイド)
+        - 02_update (changelog・アップデート情報)
+        - 03_deployment (インストール・環境構築・エンタープライズ)
+        - 04_reference (設定ファイル・ショートカット・権限などの辞書)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered any alternative approaches?
+      placeholder: Describe alternatives you've considered
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the feature request
+      placeholder: Screenshots, examples, links, etc.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/kamogashira-sys/kiro-ide-docs/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
