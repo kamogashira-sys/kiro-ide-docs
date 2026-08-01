@@ -12,7 +12,7 @@
     - kiro-ide-docs/**/*.md ＋ ルート README.md の相対 Markdown リンクを抽出
     - リンク先ファイルの実在を検証（アンカー #... は分離して判定）
     - kiro.dev の外部リンクの書式を検証:
-        - changelog ページは末尾スラッシュ必須（`/changelog/ide/1-0` は空応答を返す）
+        - changelog ページは末尾スラッシュ必須（`/changelog/ide/1-0` は 301 リダイレクト）
         - Kiro CLI 版へのリンクは `docs/cli/v3/` を指す（非 v3 は 2.x 系の別仕様）
     - 上記以外の http(s)/mailto/tel/# 始まりは到達性を検証しない（check-urls.sh の担当）
 
@@ -48,7 +48,8 @@ SKIP_PREFIX = ("http://", "https://", "mailto:", "tel:", "#")
 # ファイルシステム上には存在しないため実在検証の対象外にする。
 GITHUB_RELATIVE = ("../../issues", "../../pulls", "../../discussions", "../../wiki")
 
-# kiro.dev の changelog は末尾スラッシュがないと空応答になる（実測）
+# kiro.dev の changelog は末尾スラッシュがないと 301 リダイレクトになる（実測・F-15）。
+# ブラウザや curl -L では追随するが、本サイトは公式ページの正規 URL を載せる方針。
 CHANGELOG_RE = re.compile(r'^https://kiro\.dev/changelog/[^\s]*$')
 # Kiro CLI 版のドキュメントへのリンク
 CLI_DOCS_RE = re.compile(r'^https://kiro\.dev/docs/cli/([^\s#?]*)')
@@ -117,7 +118,7 @@ def check_kiro_url(url):
     # フィードは静的ファイルなので末尾スラッシュの規則は適用されない
     is_page = not os.path.splitext(url)[1]
     if is_page and CHANGELOG_RE.match(url) and not url.endswith("/"):
-        return "changelog の URL は末尾スラッシュが必須（スラッシュなしは空応答を返す）"
+        return "changelog の URL は末尾スラッシュが必須（スラッシュなしは 301 リダイレクト）"
     m = CLI_DOCS_RE.match(url)
     if m:
         rest = m.group(1).rstrip("/")

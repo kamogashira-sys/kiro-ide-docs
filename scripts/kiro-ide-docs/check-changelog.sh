@@ -126,7 +126,7 @@ for CHANGELOG in "${FILES[@]}"; do
     fi
 
     # ---- 5. 公式 changelog URL の末尾スラッシュ ----
-    # `/changelog/ide/1-0` は空応答を返すため、ページ URL は末尾スラッシュが必須。
+    # `/changelog/ide/1-0` は 301 リダイレクトになるため、ページ URL は末尾スラッシュが必須（F-15）。
     # 拡張子を持つもの（feed.atom）は静的ファイルなので対象外。
     #
     # grep -o で URL を切り出すと、正常な `.../1-0-242/` からも末尾スラッシュを含まない
@@ -145,7 +145,7 @@ for CHANGELOG in "${FILES[@]}"; do
         }
     ' "$CHANGELOG" | sort -u || true)
     if [ -n "$bad_urls" ]; then
-        echo "  ❌ changelog の URL に末尾スラッシュがありません（空応答の原因）:"
+        echo "  ❌ changelog の URL に末尾スラッシュがありません（301 リダイレクトになる）:"
         echo "$bad_urls" | sed 's/^/       /'
         errors=$((errors + 1))
     fi
