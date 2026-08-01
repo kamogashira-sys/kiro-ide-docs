@@ -46,7 +46,15 @@ SKIP_PREFIX = ("http://", "https://", "mailto:", "tel:", "#")
 
 # GitHub が解決する相対リンク（`../../issues` = リポジトリの Issues タブ）。
 # ファイルシステム上には存在しないため実在検証の対象外にする。
-GITHUB_RELATIVE = ("../../issues", "../../pulls", "../../discussions", "../../wiki")
+#
+# **`../` の数はファイルの階層で変わる**（`blob/main/<パス>` を遡ってリポジトリ直下に
+# 出るまで必要なため）。ルート README なら `../../issues`、
+# `kiro-ide-docs/01_features/README.md` なら `../../../../issues`。
+# 個別の番号（`issues/1`）も同じ扱いにする。
+# 固定文字列で列挙していたため深さ4の形が全件リンク切れ扱いになった（実測して発覚）。
+GITHUB_RELATIVE_RE = re.compile(
+    r"^(?:\.\./)+(?:issues|pulls|discussions|wiki)(?:/\d+)?$"
+)
 
 # kiro.dev の changelog は末尾スラッシュがないと 301 リダイレクトになる（実測・F-15）。
 # ブラウザや curl -L では追随するが、本サイトは公式ページの正規 URL を載せる方針。
@@ -199,7 +207,7 @@ def main():
                 continue
             if target.startswith(SKIP_PREFIX):
                 continue
-            if target.rstrip("/") in GITHUB_RELATIVE:
+            if GITHUB_RELATIVE_RE.match(target.rstrip("/")):
                 continue
             path, _, anchor = target.partition("#")
             if not path:

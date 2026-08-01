@@ -66,15 +66,17 @@
 
 ## 📌 今後追加する機能
 
-v1 公開時点では上記10機能を収録しています。公式ドキュメントには他にも次の領域があり、公開後に追補します。
+v1 公開時点では上記10機能を収録しています。公式ドキュメントには他にも次の領域があり、公開後に追補します。**それぞれ Issue を立てています**（[Issues](../../../../issues)）。
 
-| 領域 | 公式ページ |
-|------|----------|
-| **Powers**（コンテキストと MCP サーバの動的読み込み） | [`/docs/powers`](https://kiro.dev/docs/powers/) |
-| **Agent Skills**（可搬な指示パッケージ） | [`/docs/skills`](https://kiro.dev/docs/skills/) |
-| Dev servers（長時間実行プロセスの管理） | [`/docs/chat/dev-servers`](https://kiro.dev/docs/chat/dev-servers/) |
-| Diagnostics tool・Agent Notifications・Terminal integration | `/docs/chat/*` |
-| Spec の Best practices・Correctness の詳細 | `/docs/specs/*` |
+| 領域 | 公式ページ | Issue |
+|------|----------|-------|
+| **Powers**（コンテキストと MCP サーバの動的読み込み） | [`/docs/powers`](https://kiro.dev/docs/powers/) | [#1](../../../../issues/1) |
+| **Agent Skills**（可搬な指示パッケージ） | [`/docs/skills`](https://kiro.dev/docs/skills/) | [#2](../../../../issues/2) |
+| Dev servers（長時間実行プロセスの管理）・Diagnostics tool・Agent Notifications | `/docs/chat/*` | [#3](../../../../issues/3) |
+| Terminal integration | [`/docs/chat/terminal`](https://kiro.dev/docs/chat/terminal/) | [#3](../../../../issues/3) |
+| Spec の Best practices | [`/docs/specs/best-practices`](https://kiro.dev/docs/specs/best-practices/) | [#4](../../../../issues/4) |
+
+> **Spec の Correctness（プロパティベーステスト）は収録済み**です（[01_specs.md](01_specs.md) §9）。
 
 ---
 
