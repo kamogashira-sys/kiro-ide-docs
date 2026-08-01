@@ -68,8 +68,8 @@
 | `web_search` | Web 検索 |
 | `mcp` | MCP サーバのツール呼び出し（パターン形式: `server/tool`） |
 | `subagent` | サブエージェントへの委譲 |
-| `skill` | Skills の有効化 |
-| `power` | Powers の有効化とツール呼び出し |
+| `skill` | **Skills** の有効化（可搬な指示パッケージ。置き場所は [01_kiro-directory.md](01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd)・公式 [`/docs/skills`](https://kiro.dev/docs/skills/)） |
+| `power` | **Powers** の有効化とツール呼び出し（MCP サーバ・ステアリング・フックのバンドルを動的に読み込む仕組み。[0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)・公式 [`/docs/powers`](https://kiro.dev/docs/powers/)） |
 | `diagnostics` | 診断ツール |
 | `context` | コンテキストおよびステアリングのツール |
 | `all` | **すべての capability**（メタ） |

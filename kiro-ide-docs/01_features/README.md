@@ -76,8 +76,18 @@ v1 公開時点では上記10機能を収録しています。公式ドキュメ
 | Diagnostics tool・Agent Notifications・Terminal integration | `/docs/chat/*` |
 | Spec の Best practices・Correctness の詳細 | `/docs/specs/*` |
 
-> **Agent Skills の置き場所**（`.kiro/skills/<名前>/SKILL.md`）は
-> [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd) に収録済みです。
+---
+
+## 🔎 未収録機能に関する記述の在りか
+
+**専用ページはありませんが、次の情報は本サイト内にあります。**
+
+| 項目 | 本サイト内の記述 |
+|------|--------------|
+| **Powers とは何か** | [0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)（**0.7 時点の内容**。現在の仕様は公式を参照） |
+| Powers の権限（`power` capability） | [04_reference/03_permissions.md](../04_reference/03_permissions.md#3-capability-一覧14種) |
+| Powers のツール指定（`@powers`・`includePowers`） | [05_hooks.md](05_hooks.md#21-matcher-の書き方ツール名の指定)・[02_chat.md](02_chat.md#7-サブエージェント並列実行と委譲) |
+| **Agent Skills の置き場所**（`.kiro/skills/<名前>/SKILL.md`） | [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd) |
 
 ---
 

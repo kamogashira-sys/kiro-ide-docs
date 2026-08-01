@@ -254,7 +254,7 @@ Kiro は [AGENTS.md](https://agents.md/) 標準によるステアリング指示
 
 | 機能 | 関係 |
 |------|------|
-| **サブエージェント** | **ステアリングはサブエージェント内でもメインエージェントと同じように動きます**（[02_chat.md](02_chat.md#73-サブエージェントで使えるもの使えないもの)） |
+| **サブエージェント** | **ステアリングはサブエージェント内でもメインエージェントと同じように動きます**（[02_chat.md](02_chat.md#subagent-capabilities)） |
 | **Agent Skills** | `auto` の inclusion は Skills と似た仕組み（`description` による照合） |
 | **Hooks** | manual トリガの後継がステアリングファイル（[05_hooks.md](05_hooks.md)） |
 | **コンテキストプロバイダ** | `#steering:ファイル名` で明示的に参照できる（[04_reference/04_context-providers.md](../04_reference/04_context-providers.md)） |

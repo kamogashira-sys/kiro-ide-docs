@@ -85,7 +85,7 @@
 | プレフィックス | 内容 |
 |-------------|------|
 | `@mcp` | すべての MCP ツール |
-| `@powers` | すべての Powers ツール |
+| `@powers` | すべての **Powers** ツール（Powers = MCP サーバ・ステアリング・フックのバンドルを動的に読み込む仕組み。[0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)・公式 [`/docs/powers`](https://kiro.dev/docs/powers/)） |
 | `@builtin` | すべての組み込みツール |
 
 > **`@` で始まるプレフィックスは正規表現で照合されます。** `@mcp.*sql.*` のようなパターンで
@@ -242,7 +242,7 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 
 | # | 注意点 |
 |---|-------|
-| 1 | **サブエージェント内ではフックは発火しません**（[02_chat.md](02_chat.md#73-サブエージェントで使えるもの使えないもの)） |
+| 1 | **サブエージェント内ではフックは発火しません**（[02_chat.md](02_chat.md#subagent-capabilities)） |
 | 2 | **`.kiro/hooks/**` への書き込みは、エージェントに対して常に確認が求められます**（Kiro スコープの不変条件・上書き不可。[04_reference/03_permissions.md](../04_reference/03_permissions.md#71-kiro-スコープの不変条件上書き不可)） |
 | 3 | **Agent Prompt アクションはクレジットを消費します。** 高頻度のトリガー（`PostFileSave` など）に付けると消費が増えます |
 | 4 | **`timeout` は agent アクションでは無視されます**（command アクションのみ有効） |

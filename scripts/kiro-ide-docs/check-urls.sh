@@ -91,6 +91,10 @@ if [ "$MODE" = "important" ]; then
         "https://kiro.dev/docs/custom-agents/"
         "https://kiro.dev/docs/mcp/"
         "https://kiro.dev/docs/experimental/focus-mode/"
+        # 未収録機能（Powers・Agent Skills）の代替導線。本サイトに機能ページが無く
+        # 公式へ送る唯一の経路なので、切れたら読者が行き止まりになる（重要扱いの理由）
+        "https://kiro.dev/docs/powers/"
+        "https://kiro.dev/docs/skills/"
         "https://kiro.dev/docs/editor/interface/"
         "https://kiro.dev/docs/editor/keyboard-shortcuts/"
         "https://kiro.dev/docs/models/"

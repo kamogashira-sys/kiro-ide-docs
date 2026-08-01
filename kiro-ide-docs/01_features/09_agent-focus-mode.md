@@ -124,7 +124,7 @@ Agent Focus Mode では、**spec が会話から自然に生まれます**。フ
 | 機能 |
 |------|
 | **設定と環境設定** |
-| **Powers と Skills** |
+| **[Powers](../02_update/02_changelog-0x.md#powers) と [Skills](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd)** |
 | **MCP サーバの管理** |
 | **ターミナルへのアクセス** |
 | **完全な git ワークフロー** |

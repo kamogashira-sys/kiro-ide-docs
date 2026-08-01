@@ -3,10 +3,10 @@
 
 使用方法:
     ./scripts/kiro-ide-docs/check-links.py
-    ./scripts/kiro-ide-docs/check-links.py --check-anchors   # アンカー(見出し)実在も検査(ASCIIのみ)
+    ./scripts/kiro-ide-docs/check-links.py --check-anchors   # アンカー(見出し)実在も検査(日本語含む)
     ./scripts/kiro-ide-docs/check-links.py --check-anchors --paths <file...>
         # 指定ファイルのみ検査（既定の除外を適用しない。05_meta 等のローカル管理文書の
-        # 相互リンク・目次アンカー検証用。--paths 時は非 ASCII アンカーも検査する）
+        # 相互リンク検証用。--paths 時は**同一ファイル内アンカー**（`#...` のみのリンク）も検査する）
 
 機能:
     - kiro-ide-docs/**/*.md ＋ ルート README.md の相対 Markdown リンクを抽出
@@ -158,7 +158,6 @@ def main():
     broken = []
     anchor_broken = []
     bad_urls = []
-    anchor_skipped = 0
     heading_cache = {}
 
     for f in files:
@@ -186,10 +185,11 @@ def main():
 
         for m in LINK_RE.finditer(txt):
             target = m.group(2).strip()
-            # 同一ファイル内アンカー（#... のみのリンク）は既定ではスキップ。
-            # --paths では目次アンカー検証が目的のため検査する。
+            # 同一ファイル内アンカー（`#...` のみのリンク）。目次リンクがここに該当する。
+            # 以前は --paths のときだけ検査していたが、公開文書の目次62件も同じ規則で
+            # 検査できる（誤検知 0 件を実測）ため、--check-anchors があれば常に検査する。
             if target.startswith("#"):
-                if paths_mode and check_anchors:
+                if check_anchors:
                     anchor = target[1:]
                     checked += 1
                     if f not in heading_cache:
@@ -215,11 +215,15 @@ def main():
                 continue
             # アンカー検査（任意）
             if check_anchors and anchor and resolved.endswith(".md"):
-                # 非 ASCII を含むアンカーはスラッグ規則が複雑なため既定ではスキップ（誤検知防止）。
-                # --paths は目次アンカー検証が目的（対象が少なく目視確認可能）のため日本語も検査する。
-                if not anchor.isascii() and not paths_mode:
-                    anchor_skipped += 1
-                    continue
+                # ⚠️ **非 ASCII（日本語）アンカーも検査する。**
+                # 以前は「スラッグ規則が複雑で誤検知しやすい」として既定でスキップしていたが、
+                # そのため**公開文書の壊れたアンカー4件を見逃していた**
+                # （`#73-サブエージェントで使えるもの使えないもの` — 見出し末尾の
+                # `（重要）` が slug に含まれるのを落としていた／`#3-仕様specs--kirospecs機能名` —
+                # `—` の前後の空白の扱いを誤っていた）。全 497 リンクで検査した結果、
+                # 誤検知は 0 件で実害のある切れだけが出た。**スキップは復活させないこと。**
+                # 日本語見出しへリンクするときは、slug を手で組まず
+                # `<a id="...">` の明示アンカーを使うのが安全（絵文字見出しと同じ方針）。
                 if resolved not in heading_cache:
                     heading_cache[resolved] = collect_headings(resolved)
                 if anchor.lower() not in heading_cache[resolved]:
@@ -240,7 +244,7 @@ def main():
 
     if check_anchors:
         print("")
-        print(f"アンカー検査: 切れ {len(anchor_broken)} 件 / スキップ(非ASCII) {anchor_skipped} 件")
+        print(f"アンカー検査: 切れ {len(anchor_broken)} 件（日本語アンカーも検査対象）")
         for f, t, a in anchor_broken:
             print(f"  ⚠️  {f}: '{t}'（見出し '#{a}' が見つからない）")
 

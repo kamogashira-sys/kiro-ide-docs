@@ -139,6 +139,8 @@ Kiro は会話中の**過去のメッセージすべて**をコンテキスト�
 
 **これが速度以外の価値でもあります**（公式の例: 複数のチケットを並列に取得・分析する場合、逐次より速いだけでなく、ツール呼び出しとチケットの詳細が各サブエージェント内に留まりメインのコンテキストを汚さない）。
 
+<a id="subagent-capabilities"></a>
+
 ### 7.3 サブエージェントで使えるもの・使えないもの（重要）
 
 | 機能 | サブエージェント内 |
@@ -176,7 +178,7 @@ You are a senior code reviewer.
 | `tools` | アクセスできるツールの配列 | `["@builtin", "@context7"]` | **ツールなし** |
 | `model` | 使用するモデル | `claude-sonnet-4` | **チャットで現在選択中の LLM** |
 | `includeMcpJson` | true ならすべての MCP ツールを含める | `true` | `false` |
-| `includePowers` | true なら Powers 内のすべての MCP ツールを含める | `true` | `false` |
+| `includePowers` | true なら **Powers** 内のすべての MCP ツールを含める（Powers = MCP サーバ・ステアリング・フックのバンドルを動的に読み込む仕組み。[0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)・公式 [`/docs/powers`](https://kiro.dev/docs/powers/)） | `true` | `false` |
 
 **`tools` フィールドで使える指定**:
 
