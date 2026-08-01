@@ -55,6 +55,14 @@ def public_docs():
             if not is_local_only(d)]
     if os.path.isfile("README.md"):
         docs.append("README.md")
+    # `.github/` の Markdown（WORKFLOW.md・COMMIT_CHECKLIST.md・PR テンプレート）も
+    # **GitHub に公開される**ため表記規約の対象にする。
+    # 対象外にしていたため、公開後に `.github/COMMIT_CHECKLIST.md` の
+    # 「スラッシュなしは空応答になる」（実際は **301**）という誤りを見逃していた。
+    # なお `check-consistency.py` の対象には**しない** — これらは
+    # 「未確認と書く作法」を*説明する*文書で、規則 (e)（未確認に説明が伴うか）が
+    # 誤検知する（実測2件）。
+    docs += sorted(glob.glob(".github/**/*.md", recursive=True))
     return docs
 
 
