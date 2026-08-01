@@ -79,8 +79,9 @@ Kiro IDE は `1.0.NNN`（3桁ビルド番号）でほぼ週次リリースされ
 
 ```bash
 cd /home/katoh/projects/kiro-ide-docs
-make check-kiro-ide-quick   # 執筆中の常用（links / changelog / structure）
-make check-kiro-ide-all     # コミット前・公開前
+make check-kiro-ide-quick    # 執筆中の常用（links / changelog / structure）
+make check-kiro-ide-ignore   # 公開範囲の機械確認（コミット前に必須・exit 0 必須）
+make check-kiro-ide-all      # コミット前・公開前
 ```
 
 外部フィードに依存する新バージョン検知は手動ターゲットです（CI・`all` には含めません）。
@@ -88,6 +89,10 @@ make check-kiro-ide-all     # コミット前・公開前
 ```bash
 make check-kiro-ide-freshness
 ```
+
+> **現状**: `check-kiro-ide-quick` と `check-kiro-ide-ignore` は利用可能です。
+> `check-kiro-ide-all` と `check-kiro-ide-freshness` は検証体制の完成時に追加します
+> （利用可能なターゲットは `make` で確認できます）。
 
 ### 手動検証
 
@@ -102,6 +107,7 @@ make check-kiro-ide-freshness
 
 - [ ] 全てのチェック項目を確認した
 - [ ] `make check-kiro-ide-quick` を実行した（問題0件）
+- [ ] `make check-kiro-ide-ignore` を実行した（exit 0）
 - [ ] 公開範囲の確認を実施した（`git status` ＋ `git check-ignore`）
 - [ ] コミットメッセージが明確である
 

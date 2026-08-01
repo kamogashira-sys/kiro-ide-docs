@@ -191,13 +191,16 @@ cd /home/katoh/projects/kiro-ide-docs
 # 執筆中の常用
 make check-kiro-ide-quick
 
-# コミット前・公開前
+# 公開範囲の機械確認（ローカル管理対象が除外されているか。exit 0 必須）
+make check-kiro-ide-ignore
+
+# コミット前・公開前（検証体制の完成時に追加）
 make check-kiro-ide-all
 
-# 公開範囲の機械確認（ローカル管理対象が除外されているか）
-git check-ignore -q kiro-ide-docs/05_meta/x && echo "OK: 05_meta ignored"
 git status --short
 ```
+
+> 利用可能なターゲットは `make`（引数なし）で確認できます。
 
 [コミット前チェックリスト](COMMIT_CHECKLIST.md)も確認してください。
 
