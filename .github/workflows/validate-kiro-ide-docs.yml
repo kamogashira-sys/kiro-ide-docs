@@ -1,0 +1,80 @@
+name: Validate kiro-ide-docs
+
+# 対象ブランチは main のみ（D7）。develop 運用はしない。
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'kiro-ide-docs/**'
+      - 'README.md'
+      - 'scripts/kiro-ide-docs/**'
+      - 'Makefile'
+      - '.github/workflows/validate-kiro-ide-docs.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'kiro-ide-docs/**'
+      - 'README.md'
+      - 'scripts/kiro-ide-docs/**'
+      - 'Makefile'
+      - '.github/workflows/validate-kiro-ide-docs.yml'
+  schedule:
+    # nightly。公式サイトの改廃によるリンク切れと、新バージョンの掲載漏れを検知する。
+    # Kiro IDE は週次リリースのため、CLI 版より検知頻度を高く保つ必要がある。
+    - cron: '47 18 * * *'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # 公開範囲の機械検証。ローカル管理対象（work_plans / 05_meta /
+      # 06_embedded-docs / work_records）が公開ツリーに混入していないかを見る。
+      # 公開事故は取り返しがつかないので最初に実行する。
+      - name: 公開範囲チェック（ローカル管理対象の混入）
+        run: make check-kiro-ide-ignore
+
+      # ネットワーク不要の全チェック（links / changelog / structure / coverage /
+      # counts / notation / consistency）。
+      - name: 全チェック（ネットワーク不要）
+        run: make check-kiro-ide-all
+
+      # ⚠️ 重要: CI には一次情報スナップショット（06_embedded-docs/）が無い。
+      # .gitignore 対象のため clone されず、check-kiro-ide-coverage は
+      # 「スキップして exit 0」になる。つまり **CI の green は網羅性を保証しない**。
+      # 網羅性（版の取り落ち・日付のずれ・公式の説明の転記漏れ）は
+      # スナップショットを持つローカル環境で確認する必要がある。
+      # このステップは、その事実をログに残して誤読を防ぐためにある。
+      - name: 網羅性チェックの状態を明示
+        run: |
+          if ls kiro-ide-docs/06_embedded-docs/*.html >/dev/null 2>&1; then
+            echo "::notice::一次情報スナップショットがあるため網羅性を検証しました"
+          else
+            echo "::warning::一次情報スナップショット（06_embedded-docs/）が無いため" \
+                 "網羅性チェックはスキップされました。CI の green は版の網羅性を保証しません。" \
+                 "ローカルで make check-kiro-ide-coverage を実行してください"
+          fi
+
+      # 外部サイトに依存するチェックは PR では実行しない（レート制限・一時障害で
+      # PR が赤くなるのを避ける）。push / nightly / 手動で実施する。
+      # 重要 URL のみに絞ることで、外部要因の failure と本当のリンク切れを
+      # 切り分けやすくする（全件は make check-kiro-ide-urls）。
+      - name: 重要 URL の到達性（PR ではスキップ）
+        if: github.event_name != 'pull_request'
+        run: make check-kiro-ide-urls-important
+
+      # 新バージョンの掲載漏れ検知。3情報源の和集合で判定する（M-F）。
+      # 公式に新版が出たのに文書が追随していない場合ここで落ちる。
+      # ⚠️ ここでの failure は「文書のバグ」ではなく「更新作業が必要」の合図。
+      - name: 新バージョン検知（nightly と手動のみ）
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: make check-kiro-ide-freshness
