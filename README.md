@@ -2,7 +2,7 @@
 
 **[Kiro IDE](https://kiro.dev/) のアップデート情報を、初心者にも分かりやすく解説するプロジェクトです。** より正確な情報発信を心がけて更新していきます。
 
-> **姉妹サイト**: Kiro CLI 版は **[猫でもわかるkiro-cli アップデート情報（q-cli-docs）](https://github.com/kamogashira-sys/q-cli-docs)** をご覧ください。Kiro IDE と Kiro CLI の比較は CLI 版サイトの [Kiro IDE 版との比較](https://github.com/kamogashira-sys/q-cli-docs/blob/main/kiro-docs/09_v3/02_kiro-ide-vs-cli.md) にまとめています。
+> **姉妹サイト**: Kiro CLI 版は **[猫でもわかるkiro-cli アップデート情報（q-cli-docs）](https://github.com/kamogashira-sys/q-cli-docs)**、Kiro Web 版は **[猫でもわかるKiro Web アップデート情報（kiro-web-docs）](https://github.com/kamogashira-sys/kiro-web-docs)** をご覧ください。Kiro IDE と Kiro CLI の比較は CLI 版サイトの [Kiro IDE 版との比較](https://github.com/kamogashira-sys/q-cli-docs/blob/main/kiro-docs/09_v3/02_kiro-ide-vs-cli.md) にまとめています。
 
 ## 🧭 目的別の入口
 

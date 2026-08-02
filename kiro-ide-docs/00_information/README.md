@@ -44,7 +44,7 @@ Kiro は IDE 単体の製品ではありません。公式の `llms.txt` は次�
 |-----------|----------|---------------|--------------|
 | **IDE** | <https://kiro.dev/ide/> | `/docs/`（117ページ） | **本サイトの対象** |
 | **CLI** | <https://kiro.dev/cli/> | `/docs/cli/`（101ページ） | 姉妹サイト [q-cli-docs](https://github.com/kamogashira-sys/q-cli-docs) が扱う |
-| **Web** | <https://kiro.dev/web/> | `/docs/web/`（20ページ） | 対象外 |
+| **Web** | <https://kiro.dev/web/> | `/docs/web/`（20ページ） | 姉妹サイト [kiro-web-docs](https://github.com/kamogashira-sys/kiro-web-docs) が扱う |
 
 > **モバイル**: <https://kiro.dev/mobile/> も存在しますが、専用のドキュメントツリーはありません。
 

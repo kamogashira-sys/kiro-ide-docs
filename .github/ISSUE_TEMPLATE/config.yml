@@ -12,3 +12,6 @@ contact_links:
   - name: 🐱 Kiro CLI 版ドキュメント（姉妹サイト）
     url: https://github.com/kamogashira-sys/q-cli-docs
     about: 猫でもわかるKiro CLI アップデート情報
+  - name: 🐱 Kiro Web 版ドキュメント（姉妹サイト）
+    url: https://github.com/kamogashira-sys/kiro-web-docs
+    about: 猫でもわかるKiro Web アップデート情報
