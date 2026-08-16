@@ -54,6 +54,6 @@
 ## 関連セクション
 
 - [00_information](../00_information/) - Kiro IDE の基本情報・公式情報源
-- [01_features](../01_features/) - 機能詳細ガイド（10機能）
+- [01_features](../01_features/) - 機能詳細ガイド（12機能）
 - [02_update](../02_update/) - アップデート情報（更新内容の確認）
 - [04_reference](../04_reference/) - リファレンス（設定ファイル・権限ほか）

@@ -11,7 +11,7 @@
 | 🚀 **はじめて Kiro IDE を使う** | [インストール](kiro-ide-docs/03_deployment/01_installation.md) → [認証](kiro-ide-docs/03_deployment/02_authentication.md) → [機能を知る](kiro-ide-docs/01_features/) |
 | ⚠️ **0.x から 1.0 に上げたら動かなくなった** | [1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md)（フックの形式変更・セッション移行） |
 | 📖 **最新版で何が変わったか知りたい** | [アップデート情報（1.0 系）](kiro-ide-docs/02_update/01_changelog.md) |
-| 📚 **機能の使い方を知りたい** | [機能詳細ガイド（10機能）](kiro-ide-docs/01_features/) |
+| 📚 **機能の使い方を知りたい** | [機能詳細ガイド（12機能）](kiro-ide-docs/01_features/) |
 | 🔍 **設定ファイルやショートカットを引きたい** | [リファレンス](kiro-ide-docs/04_reference/) |
 | 🖥️ **VS Code から乗り換えたい** | [VS Code からの移行](kiro-ide-docs/03_deployment/03_migrating-from-vscode.md) |
 | 🏢 **組織に導入したい** | [エンタープライズ配布](kiro-ide-docs/03_deployment/04_enterprise.md)・[セキュリティ](kiro-ide-docs/03_deployment/05_security.md) |
@@ -21,12 +21,12 @@
 | セクション | 内容 |
 |-----------|------|
 | [00_information](kiro-ide-docs/00_information/) | **基本情報・公式情報源**。公式サイトの構造マップ・`llms.txt` や changelog の性質と使い分け |
-| [01_features](kiro-ide-docs/01_features/) | **機能詳細ガイド（10機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 |
-| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.0 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全61バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
+| [01_features](kiro-ide-docs/01_features/) | **機能詳細ガイド（12機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 / Powers / Cloud Sessions |
+| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.0 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全64バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
 | [03_deployment](kiro-ide-docs/03_deployment/) | **インストール・認証・VS Code 移行・エンタープライズ配布・セキュリティ** |
 | [04_reference](kiro-ide-docs/04_reference/) | **リファレンス**: `.kiro/` ファイル仕様・キーボードショートカット（29件）・権限（capability 14種）・コンテキストプロバイダ（14種）・モデル |
 
-**カバー範囲**: 0.1（2025-07-14）〜 **1.0.242**（2026-07-28）の**全61バージョン**。公式が説明を公開しているものは省略せず掲載しています。
+**カバー範囲**: 0.1（2025-07-14）〜 **1.0.309**（2026-08-13）の**全64バージョン**。公式が説明を公開しているものは省略せず掲載しています。
 
 ## 📢 Kiro IDE とは
 

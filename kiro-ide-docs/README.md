@@ -24,7 +24,7 @@
 | セクション | 内容 |
 |-----------|------|
 | [00_information](00_information/) | Kiro IDE の基本情報・公式サイトの構造・情報源一覧 |
-| [01_features](01_features/) | **機能詳細ガイド（10機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 |
+| [01_features](01_features/) | **機能詳細ガイド（12機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 / Powers / Cloud Sessions |
 | [02_update](02_update/) | **アップデート情報**: [1.0 系](02_update/01_changelog.md)・[0.x 系](02_update/02_changelog-0x.md)・[1.0 移行ガイド](02_update/03_migration-to-1.0.md) |
 | [03_deployment](03_deployment/) | インストール・認証・VS Code からの移行・エンタープライズ配布・セキュリティ |
 | [04_reference](04_reference/) | **リファレンス**: `.kiro/` ファイル仕様・キーボードショートカット・権限・コンテキストプロバイダ・モデル |

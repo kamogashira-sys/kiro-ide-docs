@@ -2,7 +2,7 @@
 
 **チャットを画面の中心に据えた、エージェント前提のレイアウトです。1.0 で導入されました。**
 
-- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-06-25）・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
+- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-08-11）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
 - **導入バージョン**: **1.0**（2026-06-25）
 - **位置づけ**: **実験的機能**（公式の `Experimental features` セクションに分類）
 
@@ -89,6 +89,55 @@ Agent Focus Mode で新しいセッションを作るとき、**任意でワー�
 > **Warning の状態が要点です。** 並列に走らせていると、どのセッションが自分の応答を待っているのかが
 > 分からなくなります。状態表示がそれを示します。
 
+### 5.1 attention カード（1.0.293 で追加）
+
+**セッションが判断を必要とするとき**（コマンドの承認・質問への回答）、チャットの横のパネルに **attention カード**が現れます。**そのセッションを見ていなくても気づけます。**
+
+| 特性 | 内容 |
+|------|------|
+| 表示内容 | セッション名・プロジェクト名・質問文・関連するコマンドまたはパスを表示し、エージェントの選択肢をボタンとして提示する |
+| その場で回答 | セッションを切り替えずに、カードから直接回答できる |
+| 開くタイミング | **attention パネルは自動では開かない**。タイトルバーの**ベルアイコン**から開く（保留中の依頼数が表示される） |
+| 前面化しない | **画面に表示されているセッションのために前面化することはない**（読んでいる内容を妨げない） |
+| 回答済みカード | 自動的にクリアされる。タイムアウトした依頼は「消える」のではなく「タイムアウト」と明示される |
+
+### 5.2 セッションの固定（Pin、1.0.288 で追加）
+
+**Pin Session** でセッションをそのセクションの先頭に固定できます。他のセッションが増減しても固定したセッションはその場に残るため、長時間動くタスクに常に1クリックでアクセスできます。**Unpin** で通常の並びに戻せます。
+
+### 5.3 セッションレールの折りたたみ（1.0.293 で追加）
+
+チャットの表示領域を広げたいときは、セッションパネルを**アイコンのみの帯**に折りたためます。
+
+| 操作 | 内容 |
+|------|------|
+| 折りたたむ | タイトルバー左のボタンで切り替える。またはパネルの端をドラッグして狭めると閉じる（外側にドラッグすると再度開く） |
+| 折りたたみ時の表示 | 各セッションが、**種別（ローカル・クラウド・CLI）を示すバッジ付きの色分けされたモノグラムタイル**とステータス表示になる。タイルにカーソルを合わせると完全なタイトル・ワークスペース・ステータスが表示される |
+| 状態の記憶 | 選んだ表示状態は、次にウィンドウを開いたときも保持される |
+
+### 5.4 Kiro CLI での再開（1.0.288 で追加）
+
+セッションで **Open with Kiro CLI** を選ぶと、その会話を [Kiro CLI](https://kiro.dev/docs/cli/v3/) で再開できます。セッションはターミナルウィンドウで開き、コマンドラインからエージェントの指揮を続けられます。
+
+### 5.5 戻る・進むナビゲーション（1.0.293 で追加）
+
+Agent Focus は、開いたセッション・**Settings** ペイン・プロジェクトの **Workspace Configuration** など、辿った経路の履歴を保持します。
+
+| 操作 | 方法 |
+|------|------|
+| 前後に移動 | タイトルバーの矢印、または `Cmd/Ctrl+[`・`Cmd/Ctrl+]` |
+| Settings ペイン | トグル式。開いて確認した後、Back（または再度 **Settings**）で元の作業に戻る |
+
+### 5.6 Cloud Sessions（プレビュー、1.0.293 で追加）
+
+**Agent Focus Mode は、IDE が [Cloud Sessions](12_cloud-sessions.md) を表示する場所です。** アカウントで Cloud Sessions が利用可能な場合、セッションパネルに **Cloud Sessions** セクションが現れます。
+
+**＋**（**New Cloud Session**）で新規作成し、任意でリポジトリを **Select repos** で紐づけ、モデルと自律レベル（**Autopilot** または **Autonomous**）を選んで最初のプロンプトを送信します。Kiro がサンドボックスを準備し、選んだリポジトリをサーバー側でクローンします（**ローカルのファイルはアップロードされません**）。
+
+Cloud Session もローカルセッションと同様に pin できます。コンテキストメニューには **Open in Kiro Web**・**Open with Kiro CLI** が追加され、ブラウザやターミナルで同じセッションを継続できます。**ファイルがサンドボックスにあるため**、ファイル・差分を開く操作・チェックポイント・ローカルのコンテキストピッカー・クリック可能な spec タスクのアクションは使えず、**Supervised モードも提供されません**。
+
+詳細な仕組み・データの境界・クラウド設定の同期は [12_cloud-sessions.md](12_cloud-sessions.md) を参照してください。
+
 ---
 
 ## 6. チャットから spec が生まれる（Chat-first specs）
@@ -101,6 +150,7 @@ Agent Focus Mode では、**spec が会話から自然に生まれます**。フ
 | 2 | **エージェントが意図を理解するために明確化の質問をする** |
 | 3 | 準備ができたら **spec を紐づける**。エージェントが**話し合った内容を要件・設計・タスクに形式化する** |
 | 4 | 実行を開始し、**セッションをまたいで進捗を監視する** |
+
 
 **「まず話して、固まったら形式化する」**という進め方ができます。Editor View の spec が「フェーズを順に進める」のに対し、こちらは「会話が先」です。
 
@@ -124,7 +174,7 @@ Agent Focus Mode では、**spec が会話から自然に生まれます**。フ
 | 機能 |
 |------|
 | **設定と環境設定** |
-| **[Powers](../02_update/02_changelog-0x.md#powers) と [Skills](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd)** |
+| **[Powers](11_powers.md) と [Skills](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd)** |
 | **MCP サーバの管理** |
 | **ターミナルへのアクセス** |
 | **完全な git ワークフロー** |
@@ -165,10 +215,18 @@ Agent Focus Mode は 1.0 で加わった UI 変更の1つです。関連する2�
 
 ---
 
+## 11. アプリ内での更新通知（1.0.288 で追加）
+
+**新しいバージョンの Kiro が利用可能になると、セッションパネルの下部に更新行が表示されます。** Agent Focus Mode を離れなくても気づけます。**Check for Updates** ボタン（Agent Focus Mode の設定ペイン内）で、いつでも手動確認もできます。
+
+---
+
 ## 関連ドキュメント
 
 - [02_chat.md](02_chat.md) - Dockable chat・セッションの書き出し・サブエージェント
 - [01_specs.md](01_specs.md) - Spec / Plan / Bug Fix / Quick Spec のワークフロー
 - [04_autopilot-supervised.md](04_autopilot-supervised.md) - 両モードが使える
 - [07_custom-agents.md](07_custom-agents.md) - 組み込みエージェントとの対応
-- [02_update/01_changelog.md](../02_update/01_changelog.md) - 1.0 での導入
+- [11_powers.md](11_powers.md) - Agent Focus からはまだ使えない機能
+- [12_cloud-sessions.md](12_cloud-sessions.md) - Agent Focus 内での Cloud Sessions の全詳細
+- [02_update/01_changelog.md](../02_update/01_changelog.md) - 1.0 での導入・1.0.288/293 での加筆

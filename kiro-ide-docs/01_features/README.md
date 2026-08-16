@@ -4,7 +4,7 @@
 
 ---
 
-## 📋 機能一覧（10機能）
+## 📋 機能一覧（12機能）
 
 | # | 機能 | 概要 | 導入 |
 |---|------|------|------|
@@ -18,6 +18,8 @@
 | 8 | [MCP](08_mcp.md) | **外部ツールの接続**。プロンプト・リソーステンプレート・elicitation | 0.1 |
 | 9 | [Agent Focus Mode](09_agent-focus-mode.md) | **チャット中心のレイアウト**（実験的）。並列セッション・Dockable chat | **1.0** |
 | 10 | [エディタ基盤](10_editor.md) | 画面構成・コードベース索引・Git 統合・`.kiroignore`・マルチルート | 0.1 |
+| 11 | [Powers](11_powers.md) | **動的に読み込まれる専門知識パッケージ**。Agent Plugins 仕様・MCP と Skills のバンドル | **1.0.288** |
+| 12 | [Cloud Sessions](12_cloud-sessions.md) | **クラウドサンドボックスで動くセッション**（プレビュー）。IDE/CLI/Web/Mobile 間で継続 | **1.0.293** |
 
 **「導入」列**: 機能が最初に登場したバージョンです。1.0 で追加された3機能（Permissions・Custom Agents・Agent Focus Mode）は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md) も参照してください。
 
@@ -66,11 +68,10 @@
 
 ## 📌 今後追加する機能
 
-v1 公開時点では上記10機能を収録しています。公式ドキュメントには他にも次の領域があり、公開後に追補します。**それぞれ Issue を立てています**（[Issues](../../../../issues)）。
+v1 公開時点では10機能を収録していました（現在は Powers・Cloud Sessions を追加し**12機能**）。公式ドキュメントには他にも次の領域があり、公開後に追補します。**それぞれ Issue を立てています**（[Issues](../../../../issues)）。
 
 | 領域 | 公式ページ | Issue |
 |------|----------|-------|
-| **Powers**（コンテキストと MCP サーバの動的読み込み） | [`/docs/powers`](https://kiro.dev/docs/powers/) | [#1](../../../../issues/1) |
 | **Agent Skills**（可搬な指示パッケージ） | [`/docs/skills`](https://kiro.dev/docs/skills/) | [#2](../../../../issues/2) |
 | Dev servers（長時間実行プロセスの管理） | [`/docs/ide/chat/dev-servers`](https://kiro.dev/docs/ide/chat/dev-servers/) | [#3](../../../../issues/3) |
 | Diagnostics tool | `/docs/ide/chat/*`（**未確認**: 公式索引 `llms.txt` の Chat 配下ページを確認しましたが、該当する専用ページの記述が見当たりません） | [#3](../../../../issues/3) |

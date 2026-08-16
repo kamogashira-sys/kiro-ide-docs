@@ -139,6 +139,9 @@ PROVIDER_DOC = f"{DOC_ROOT}/04_reference/04_context-providers.md"
 SUBSET_OK = {
     "機能数": {
         3: "1.0 で追加された3機能（Permissions・Custom Agents・Agent Focus Mode）は部分集合",
+        # v1公開時点(2026-08-01)の収録数は10機能。Powers・Cloud Sessions追加(1.0.309対応)後の
+        # 現在は12機能だが、公開当時の経緯を示す歴史的記述として「10」を残している。
+        10: "v1公開時点(2026-08-01)の収録機能数（歴史的記述。現在の正準値12とは異なる）",
     },
     "ショートカット数": {
         9: "General カテゴリの件数", 11: "Navigation カテゴリの件数",

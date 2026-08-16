@@ -86,7 +86,7 @@ Kiro IDE と Kiro CLI は**同じ名前の機能でも仕様が異なる**こと
 
 ## 関連セクション
 
-- [01_features](../01_features/) - 機能詳細ガイド（10機能）
+- [01_features](../01_features/) - 機能詳細ガイド（12機能）
 - [02_update](../02_update/) - アップデート情報（1.0 系・0.x 系）
 - [03_deployment](../03_deployment/) - インストール・認証・エンタープライズ配布
 - [04_reference](../04_reference/) - リファレンス（設定ファイル・ショートカットほか）
