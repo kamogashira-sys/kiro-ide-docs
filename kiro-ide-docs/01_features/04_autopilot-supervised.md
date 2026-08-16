@@ -72,7 +72,11 @@
 
 ## 5. Supervised でのレビュー（6段階の粒度）
 
-**ファイル編集を含む各ターンの後に承認を求めます。** これは **vibe チャットでも spec チャットでも同じ**です。
+**ファイル編集を含む各ターンの後に承認を求めます。** これは **Free-flow chat でも Spec ワークフローでも同じ**です。
+
+> **用語について**: 公式は 0.x 時代の呼称で「vibe チャットでも spec チャットでも同じ」と記述していますが、
+> **1.0 で Vibe / Spec の二択は廃止**されています（[02_chat.md](02_chat.md#3-セッションの始め方10-で二択ピッカーが廃止)）。
+> 本サイトでは現行の呼称に置き換えて記載しています。
 
 | # | 機能 | 内容 |
 |---|------|------|
@@ -85,6 +89,11 @@
 
 > **Reject All のあとにフィードバックを渡せる**のが要点です。単に捨てるのではなく、
 > 「なぜ違うのか」を伝えて別の方向で作り直させられます。
+
+> ⚠️ **ここでいう「インラインチャット」は、1.0 で廃止された `Cmd+I` のインラインチャットとは別物です。**
+> エディタ上の Inline Chat（`Cmd+I`）は **1.0 で廃止**されました（[04_reference/02_keyboard-shortcuts.md](../04_reference/02_keyboard-shortcuts.md#chat-tabs-and-debugging4件)）。
+> 一方、**Supervised のハンクレビュー内の「Chat inline」は現行機能**です — 公式 [Autopilot and Supervised](https://kiro.dev/docs/ide/chat/autopilot/)（更新日 2026-08-04、
+> 廃止告知より後の更新）に「each hunk can be independently accepted, rejected, or **modified with inline chat**」と記載されています。
 
 ### 5.1 必ずレビュー対象になるファイル操作（7種）
 

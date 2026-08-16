@@ -64,7 +64,7 @@
 
 ## Chat, tabs, and debugging（4件）
 
-**⚠️ 節名が変更されました（旧 "AI features"）。** 2026-08 の公式サイト再構成に伴い、収録項目も変わっています（旧: `Cmd+L`・`Cmd+I`・`F5` の3件 → 新: `Cmd+T`・`Cmd+L`・`Cmd+Shift+L`・`F5` の4件。**`Cmd+I`（インラインチャット）は本節から削除**され、`Cmd+T`・`Cmd+Shift+L` が新たに掲載されています）。
+**⚠️ 節名が変更されました（旧 "AI features"）。** 2026-08 の公式サイト再構成に伴い、収録項目も変わっています（旧: `Cmd+L`・`Cmd+I`・`F5` の3件 → 新: `Cmd+T`・`Cmd+L`・`Cmd+Shift+L`・`F5` の4件）。**`Cmd+I`（インラインチャット）は 1.0 で廃止された**ため本節から削除され、代わりに `Cmd+T`・`Cmd+Shift+L` が掲載されています（廃止の詳細は下の注記）。
 
 | Mac | Windows / Linux | 内容 |
 |-----|----------------|------|
@@ -79,8 +79,22 @@
 > **`F5`（デバッグ開始）は本節に分類されていますが**、Code OSS 由来の標準的なデバッグ機能です。
 > 公式ページの分類をそのまま反映しています。
 >
-> ⚠️ **`Cmd+I`（インラインチャット）は公式ショートカット一覧ページから削除されています。** 機能自体が廃止されたか、
-> 別ページに移動したかは本ページの範囲では確認できていません（**未確認**）。
+> ⚠️ **`Cmd+I`（インラインチャット）は 1.0 で廃止されました（Inline chat is retired in IDE 1.0）。**
+> 公式 [changelog 1.0](https://kiro.dev/changelog/ide/1-0/) に「**Inline Chat replaced by Ask Kiro workflow**」という
+> 専用の項目が立てられています。**代替手段**は次の3つです。
+>
+> | 代替手段 | 操作 |
+> |---------|------|
+> | 選択したコードを現在のチャットに渡す | **`Cmd+L`** / `Ctrl+L` |
+> | 選択したコードで新しいセッションを始める | **`Cmd+Shift+L`** / `Ctrl+Shift+L` |
+> | 右クリックメニュー | **Kiro > Ask Kiro**（ほかに **Fix Grammar / Spelling**・**Write Comments for this Code**・**Optimize this Code** のクイックアクション） |
+>
+> 公式の説明: 選択範囲は現在のチャットに追加され、**エージェントはすでにプロジェクトの文脈・履歴・
+> すべてのツールを持っている**状態で扱える — という理由づけです。
+>
+> **⚠️ 混同しやすい点**: 廃止されたのは**エディタ上の Inline Chat（`Cmd+I`）**です。
+> **Supervised モードのハンクレビュー内の「Chat inline」は別物で、現行機能として残っています**
+> （[01_features/04_autopilot-supervised.md](../01_features/04_autopilot-supervised.md#5-supervised-でのレビュー6段階の粒度)）。
 
 ---
 
