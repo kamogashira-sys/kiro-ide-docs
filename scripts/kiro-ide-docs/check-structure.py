@@ -36,12 +36,14 @@ PUBLIC_SECTIONS = [
 LOCAL_ONLY = ["05_meta", "06_embedded-docs", "work_plans"]
 
 # 04_reference/ の確定した軸（D12・G1 確定）。CLI 版の写しではない。
+# 06 は公式に対応ページが存在しない実測値ベースのページ（`kiro --help` の出力）。
 REFERENCE_FILES = [
     "01_kiro-directory.md",
     "02_keyboard-shortcuts.md",
     "03_permissions.md",
     "04_context-providers.md",
     "05_models.md",
+    "06_launch-options.md",
 ]
 
 LINK_RE = re.compile(r'\[[^\]]*\]\(([^)]+)\)')

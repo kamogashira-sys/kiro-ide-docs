@@ -3,7 +3,7 @@
 **エージェントに何を許すかを決める仕組みの辞書です。**
 
 - **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-08-14）
-- **収録件数**: capability **14種**
+- **収録件数**: capability **15種**
 - **導入バージョン**: **1.0**（0.x から更新する場合は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md) を参照）
 
 > **これは何か**: エージェントが行うすべての操作に対する**単一の統一された権限モデル**です。
@@ -40,23 +40,35 @@
 |---------|------|----------|
 | **User**（全ワークスペース） | `~/.kiro/settings/permissions.yaml` | `deny` / `ask` / `allow` |
 | **Workspace**（このプロジェクトのみ） | `~/.kiro/workspace-roots/<hash>/permissions.yaml` | `deny` / `ask` / `allow` |
+| **Agent**（そのエージェントのみ） | **エージェントプロファイルの `permissions` フィールドに埋め込む** | `deny` / `ask` / `allow` |
 
 > **ワークスペースの権限はリポジトリの外に、利用者ごとに保存されます**（`~/.kiro/workspace-roots/<hash(workspaceRoot)>/`）。
 > これは重要な設計です — **クローンしてきたリポジトリが権限ルールを注入することはできません**。
+
+> **Agent スコープ**は、エージェント定義そのものに権限を持たせる方法です。
+> 書き方は [01_features/07_custom-agents.md](../01_features/07_custom-agents.md) の `permissions` フィールドを参照してください。
 
 ### 2.2 システムが管理するスコープ
 
 | スコープ | 目的 | 使える効果 |
 |---------|------|----------|
 | **Kiro** | ハードコードされたセキュリティ不変条件（**上書き不可**） | `deny` / `ask` |
-| **Administration** | エンタープライズ／MDM で管理されるポリシー（エンタープライズプランのみ） | `deny` / `ask` |
+| **Administration** | エンタープライズで管理されるポリシー（**`managed-settings.json`**、エンタープライズプランのみ） | `deny` / `ask` |
 | **Session** | IDE での承認判断から生まれるメモリ上のルール | `deny` / `ask` / `allow` |
 
 **`allow` を持たないスコープがある**点に注意してください。Kiro スコープと Administration スコープは「制限を加える」ためのもので、緩めることはできません。
 
+### 2.3 スコープ間に優先順位はない
+
+**評価は deny-overrides アルゴリズムで行われ、スコープ同士の優劣はありません。**
+どのスコープから来たルールであっても、**最も制限の強い効果が勝ちます**（`deny` > `ask` > `allow`）。
+
+> ⚠️ **どのスコープの `deny` も、他のスコープの `allow` で上書きできません。**
+> `deny` ルールは慎重に書いてください。
+
 ---
 
-## 3. capability 一覧（14種）
+## 3. capability 一覧（15種）
 
 | capability | 制御する対象 |
 |-----------|------------|
@@ -72,6 +84,7 @@
 | `power` | **Powers** の有効化とツール呼び出し（MCP サーバ・ステアリング・フックのバンドルを動的に読み込む仕組み。[0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)・公式 [`/docs/powers`](https://kiro.dev/docs/powers/)） |
 | `diagnostics` | 診断ツール |
 | `context` | コンテキストおよびステアリングのツール |
+| `sandbox_network` | **公式は capability 名のみを列挙しており、制御対象の説明を公開していません**（**未確認**）。関連しそうな設定として Kiro Web のサンドボックスにネットワークアクセスレベルの設定があります（公式 [Internet access](https://kiro.dev/docs/web/sandbox/internet-access/)）が、**この capability と結びつける記述は公式にありません** |
 | `all` | **すべての capability**（メタ） |
 | `builtin` | **すべての組み込みツール**（メタ） |
 

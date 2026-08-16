@@ -46,6 +46,12 @@ H2_RE = re.compile(r"^##\s+(.*?)\s*$")
 # （節番号 `### 4.5 機能を使う場合...` の "5 機能"、バージョン番号 `1.0` を件数と誤読しないため）
 NUM = r"(?<![\d.])(\d+)"
 COUNT_RE = NUM + r"\s*(?:件|種|機能|個)"
+# 「〜数（29）」のように単位を伴わず括弧で数値を書く形。
+# COUNT_RE は単位（件・種・機能・個）を必須にするため、この形は取り落とす。
+# 実際に 04_reference/README.md の「ショートカット数（29）と capability 数（14）」を
+# 検出できず水平展開漏れが残っていたため、専用のパターンを設けた。
+def bare_count_re(keyword):
+    return re.compile(keyword + r"\s*数\s*[（(]\s*" + NUM + r"\s*[）)]")
 # Markdown リンクの宛先
 LINK_RE = re.compile(r"\]\(([^)\s]+)")
 
@@ -386,7 +392,10 @@ def main():
     if feature is not None:
         total_checked += check_claims(
             "機能数", feature, FEATURE_DOC,
-            [re.compile(NUM + r"\s*機能")],
+            [
+                re.compile(NUM + r"\s*機能"),
+                bare_count_re("機能"),
+            ],
             docs,
         )
     if shortcut is not None:
@@ -395,13 +404,17 @@ def main():
             [
                 re.compile(r"ショートカット[^。\n]{0,12}?" + COUNT_RE),
                 re.compile(COUNT_RE + r"[^。\n]{0,10}?ショートカット"),
+                bare_count_re("ショートカット"),
             ],
             docs,
         )
     if capability is not None:
         total_checked += check_claims(
             "capability数", capability, PERMISSION_DOC,
-            [re.compile(r"capability[^。\n]{0,10}?" + COUNT_RE)],
+            [
+                re.compile(r"capability[^。\n]{0,10}?" + COUNT_RE),
+                bare_count_re("capability"),
+            ],
             docs,
         )
     if provider is not None:
@@ -410,6 +423,7 @@ def main():
             [
                 re.compile(r"プロバイダ[^。\n]{0,10}?" + COUNT_RE),
                 re.compile(COUNT_RE + r"[^。\n]{0,10}?プロバイダ"),
+                bare_count_re("プロバイダ"),
             ],
             docs,
         )

@@ -2,7 +2,7 @@
 
 **自然言語で Kiro に指示する、すべての入口になる機能です。**
 
-- **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-06-25）・[Vibe vs Spec sessions（⚠️ 公式は Setup & First Run ページに統合済み。内容の精査は別途対応）](https://kiro.dev/docs/ide/setup/)・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)
+- **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-06-25）・[Setup & First Run（セッションの始め方。旧 Vibe vs Spec sessions ページはここに統合され、二択ピッカー自体も廃止）](https://kiro.dev/docs/ide/setup/)（更新日: 2026-08-04）・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
 > 繰り返し作業を自動化する — これらを**プロジェクトの文脈を保ったまま**自然言語で行えます。
@@ -31,27 +31,38 @@ Mandarin（中国語）・French・German・Italian・**Japanese（日本語）*
 
 ---
 
-## 3. 2種類のセッション（Vibe と Spec）
+## 3. セッションの始め方（1.0 で二択ピッカーが廃止）
 
-新しいセッションを開始するときの**セッションピッカー**で切り替えます。
+> ⚠️ **0.x からの変更点**: セッション開始時の **Vibe / Spec 二択ピッカーは 1.0 で廃止されました。**
+> 公式は「This binary picker has been removed」と明記しています。
+> 0.x での挙動は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md#6-セッションの始め方が変わった対応不要) を参照してください。
 
-| | **Vibe セッション** | **Spec セッション** |
-|-|------------------|------------------|
-| 性格 | 対話的な Q&A 中心。**会話的で流動的** | 構造化された段階的な進め方 |
-| 成果物 | **保存されない** | `.kiro/specs/` に保存される |
-| 向く場面 | 素早い質問・説明・概念の理解・**探索的なコーディングと学習** | **複雑な機能・アプリ全体・大きなリファクタリング** |
-| 重点 | **説明**（大量のコード生成より） | 実装計画と追跡 |
+**すべてのセッションはデフォルトエージェント（汎用のコーディングアシスタント）で始まります。**
+新しいセッションを開くと「**Let's build**」画面が2つの入口を示します。
 
-### 3.1 Vibe を使うとき（公式）
+### 3.1 Free-flow chat（デフォルト）
 
-| # | 理由 |
-|---|------|
-| 1 | **対話的な Q&A 形式** — コードについての往復のやり取りに最適化されている |
-| 2 | **素早い支援** — 形式的な仕様化のプロセスを通らずに、質問への素早い回答・コードの振る舞いの説明・概念の理解が得られる |
-| 3 | **文脈の理解** — 他のセッションと同様にコンテキストプロバイダを活用するが、**説明に重点**がある |
-| 4 | **柔軟な進め方** — Spec より構造が緩く、探索的なコーディングと学習に向く |
+**チャット入力欄に直接書くだけで、デフォルトエージェントと作業を始められます。** 事前の設定は不要です。
 
-### 3.2 Spec を使うとき（公式）
+素早い探索・質問・説明にはこちらが向きます。
+
+### 3.2 ワークフローから始める
+
+**組み込みのワークフローエージェントを選ぶと、そのセッションのエージェントが切り替わります。**
+
+| ワークフロー | 内容 |
+|------------|------|
+| **Spec** | 構造化された機能開発（要件 → 設計 → タスク、**各フェーズに承認ゲート**） |
+| **Plan** | **読み取り専用**の計画モード。コードベースを調べ、変更を加えずに実装計画を作る |
+| **Bug Fix** | 構造化されたバグ調査（原因究明 → 修正設計 → 実装） |
+| **Quick Spec** | 高速版の Spec。**承認ゲートなし**で要件・設計・タスクを自動生成する |
+
+**公式の目安**: **複雑な機能を作るとき・回帰のコストが高いバグを直すとき**は Spec を選び、
+**素早い探索的な作業**は Free-flow chat のままにします。
+
+Spec の詳細は [01_specs.md](01_specs.md) を参照してください。
+
+#### Spec を選ぶ場面（公式）
 
 | # | 理由 |
 |---|------|
@@ -60,7 +71,18 @@ Mandarin（中国語）・French・German・Italian・**Japanese（日本語）*
 | 3 | **チーム協業** — 複数のメンバーが実装計画を理解し、仕様に対する進捗を追う必要があるプロジェクト |
 | 4 | **文書化の必要** — 将来の参照や知識共有のために、コードと並行して詳細な文書を生成したいとき |
 
-Spec の詳細は [01_specs.md](01_specs.md) を参照してください。
+### 3.3 セッション中の切り替え（いつでも可能）
+
+**開始時に決める必要はありません。** 会話の途中でエージェントを切り替えられます。
+
+| 操作 | 内容 |
+|------|------|
+| チャット入力欄の下部にあるエージェント名（例: **Default**）をクリック | **エージェントピッカー**が開く |
+| チャット入力欄の **Build with spec** をクリック | 会話の途中から Spec ワークフローを呼び出す |
+| 自作のエージェント | ピッカーの **WORKSPACE** / **GLOBAL** セクションに表示される |
+
+素早い質問を Free-flow で始め、複雑になったら Plan エージェントに切り替え、実装では Default に戻す —
+といった進め方ができます。組み込みエージェントの一覧は公式 [Built-in agents](https://kiro.dev/docs/custom-agents/built-in/) を参照してください。
 
 ---
 

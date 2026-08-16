@@ -9,7 +9,7 @@
 | # | 機能 | 概要 | 導入 |
 |---|------|------|------|
 | 1 | [Specs](01_specs.md) | **仕様駆動開発**。要件・設計・タスクの3成果物で機能を作る。Quick Spec・Bugfix Spec・要件分析 | 0.1 |
-| 2 | [Chat](02_chat.md) | **エージェントとの対話**。Vibe / Spec セッション・サブエージェント・チェックポイント・会話の書き出し | 0.1 |
+| 2 | [Chat](02_chat.md) | **エージェントとの対話**。セッションの始め方（Free-flow chat・ワークフロー）・サブエージェント・チェックポイント・会話の書き出し | 0.1 |
 | 3 | [Permissions](03_permissions.md) | **capability ベースの権限**。1つのルールを全ツールに効かせる | **1.0** |
 | 4 | [Autopilot・Supervised](04_autopilot-supervised.md) | **2つの実行モード**。レビューのタイミングを変える（**権限は同一**） | 0.x |
 | 5 | [Hooks](05_hooks.md) | **イベント駆動の自動化**。v1 JSON 形式・トリガー10種 | 0.x（**1.0 で形式変更**） |
@@ -90,7 +90,7 @@ v1 公開時点では10機能を収録していました（現在は Powers・Cl
 | 項目 | 本サイト内の記述 |
 |------|--------------|
 | **Powers とは何か** | [0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)（**0.7 時点の内容**。現在の仕様は公式を参照） |
-| Powers の権限（`power` capability） | [04_reference/03_permissions.md](../04_reference/03_permissions.md#3-capability-一覧14種) |
+| Powers の権限（`power` capability） | [04_reference/03_permissions.md](../04_reference/03_permissions.md#3-capability-一覧15種) |
 | Powers のツール指定（`@powers`・`includePowers`） | [05_hooks.md](05_hooks.md#21-matcher-の書き方ツール名の指定)・[02_chat.md](02_chat.md#7-サブエージェント並列実行と委譲) |
 | **Agent Skills の置き場所**（`.kiro/skills/<名前>/SKILL.md`） | [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd) |
 

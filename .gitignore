@@ -20,6 +20,9 @@ work_records/
 # 計画書類の保険: 上記ディレクトリ外に置かれた場合も公開させない
 *_update_plan.md
 *_plan.md
+*_review_report.md
+*_investigation.md
+*_worklog.md
 
 # ============================================================
 # バックアップ・作業ファイル
