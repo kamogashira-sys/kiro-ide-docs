@@ -7,13 +7,24 @@
 - **1.0 で形式が変わりました**（`.hook` → **v1 JSON**）。移行は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)
 
 > ⚠️ **公式ドキュメント間の食い違いに注意**（本サイトの調査結果）:
-> [Hook types](https://kiro.dev/docs/hooks/types/) のページ（更新日 2026-08-04）には、
-> 「Manual Trigger」という項目が**現在も掲載されています**（Agent Hooks パネルの「Quick run」ボタンで
-> 既存フックを手動起動する UI 機能）。ただしこれは v1 JSON の `trigger` フィールドの値としては存在しません。
-> [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/) の移行対応表に明記の通り、
-> **旧 `userTriggered` トリガーは manual ステアリングファイルに置き換えられ、v1 JSON の10種トリガーには含まれません**。
-> **本ページのトリガー一覧（第2節）は v1 JSON の `trigger` フィールドの値のみを記載しています。**
-> 特に **manual トリガは 1.0 で廃止**され、manual ステアリングファイルに置き換わりました（[06_steering.md](06_steering.md)）。
+>
+> **本サイトは、更新日が最も新しく階層も上位の [Hooks](https://kiro.dev/docs/hooks/)（更新日 2026-08-06）を正としています。**
+> 同ページはトリガー一覧を**10種**で示し（Manual Trigger を含めず）、その直後に
+> 「**Manual hooks from earlier IDE versions have been replaced by manual steering files.**」と明記しています。
+> [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/) の移行対応表も
+> `userTriggered` → 「Replaced by manual steering files」と一致しています。
+>
+> 一方、次の2ページ（いずれも更新日 2026-08-04）には異なる記述が残っています。
+>
+> | 公式ページ | 記述 |
+> |-----------|------|
+> | [Hook types](https://kiro.dev/docs/hooks/types/) | 「Manual Trigger」を IDE・CLI 対応の**トリガーとして掲載**（11種類目）。[Hook management](https://kiro.dev/docs/hooks/management/) にも「Run manual trigger hooks」節があり、Agent Hooks パネルの `▷`（Quick run）・hook view の `Start Hook` で実行すると説明されている |
+> | [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) | 「Available triggers（**unchanged from 0.x**）」という見出しで `userTriggered`（"Triggered manually by user"）を含む**11種**を掲載。さらに「Current format (1.0)」節は `when`/`then` + camelCase でv1形式を説明しており、`docs/hooks/` の `trigger`/`matcher`/`action`（PascalCase）と**スキーマの記述自体が食い違っています** |
+>
+> **本ページのトリガー一覧（第2節）は、`docs/hooks/` に従って v1 JSON の `trigger` フィールドの値のみを記載しています。**
+> **manual トリガは 1.0 で廃止**され、manual ステアリングファイルに置き換わりました（[06_steering.md](06_steering.md)）。
+> なお「Manual Trigger」という**UI 操作**（既存フックの手動実行ボタン）について公式が上記のように記述している事実は
+> そのまま伝えますが、どのトリガーを持つフックに対して有効なのかは公式に明示がなく、**実機未確認**です。
 
 ---
 
@@ -214,34 +225,36 @@
 
 フィールドの一覧は [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson) を参照してください。
 
-### 4.2 自然言語で作らせる（Ask Kiro to create a hook）
+### 4.2 チャットで作らせる（Ask Kiro to create a hook）
 
 | 順 | 操作 |
 |----|------|
-| 1 | Kiro パネルの **Agent Hooks** セクションへ移動する |
-| 2 | **`+`** ボタンを押す |
-| 3 | **Ask Kiro to create a hook** を選ぶ |
-| 4 | **自然言語でフックのワークフローを説明する** |
-| 5 | `Enter` または **Submit** を押す |
-| 6 | 生成された設定をレビューし、必要なら調整して **Save Hook** |
+| 1 | Kiro パネルの **Agent Hooks** セクションで **`+`** ボタンを押す |
+| 2 | 表示される**2つの選択肢**（§4.3）から **Ask Kiro to create a hook** を選ぶ |
+| 3 | **チャット入力欄にプロンプトが事前入力される**（Kiro にフックの機能概要を尋ねる内容） |
+| 4 | 作りたいことを自然言語で説明し、**会話しながら設定を詰める**（例: 「ファイルを保存するたびにテストを走らせて」） |
+| 5 | 生成されたフックは **`.kiro/hooks/` の JSON ファイルとして保存される** |
 
-### 4.3 フォームで手動作成（Manually create a hook）
+### 4.3 `+` ボタンの2つの選択肢
 
-**Manually create a hook** を選ぶとフォームが開きます。
+| 選択肢 | 内容 |
+|-------|------|
+| **Manually create a steering file** | **`/<ファイル名>` スラッシュコマンドとして呼び出す Markdown のステアリングファイル**を自分で書く |
+| **Ask Kiro to create a hook** | チャットにプロンプトが事前入力され、会話でフック設定を作る（§4.2） |
 
-| 項目 | 内容 |
-|------|------|
-| **Title** | フックの短い名前 |
-| **Description** | 何をするフックか |
-| **Event** | トリガー種別 |
-| **Tool name** | Pre/Post Tool Use の場合、照合するツールを指定 |
-| **File pattern** | ファイルイベントの場合、照合するファイルを指定 |
-| **Action** | **Ask Kiro**（エージェントプロンプト）または **Run Command**（シェルコマンド） |
-| **Instructions** / **Command** | 実行するプロンプトまたはシェルコマンド |
+> **「Manually create a steering file」がフック作成の選択肢に並んでいる理由**: **manual フックの後継が
+> manual ステアリングファイル**だからです（冒頭の食い違い注記・[06_steering.md](06_steering.md)）。
 
-**Create Hook** で作成、**Clear** でフォームをリセットします。
+### 4.4 0.x のフォーム UI は 1.0 で削除された
 
-> **コマンドパレットからも開けます**: `Cmd+Shift+P` / `Ctrl+Shift+P` → `Kiro: Open Kiro Hook UI`
+**0.x には「Manually create a hook」のフォーム UI がありました**（Title・Description・Event・Tool name・
+File pattern・Action・Instructions/Command の各欄を埋める形式）。**1.0 でこのフォームは会話フローに置き換えられ、
+`+` を押すとチャットにプロンプトが事前入力される形になりました。**
+
+コマンドパレットの `Kiro: Open Kiro Hook UI` も 0.x のフォーム UI を開くためのものでした。
+
+> 出典: [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) の
+> 「Hook creation UI (**removed in 1.0**)」節。0.x から上げた方は操作が変わった点に注意してください。
 
 ---
 
@@ -254,6 +267,7 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 | **有効・無効の切り替え**（削除せず） | Agent Hooks パネルでフックの隣の**目のアイコン**をクリック／フックを選んで右上の **Hook Enabled** スイッチ |
 | **編集** | パネルでフックを選び、トリガー・ファイルパターン・指示・説明などを変更する。**更新は即座に反映される** |
 | **削除** | フックを選び、下部の **Delete Hook** → **delete**。**この操作は取り消せません** |
+| **手動実行**（manual trigger hooks） | Agent Hooks パネルでフック名の隣の **`▷`（Quick run）**／フックを選んで右上の **Start Hook**。**⚠️ 公式 [Hook management](https://kiro.dev/docs/hooks/management/) に「Run manual trigger hooks」として記載されている操作ですが、v1 JSON に manual トリガが存在しないため、どのフックに対して有効かは公式に明示がありません（実機未確認。冒頭の食い違い注記を参照）** |
 
 > JSON ファイルの `enabled` を `false` にしても同じことができます（[04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)）。
 
