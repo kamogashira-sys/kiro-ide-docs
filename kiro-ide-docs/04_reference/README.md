@@ -10,7 +10,7 @@
 |---------|------|---------|
 | [01_kiro-directory.md](01_kiro-directory.md) | **`.kiro/` ディレクトリのファイル仕様**。Specs・Hooks・Steering・Custom Agents・MCP・権限の置き場所 | — |
 | [02_keyboard-shortcuts.md](02_keyboard-shortcuts.md) | **キーボードショートカット** | **30件** |
-| [03_permissions.md](03_permissions.md) | **権限モデル**。capability・ルールの書式・既定の挙動 | capability **14種** |
+| [03_permissions.md](03_permissions.md) | **権限モデル**。capability・ルールの書式・既定の挙動 | capability **15種** |
 | [04_context-providers.md](04_context-providers.md) | **コンテキストプロバイダ**。チャットで `#` から呼び出せる参照元 | — |
 | [05_models.md](05_models.md) | **モデル**。選べるモデルと選び方 | — |
 
@@ -33,7 +33,7 @@
 | 方針 | 内容 |
 |------|------|
 | **出典を明記する** | 各項目に公式ページの URL を付けます |
-| **件数を数値で持つ** | ショートカット数（29）と capability 数（14）は本サイトの検証対象です。公式ページで件数が変わったら本サイトも更新します |
+| **件数を数値で持つ** | ショートカット数（30）と capability 数（15）は本サイトの検証対象です。公式ページで件数が変わったら本サイトも更新します |
 | **IDE 版として完結させる** | 設定ファイルの仕様は Kiro CLI とも共通ですが、引くときにリンクを往復しなくて済むよう **IDE 版で完結**して書きます。CLI 側の対応ページは各項目に併記します |
 
 ---
