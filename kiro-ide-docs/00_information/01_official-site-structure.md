@@ -147,7 +147,7 @@
 | `/docs/custom-agents/subagents`（旧 `/docs/chat/subagents`。ルート直下へ昇格） | — | [01_features/02_chat.md](../01_features/02_chat.md) §7 |
 | `/docs/configuration`（新設） | — | 各ページの設定範囲の参考 |
 | `/docs/ide`（旧 `/docs/editor/codebase-indexing` 単独ページが消滅し集約） | — | [01_features/10_editor.md](../01_features/10_editor.md) |
-| `/docs/ide/setup`（旧 `/docs/chat/vibe` 単独ページが消滅し集約。**Vibe/Spec の二択ピッカーも廃止**） | — | ✅ [01_features/02_chat.md](../01_features/02_chat.md) 第3節を現行仕様（Free-flow chat・4ワークフロー・セッション中の切替）に改訂済み |
+| `/docs/ide/setup`（旧 `/docs/chat/vibe` 単独ページが消滅し集約。**Vibe/Spec の二択ピッカーも廃止**） | — | ✅ [01_features/02_chat.md](../01_features/02_chat.md) 第3節を現行仕様（Free-flow chat・4ワークフロー・セッション中の切替）に改訂済み<br>✅ Open a project の3方法（**File > Open Folder**・ドラッグ&ドロップ・`kiro .`）を [03_deployment/01_installation.md](../03_deployment/01_installation.md#42-プロジェクトを開く3つの方法) 第4.2節に掲載済み |
 
 ---
 
