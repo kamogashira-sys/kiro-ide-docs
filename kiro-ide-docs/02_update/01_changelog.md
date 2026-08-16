@@ -100,7 +100,7 @@ Kiro IDE の一般提供（GA）版です。**エージェントがアクセス�
 - **0.x のレガシーフックは Agent Hooks パネルから直接移行できる**
 - **manual hooks は manual steering ファイルに置き換えられた**
 
-> Kiro CLI 版の対応ページは [Hooks（CLI v3）](https://kiro.dev/docs/cli/v3/hooks) です。
+> Kiro CLI 版の対応ページは [Hooks](https://kiro.dev/docs/hooks/) です。
 > **CLI の非 v3 のフックはまったく別の仕組み**（標準入力の JSON によるライフサイクルフック）なので混同しないでください。
 
 ### Dockable Chat（チャットのドッキング）

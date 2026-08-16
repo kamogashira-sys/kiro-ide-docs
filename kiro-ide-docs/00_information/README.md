@@ -76,7 +76,7 @@ Kiro IDE と Kiro CLI は**同じ名前の機能でも仕様が異なる**こと
 |------|-------------|-----------------|
 | **Permissions** | capability ベース（`fs_read`・`shell` など） | **CLI 3.0（Early Access）**の [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions) が対応。CLI 2.x は旧モデル |
 | **Custom agents** | Markdown 形式・タグベースのツール指定 | [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config)。CLI 2.x は JSON 形式 |
-| **Hooks** | `.kiro/hooks/*.json`（イベント駆動の自動化） | [`docs/cli/v3/hooks`](https://kiro.dev/docs/cli/v3/hooks)。**CLI 2.x の hooks は完全な別物**（stdin 経由 JSON のライフサイクルフック） |
+| **Hooks** | `.kiro/hooks/*.json`（イベント駆動の自動化） | [`docs/hooks`](https://kiro.dev/docs/hooks/)。**CLI 2.x の hooks は完全な別物**（stdin 経由 JSON のライフサイクルフック） |
 
 **スラッシュコマンド**は、同名でも仕組み自体が違います。IDE のスラッシュコマンドは**すべてユーザー定義**（manual トリガのフックと `inclusion: manual` のステアリングファイルが `/` メニューに並ぶ）で、製品が提供する固定のコマンド一覧はありません。CLI 版の固定コマンド一覧を IDE に当てはめないでください。
 

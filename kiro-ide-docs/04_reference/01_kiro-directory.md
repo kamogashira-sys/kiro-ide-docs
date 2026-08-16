@@ -56,7 +56,7 @@
 |------|--------------|------------------|------|-----------------|
 | **仕様（Specs）** | `.kiro/specs/<機能名>/` | — | Markdown | — |
 | **ステアリング** | `.kiro/steering/*.md` | `~/.kiro/steering/*.md` | Markdown＋YAML front matter | — |
-| **フック** | `.kiro/hooks/*.json` | `~/.kiro/hooks/*.json` | JSON（v1） | [`docs/cli/v3/hooks`](https://kiro.dev/docs/cli/v3/hooks) |
+| **フック** | `.kiro/hooks/*.json` | `~/.kiro/hooks/*.json` | JSON（v1） | [`docs/hooks`](https://kiro.dev/docs/hooks/) |
 | **カスタムエージェント** | `.kiro/agents/*.md` | `~/.kiro/agents/*.md` | Markdown | [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config) |
 | **Agent Skills** | `.kiro/skills/<名前>/SKILL.md` | `~/.kiro/skills/<名前>/SKILL.md` | Markdown | — |
 | **MCP サーバ定義** | `.kiro/settings/mcp.json` | `~/.kiro/settings/mcp.json` | JSON | — |

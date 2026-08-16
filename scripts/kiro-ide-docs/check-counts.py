@@ -142,7 +142,10 @@ SUBSET_OK = {
     },
     "ショートカット数": {
         9: "General カテゴリの件数", 11: "Navigation カテゴリの件数",
-        6: "Editing カテゴリの件数", 3: "AI features カテゴリの件数",
+        6: "Editing カテゴリの件数",
+        # 2026-08 の公式再構成でショートカット公式ページの節名が変わった
+        # （AI features → Chat, tabs, and debugging）。件数も3→4に増加。
+        4: "Chat, tabs, and debugging カテゴリの件数",
     },
     "capability数": {},
     "プロバイダ数": {},
