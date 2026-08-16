@@ -167,7 +167,7 @@ IDE ツリーの 117 ページは、さらに次の2つに分かれます。
 
 | 対象 | `.md` 版 | 例 |
 |------|---------|-----|
-| **ドキュメント** | ✅ 全ページに存在 | `/docs/chat` → [`/docs/chat.md`](https://kiro.dev/docs/chat.md) |
+| **ドキュメント** | ✅ 全ページに存在 | `/docs/chat` → [`/docs/chat.md`](https://kiro.dev/docs/ide/chat.md) |
 | **Changelog** | ❌ **存在しない**（404） | `/changelog/ide/1-0-242.md` → 404 |
 
 そのため changelog は HTML から読む必要があります。詳細は [02_information-sources.md](02_information-sources.md) を参照してください。

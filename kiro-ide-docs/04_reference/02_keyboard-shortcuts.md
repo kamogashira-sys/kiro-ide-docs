@@ -2,7 +2,7 @@
 
 **Kiro IDE のキーボードショートカット一覧です。**
 
-- **一次情報**: [Keyboard Shortcuts](https://kiro.dev/docs/editor/keyboard-shortcuts/)（公式ページ更新日: 2025-11-16）
+- **一次情報**: [Keyboard Shortcuts](https://kiro.dev/docs/ide/editor/keyboard-shortcuts/)（公式ページ更新日: 2025-11-16）
 - **収録件数**: **29件**（General 9・Navigation 11・Editing 6・AI features 3）
 
 > **Kiro IDE は Code OSS のフォーク**のため、ショートカットの多くは VS Code と同じです。

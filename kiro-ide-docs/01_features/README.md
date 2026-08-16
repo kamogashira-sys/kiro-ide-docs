@@ -73,7 +73,7 @@ v1 公開時点では上記10機能を収録しています。公式ドキュメ
 | **Powers**（コンテキストと MCP サーバの動的読み込み） | [`/docs/powers`](https://kiro.dev/docs/powers/) | [#1](../../../../issues/1) |
 | **Agent Skills**（可搬な指示パッケージ） | [`/docs/skills`](https://kiro.dev/docs/skills/) | [#2](../../../../issues/2) |
 | Dev servers（長時間実行プロセスの管理）・Diagnostics tool・Agent Notifications | `/docs/chat/*` | [#3](../../../../issues/3) |
-| Terminal integration | [`/docs/chat/terminal`](https://kiro.dev/docs/chat/terminal/) | [#3](../../../../issues/3) |
+| Terminal integration | [`/docs/chat/terminal`](https://kiro.dev/docs/ide/chat/terminal/) | [#3](../../../../issues/3) |
 | Spec の Best practices | [`/docs/specs/best-practices`](https://kiro.dev/docs/specs/best-practices/) | [#4](../../../../issues/4) |
 
 > **Spec の Correctness（プロパティベーステスト）は収録済み**です（[01_specs.md](01_specs.md) §9）。

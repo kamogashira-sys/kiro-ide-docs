@@ -2,7 +2,7 @@
 
 **VS Code の設定・拡張機能・キーバインドを Kiro IDE に持ち込む方法を扱います。**
 
-- **一次情報**: [Migrating from VSCode](https://kiro.dev/docs/guides/migrating-from-vscode/)
+- **一次情報**: [Migrating from VSCode](https://kiro.dev/docs/upgrade-guides/migrating-from-vscode/)
 
 > **前提**: Kiro IDE は **VS Code のオープンソース基盤（Code OSS）**の上に構築されています。
 > そのため慣れた操作画面のまま、既存の設定を持ち込めます。

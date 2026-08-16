@@ -2,7 +2,7 @@
 
 **Kiro の設定ファイルがどこに置かれ、どんな形式なのかをまとめた辞書です。**
 
-- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Hooks](https://kiro.dev/docs/hooks/)・[Steering](https://kiro.dev/docs/steering/)・[Custom agents](https://kiro.dev/docs/custom-agents/)・[MCP Configuration](https://kiro.dev/docs/mcp/configuration/)・[Permissions](https://kiro.dev/docs/chat/permissions/)・[Kiroignore](https://kiro.dev/docs/editor/kiroignore/)・[Agent Skills](https://kiro.dev/docs/skills/)・[Multi-root Workspaces](https://kiro.dev/docs/editor/multi-root-workspaces/)
+- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Hooks](https://kiro.dev/docs/hooks/)・[Steering](https://kiro.dev/docs/steering/)・[Custom agents](https://kiro.dev/docs/custom-agents/)・[MCP Configuration](https://kiro.dev/docs/mcp/configuration/)・[Permissions](https://kiro.dev/docs/permissions/)・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Agent Skills](https://kiro.dev/docs/skills/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **このページの方針**: 引くときにリンクを往復しなくて済むよう、**IDE 版で完結**して書いています。
 > 各項目には Kiro CLI 版の対応ページも併記します。

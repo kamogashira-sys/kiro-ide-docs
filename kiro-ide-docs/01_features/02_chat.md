@@ -2,7 +2,7 @@
 
 **自然言語で Kiro に指示する、すべての入口になる機能です。**
 
-- **一次情報**: [Chat](https://kiro.dev/docs/chat/)（公式ページ更新日: 2026-06-25）・[Vibe vs Spec sessions](https://kiro.dev/docs/chat/vibe/)・[Subagents](https://kiro.dev/docs/chat/subagents/)・[Summarization](https://kiro.dev/docs/chat/summarization/)・[Checkpoints](https://kiro.dev/docs/chat/checkpoints/)・[Export sessions](https://kiro.dev/docs/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/chat/chat-in-editor/)
+- **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-06-25）・[Vibe vs Spec sessions](https://kiro.dev/docs/ide/setup/)・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
 > 繰り返し作業を自動化する — これらを**プロジェクトの文脈を保ったまま**自然言語で行えます。

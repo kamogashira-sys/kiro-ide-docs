@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを決める仕組みの辞書です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/chat/permissions/)（公式ページ更新日: 2026-06-24）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-06-24）
 - **収録件数**: capability **14種**
 - **導入バージョン**: **1.0**（0.x から更新する場合は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md) を参照）
 
