@@ -51,6 +51,13 @@ SOURCE_DATE_RE = re.compile(
 # 公式ページに更新日の表示が本当に無い場合の逃げ道（明示的に書けば通す）。
 # 「書けないから省略」と「書く欄が無い」を区別するために形式を決めておく。
 SOURCE_DATE_ABSENT_RE = re.compile(r"公式ページ更新日:\s*未記載")
+# 公式に対応ページが存在せず、実機の実測値で書いているページ（例: `kiro --help` の出力）。
+# 上の「未記載」は "公式ページはあるが更新日の表示が無い" 場合であり、こちらは
+# "公式ページ自体が無い" 場合。両者を混同しないよう別形式にする。
+# 実測値であることと、どのバージョンで確認したかを必ず書かせる。
+SOURCE_DATE_MEASURED_RE = re.compile(
+    r"公式ページ:\s*該当なし（実測値・([0-9]+\.[0-9]+\.[0-9]+)\s*で確認）"
+)
 
 errors = []
 warnings = []
@@ -206,20 +213,35 @@ def main():
         + glob.glob(f"{DOC_ROOT}/01_features/[0-9][0-9]_*.md")
     )
     missing_date = []
+    measured_pages = []
     for path in need_source_date:
         body = "\n".join(read_doc(path))
+        if SOURCE_DATE_MEASURED_RE.search(body):
+            # 公式に対応ページが無い実測値ページ。黙って見逃すと「出典を書き忘れた
+            # ページ」と区別できなくなるため、許可した事実を必ず出力に出す。
+            measured_pages.append(path)
+            continue
         if not SOURCE_DATE_RE.search(body) and not SOURCE_DATE_ABSENT_RE.search(body):
             missing_date.append(path)
     # 出典日は**エラー**にする。公式ページ間の食い違いを「更新日が新しい方を正」で
     # 解決する方針（F-14）を取っているため、更新日が無いページは方針を適用できない。
     # 公式に更新日の表示が無い場合は「公式ページ更新日: 未記載」と明示的に書く。
+    # 公式に対応ページが無い実測値ページは
+    # 「公式ページ: 該当なし（実測値・X.Y.Z で確認）」と明記する。
     for p in missing_date:
         errors.append(
             f"(c) 出典日（公式ページ更新日: YYYY-MM-DD）がありません: {p}"
-            "（公式に更新日の表示が無い場合は『公式ページ更新日: 未記載』と明記する）"
+            "（公式に更新日の表示が無い場合は『公式ページ更新日: 未記載』、"
+            "公式に対応ページが無い実測値ページは"
+            "『公式ページ: 該当なし（実測値・X.Y.Z で確認）』と明記する）"
         )
     notes.append(f"出典日を必須とするページ {len(need_source_date)} 件を検証"
                  f"（うち未記載 {len(missing_date)} 件）")
+    if measured_pages:
+        notes.append(
+            "公式に対応ページが無い実測値ページとして出典日なしを許可 "
+            f"{len(measured_pages)} 件: " + ", ".join(measured_pages)
+        )
 
     # ---- (d) 誤解を招く断定 ----
     print("🔍 (d) 公式が否定している内容を肯定していないか検証中...")
