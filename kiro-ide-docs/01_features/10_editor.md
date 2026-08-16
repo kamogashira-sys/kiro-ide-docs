@@ -401,7 +401,7 @@ audit-reports/
 ## 関連ドキュメント
 
 - [02_chat.md](02_chat.md) - チャットパネルの使い方
-- [04_reference/02_keyboard-shortcuts.md](../04_reference/02_keyboard-shortcuts.md) - ショートカット29件
+- [04_reference/02_keyboard-shortcuts.md](../04_reference/02_keyboard-shortcuts.md) - ショートカット30件
 - [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md) - `.kiro/` と `.kiroignore` の仕様
 - [03_deployment/03_migrating-from-vscode.md](../03_deployment/03_migrating-from-vscode.md) - VS Code からの移行
 - [03_deployment/04_enterprise.md](../03_deployment/04_enterprise.md) - 拡張機能レジストリの変更

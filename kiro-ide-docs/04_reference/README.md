@@ -9,7 +9,7 @@
 | ファイル | 内容 | 収録件数 |
 |---------|------|---------|
 | [01_kiro-directory.md](01_kiro-directory.md) | **`.kiro/` ディレクトリのファイル仕様**。Specs・Hooks・Steering・Custom Agents・MCP・権限の置き場所 | — |
-| [02_keyboard-shortcuts.md](02_keyboard-shortcuts.md) | **キーボードショートカット** | **29件** |
+| [02_keyboard-shortcuts.md](02_keyboard-shortcuts.md) | **キーボードショートカット** | **30件** |
 | [03_permissions.md](03_permissions.md) | **権限モデル**。capability・ルールの書式・既定の挙動 | capability **14種** |
 | [04_context-providers.md](04_context-providers.md) | **コンテキストプロバイダ**。チャットで `#` から呼び出せる参照元 | — |
 | [05_models.md](05_models.md) | **モデル**。選べるモデルと選び方 | — |
