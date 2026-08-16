@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを、1つのルールで全ツールに効かせる仕組みです。1.0 の中核機能です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-06-24）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-08-14）
 - **辞書的な一覧**: [04_reference/03_permissions.md](../04_reference/03_permissions.md)（capability 14種・書式・既定の挙動）
 - **導入バージョン**: **1.0**（2026-06-25）
 
