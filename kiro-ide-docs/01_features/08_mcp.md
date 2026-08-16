@@ -2,7 +2,7 @@
 
 **外部のサーバに接続して、ツール・プロンプト・リソースを Kiro に追加する仕組みです。**
 
-- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-02-18）・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
+- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-08-04）・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
 - **設定ファイル**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#8-mcp-サーバ定義--kirosettingsmcpjson)
 
 > **これは何か**: MCP は Kiro が外部サーバと通信して、専門的なツール・プロンプト・リソースにアクセスするためのプロトコルです。
@@ -364,6 +364,9 @@ project-b/
 | 3 | **カスタムエージェントのプロファイルに MCP サーバをインラインで書けます**（[07_custom-agents.md](07_custom-agents.md#5-mcp-サーバをインラインで定義する)） |
 | 4 | **1.0.116（2026-07-09）で MCP の遅延認証が入りました**（認証が必要なサーバは使うまで認証を求めない） |
 | 5 | ファイアウォール環境では `github.com` と `raw.githubusercontent.com` の許可が必要な場合があります（[03_deployment/05_security.md](../03_deployment/05_security.md#45-機能を使う場合だけ必要な-url)） |
+| 6 | **`kiro://` リンクからの MCP 導入は書き込み前に確認ダイアログが表示されます（1.0.288）**。コマンド・引数・環境変数またはヘッダ名を表示し、**値は隠されます** |
+| 7 | **MCP サーバの接続に失敗した場合、具体的な理由が MCP 出力チャンネルとサーバのツールチップに表示されます（1.0.288）**。以前は単に「Connection Failed」とだけ表示されていました |
+| 8 | **User-Agent ヘッダーを要求する CDN・ファイアウォールの背後にあるエンタープライズ MCP レジストリで HTTP 403 が発生する問題は 1.0.309 で修正されました** |
 
 ---
 

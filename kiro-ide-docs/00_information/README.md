@@ -58,7 +58,7 @@ Kiro は IDE 単体の製品ではありません。公式の `llms.txt` は次�
 | 項目 | 内容 |
 |------|------|
 | 形式 | `1.0.NNN`（メジャー.マイナー.**ビルド番号**） |
-| 最新版 | **1.0.242**（2026-07-28） |
+| 最新版 | **1.0.309**（2026-08-13） |
 | GA | **1.0.0**（2026-06-25） |
 | 最初の公開版 | **0.1**（2025-07-14・Preview release） |
 | リリース頻度 | 実測でおおむね**週次**（1.0 系は 2026-06-25 〜 2026-07-28 の約1か月で12版） |
@@ -76,7 +76,7 @@ Kiro IDE と Kiro CLI は**同じ名前の機能でも仕様が異なる**こと
 |------|-------------|-----------------|
 | **Permissions** | capability ベース（`fs_read`・`shell` など） | **CLI 3.0（Early Access）**の [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions) が対応。CLI 2.x は旧モデル |
 | **Custom agents** | Markdown 形式・タグベースのツール指定 | [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config)。CLI 2.x は JSON 形式 |
-| **Hooks** | `.kiro/hooks/*.json`（イベント駆動の自動化） | [`docs/cli/v3/hooks`](https://kiro.dev/docs/cli/v3/hooks)。**CLI 2.x の hooks は完全な別物**（stdin 経由 JSON のライフサイクルフック） |
+| **Hooks** | `.kiro/hooks/*.json`（イベント駆動の自動化） | [`docs/hooks`](https://kiro.dev/docs/hooks/)。**CLI 2.x の hooks は完全な別物**（stdin 経由 JSON のライフサイクルフック） |
 
 **スラッシュコマンド**は、同名でも仕組み自体が違います。IDE のスラッシュコマンドは**すべてユーザー定義**（manual トリガのフックと `inclusion: manual` のステアリングファイルが `/` メニューに並ぶ）で、製品が提供する固定のコマンド一覧はありません。CLI 版の固定コマンド一覧を IDE に当てはめないでください。
 
@@ -86,7 +86,7 @@ Kiro IDE と Kiro CLI は**同じ名前の機能でも仕様が異なる**こと
 
 ## 関連セクション
 
-- [01_features](../01_features/) - 機能詳細ガイド（10機能）
+- [01_features](../01_features/) - 機能詳細ガイド（12機能）
 - [02_update](../02_update/) - アップデート情報（1.0 系・0.x 系）
 - [03_deployment](../03_deployment/) - インストール・認証・エンタープライズ配布
 - [04_reference](../04_reference/) - リファレンス（設定ファイル・ショートカットほか）

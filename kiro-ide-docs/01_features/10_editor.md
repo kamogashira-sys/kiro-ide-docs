@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/editor/interface/)（公式ページ更新日: 2025-11-16）・[Codebase indexing](https://kiro.dev/docs/editor/codebase-indexing/)・[Source Control](https://kiro.dev/docs/editor/source-control/)・[Kiroignore](https://kiro.dev/docs/editor/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-08-04）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は
@@ -49,7 +49,7 @@
 
 | ビュー | 内容 |
 |-------|------|
-| **Explorer** | プロジェクトのファイル構造を辿る。**Git の状態表示**、**Specs と MCP サーバの専用セクション**がある |
+| **Explorer** | プロジェクトのファイル構造を辿る。**Git の状態表示**、**Specs と MCP サーバの専用セクション**がある。**1つ以上のファイル・フォルダを右クリックし `Select Files as Context` でチャットのコンテキスト参照に追加できる（1.0.288）** |
 | **Search** | プロジェクト全体の検索と置換 |
 | **Source Control** | Git 操作・変更の確認・**AI 生成のコミットメッセージ**でのコミット（§3） |
 | **Run and Debug** | 変数・コールスタック・ブレークポイントの管理 |
@@ -133,6 +133,10 @@
 | **依存関係** | パッケージ定義と依存情報 |
 
 **索引データが可能にする機能**: 賢いコード補完／ファイル横断のナビゲーション／文脈に応じた提案／ドキュメントの参照／リファクタリング支援。
+
+### 2.5 エディタの検索結果と一致（1.0.288 で改善）
+
+**`grep_search` と `file_search` が IDE 自身の検索機能を経由するようになりました。** これにより、エージェントの検索結果がエディタで実際に見える内容と一致します。
 
 ---
 
@@ -311,6 +315,15 @@ audit-reports/
 > **`.kiroignore` は保護されたパスです。** エージェントが書き換えようとすると必ず確認が求められます
 > （[03_deployment/05_security.md](../03_deployment/05_security.md#3-保護されたパスprotected-paths)）。
 
+### 4.7 作業中も ignore ファイルが即時反映される（1.0.288 で改善）
+
+**`kiroAgent.agentIgnoreFiles` を編集すると、リロードなしで実行中のセッションに反映されます。** さらに以下の改善が入りました。
+
+| 改善内容 |
+|---------|
+| ignore ルールが**読み取りだけでなく書き込みにも適用される**ようになった |
+| **無効なエントリは黙って失敗せず表面化する**ようになった |
+
 ---
 
 ## 5. マルチルートワークスペース
@@ -346,6 +359,16 @@ audit-reports/
 > **信頼できる相手が所有する安全なリモートマシンにのみ接続してください**
 > （[03_deployment/05_security.md](../03_deployment/05_security.md#71-リモート拡張機能の注意)）。
 
+### 6.1 リモートホストの信頼プロンプト（1.0.288 で追加）
+
+**リモートホストへの接続時、リモート拡張機能が実行される前に信頼するかどうかを確認するプロンプトが表示されます。**
+
+| 選択肢 | 内容 |
+|-------|------|
+| **Trust and Connect** | このホストを信頼して接続する |
+| **Don't Connect** | 接続しない |
+| **Always trust this remote host** | 常に信頼する（**マシン単位で記憶される**） |
+
 ---
 
 ## 7. Code OSS のバージョン追従
@@ -354,7 +377,15 @@ audit-reports/
 
 > Kiro は定期的なリベースによって VS Code の開発サイクルに同期しています。最新の機能や改善を取り込みますが、**安定した VS Code のリリースを戦略的に選んでいます**。
 
-取り込みは changelog で明示されます（例: **1.0.242 で Code OSS v1.108.2**）。推移は [02_update/01_changelog.md](../02_update/01_changelog.md) で追えます。
+取り込みは changelog で明示されます（例: **1.0.242 で Code OSS v1.108.2**・**1.0.288 で Code OSS v1.109.5**）。推移は [02_update/01_changelog.md](../02_update/01_changelog.md) で追えます。
+
+### 7.1 Code OSS v1.109.5 での新設定（1.0.288 で追加）
+
+| 設定キー | 内容 |
+|---------|------|
+| `terminal.integrated.stickyScroll.ignoredCommands` | ターミナルのスティッキースクロールで、特定のコマンドを対象外にできる |
+| `editorBracketMatch.foreground` | 一致する括弧の色を変更できる |
+| `terminal.integrated.allowInUntrustedWorkspace` | 信頼していないワークスペースでもターミナルを使うことを選択できる |
 
 ---
 
@@ -370,7 +401,7 @@ audit-reports/
 ## 関連ドキュメント
 
 - [02_chat.md](02_chat.md) - チャットパネルの使い方
-- [04_reference/02_keyboard-shortcuts.md](../04_reference/02_keyboard-shortcuts.md) - ショートカット29件
+- [04_reference/02_keyboard-shortcuts.md](../04_reference/02_keyboard-shortcuts.md) - ショートカット30件
 - [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md) - `.kiro/` と `.kiroignore` の仕様
 - [03_deployment/03_migrating-from-vscode.md](../03_deployment/03_migrating-from-vscode.md) - VS Code からの移行
 - [03_deployment/04_enterprise.md](../03_deployment/04_enterprise.md) - 拡張機能レジストリの変更

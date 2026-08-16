@@ -2,7 +2,7 @@
 
 **Kiro の設定ファイルがどこに置かれ、どんな形式なのかをまとめた辞書です。**
 
-- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Hooks](https://kiro.dev/docs/hooks/)・[Steering](https://kiro.dev/docs/steering/)・[Custom agents](https://kiro.dev/docs/custom-agents/)・[MCP Configuration](https://kiro.dev/docs/mcp/configuration/)・[Permissions](https://kiro.dev/docs/chat/permissions/)・[Kiroignore](https://kiro.dev/docs/editor/kiroignore/)・[Agent Skills](https://kiro.dev/docs/skills/)・[Multi-root Workspaces](https://kiro.dev/docs/editor/multi-root-workspaces/)
+- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Hooks](https://kiro.dev/docs/hooks/)・[Steering](https://kiro.dev/docs/steering/)・[Custom agents](https://kiro.dev/docs/custom-agents/)・[MCP Configuration](https://kiro.dev/docs/mcp/configuration/)・[Permissions](https://kiro.dev/docs/permissions/)・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Agent Skills](https://kiro.dev/docs/skills/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **このページの方針**: 引くときにリンクを往復しなくて済むよう、**IDE 版で完結**して書いています。
 > 各項目には Kiro CLI 版の対応ページも併記します。
@@ -56,7 +56,7 @@
 |------|--------------|------------------|------|-----------------|
 | **仕様（Specs）** | `.kiro/specs/<機能名>/` | — | Markdown | — |
 | **ステアリング** | `.kiro/steering/*.md` | `~/.kiro/steering/*.md` | Markdown＋YAML front matter | — |
-| **フック** | `.kiro/hooks/*.json` | `~/.kiro/hooks/*.json` | JSON（v1） | [`docs/cli/v3/hooks`](https://kiro.dev/docs/cli/v3/hooks) |
+| **フック** | `.kiro/hooks/*.json` | `~/.kiro/hooks/*.json` | JSON（v1） | [`docs/hooks`](https://kiro.dev/docs/hooks/) |
 | **カスタムエージェント** | `.kiro/agents/*.md` | `~/.kiro/agents/*.md` | Markdown | [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config) |
 | **Agent Skills** | `.kiro/skills/<名前>/SKILL.md` | `~/.kiro/skills/<名前>/SKILL.md` | Markdown | — |
 | **MCP サーバ定義** | `.kiro/settings/mcp.json` | `~/.kiro/settings/mcp.json` | JSON | — |

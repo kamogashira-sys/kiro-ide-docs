@@ -97,7 +97,7 @@
 
 ## 5. うまくいかないとき
 
-ブラウザのリダイレクトが失敗する・サインインエラーが出るといった場合は、公式の [トラブルシューティング（認証の問題）](https://kiro.dev/docs/troubleshooting/#authentication-issues) にプラットフォーム別の対処があります。
+ブラウザのリダイレクトが失敗する・サインインエラーが出るといった場合は、公式の [トラブルシューティング（認証の問題）](https://kiro.dev/docs/ide/troubleshooting/#authentication-issues) にプラットフォーム別の対処があります。
 
 ---
 

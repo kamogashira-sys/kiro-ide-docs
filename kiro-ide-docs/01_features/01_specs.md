@@ -2,7 +2,7 @@
 
 **アイデアを「要件・設計・タスク」という3つの成果物に落として実装する、Kiro の中核機能です。**
 
-- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Feature Specs](https://kiro.dev/docs/specs/feature-specs/)・[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)・[Analyze Requirements](https://kiro.dev/docs/specs/analyze-requirements/)・[Bugfix Specs](https://kiro.dev/docs/specs/bugfix-specs/)・[Correctness](https://kiro.dev/docs/specs/correctness/)
+- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-08-12）・[Feature Specs](https://kiro.dev/docs/specs/feature-specs/)・[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)・[Analyze Requirements](https://kiro.dev/docs/specs/analyze-requirements/)・[Bugfix Specs](https://kiro.dev/docs/specs/bugfix-specs/)・[Correctness](https://kiro.dev/docs/specs/correctness/)
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#specs-dir)
 
 > **これは何か**: spec（仕様）は、機能追加やバグ修正の開発プロセスを**形式化した成果物**です。
@@ -38,6 +38,12 @@
 | **1. 要件 / バグ分析** | `requirements.md` / `bugfix.md` | 何を作る（直す）かを定める |
 | **2. 設計** | `design.md` | システムアーキテクチャ・コンポーネント設計・シーケンス図とデータフロー・エラー処理とテスト戦略 |
 | **3. タスク** | `tasks.md` | 実行可能な個別タスクに分解する |
+
+### 2.1 フェーズ間の check-in（1.0.288 で追加）
+
+**Spec ワークフローは、フェーズが切り替わるたびに一時停止して check-in します。** 各フェーズの成果物ができたら、そのまま次のフェーズに進む前に確認を求められます。
+
+**Spec セッションには、Default エージェントと同じコードベース探索ツールが備わっています。** 要件や設計を書く際に、既存のコードベースを調べながら進められます。
 
 ---
 
@@ -119,6 +125,16 @@ Quick Spec の成果物は標準の Feature Spec と**形式が同一**なので
 
 > **自動生成された要件に抜けがあったら**: `requirements.md` を直接編集するか、spec のチャットセッションで
 > Kiro に追加・修正を依頼します。そのうえで **Sync Files** でタスクを再生成します。
+
+### 4.3 完了後の次アクション（1.0.288 で追加）
+
+**Quick Spec が完了すると、そのまま同じチャットセッションで続けられる選択肢がリンクとして提示されます。**
+
+| 選択肢 | 内容 |
+|-------|------|
+| **Run required tasks** | 必須タスクだけを実行する |
+| **Run required and optional tasks** | 必須・任意タスクの両方を実行する |
+| **Analyze the requirements first** | 実行前に要件を分析する（[5. Analyze Requirements](#5-analyze-requirements要件の矛盾を洗い出す)） |
 
 ---
 

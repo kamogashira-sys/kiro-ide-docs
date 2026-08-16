@@ -63,7 +63,11 @@ CHANGELOG_RE = re.compile(r'^https://kiro\.dev/changelog/[^\s]*$')
 CLI_DOCS_RE = re.compile(r'^https://kiro\.dev/docs/cli/([^\s#?]*)')
 # IDE 1.0 の GA 機能に対応する CLI ページは v3。非 v3 は 2.x 系の別仕様なので誤リンクを弾く。
 # hooks は特に別物（IDE: .kiro/hooks/*.json ／ CLI 非 v3: stdin JSON のライフサイクルフック）。
-CLI_V3_REQUIRED = ("permissions", "agent-config", "custom-agents", "hooks")
+CLI_V3_REQUIRED = ("permissions", "agent-config", "hooks")
+# custom-agents は `docs/cli/` 配下のどちらの形（v3あり・v3なし）も誤り。
+# 2026-08 の公式再構成で `docs/cli/v3/custom-agents/` は404、`docs/cli/custom-agents/` は
+# 共通ページ `docs/custom-agents/` への移転スタブになった。正は共通ページのみ。
+CLI_CUSTOM_AGENTS_FORBIDDEN = re.compile(r'^https://kiro\.dev/docs/cli/(?:v3/)?custom-agents(?:/|$)')
 
 
 def repo_root():
@@ -127,6 +131,10 @@ def check_kiro_url(url):
     is_page = not os.path.splitext(url)[1]
     if is_page and CHANGELOG_RE.match(url) and not url.endswith("/"):
         return "changelog の URL は末尾スラッシュが必須（スラッシュなしは 301 リダイレクト）"
+    if CLI_CUSTOM_AGENTS_FORBIDDEN.match(url):
+        return ("Kiro CLI 版の 'custom-agents' は `docs/cli/` 配下ではなく共通ページ "
+                "`docs/custom-agents` を指すこと（`docs/cli/v3/custom-agents` は404、"
+                "`docs/cli/custom-agents` は移転スタブ）")
     m = CLI_DOCS_RE.match(url)
     if m:
         rest = m.group(1).rstrip("/")
@@ -135,6 +143,12 @@ def check_kiro_url(url):
             if page in CLI_V3_REQUIRED:
                 return (f"Kiro CLI 版の '{page}' は `docs/cli/v3/{page}` を指すこと"
                         "（非 v3 は 2.x 系の別仕様）")
+        elif rest == "v3/hooks":
+            # `docs/cli/v3/hooks/` は 2026-08 の公式再構成で移転スタブ化した
+            # （実体は `docs/cli/v3/hooks-migration/`（v3移行手順）または
+            #  `docs/hooks/`（機能説明・トリガー表の実体）のいずれか）。
+            return ("`docs/cli/v3/hooks` は移転スタブ。v3移行手順なら "
+                    "`docs/cli/v3/hooks-migration`、機能説明なら `docs/hooks` を指すこと")
     return None
 
 

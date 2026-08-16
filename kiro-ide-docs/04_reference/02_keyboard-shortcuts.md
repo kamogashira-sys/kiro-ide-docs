@@ -2,11 +2,11 @@
 
 **Kiro IDE のキーボードショートカット一覧です。**
 
-- **一次情報**: [Keyboard Shortcuts](https://kiro.dev/docs/editor/keyboard-shortcuts/)（公式ページ更新日: 2025-11-16）
-- **収録件数**: **29件**（General 9・Navigation 11・Editing 6・AI features 3）
+- **一次情報**: [Keyboard Shortcuts](https://kiro.dev/docs/ide/editor/keyboard-shortcuts/)（公式ページ更新日: 2026-08-05）
+- **収録件数**: **30件**（General 9・Navigation 11・Editing 6・Chat, tabs, and debugging 4）
 
 > **Kiro IDE は Code OSS のフォーク**のため、ショートカットの多くは VS Code と同じです。
-> 下表のうち **AI features** の3件が Kiro 固有の価値になります。
+> 下表のうち **Chat, tabs, and debugging** の4件が Kiro 固有の価値になります（`F5` を除く）。
 > VS Code から移行する場合は、キーバインドをそのまま持ち込めます（[03_deployment/03_migrating-from-vscode.md](../03_deployment/03_migrating-from-vscode.md)）。
 
 ---
@@ -62,21 +62,25 @@
 
 ---
 
-## AI features（3件）
+## Chat, tabs, and debugging（4件）
 
-**Kiro 固有のショートカットです。**
+**⚠️ 節名が変更されました（旧 "AI features"）。** 2026-08 の公式サイト再構成に伴い、収録項目も変わっています（旧: `Cmd+L`・`Cmd+I`・`F5` の3件 → 新: `Cmd+T`・`Cmd+L`・`Cmd+Shift+L`・`F5` の4件。**`Cmd+I`（インラインチャット）は本節から削除**され、`Cmd+T`・`Cmd+Shift+L` が新たに掲載されています）。
 
 | Mac | Windows / Linux | 内容 |
 |-----|----------------|------|
-| **`Cmd+L`** | **`Ctrl+L`** | **チャットセッションを開く** |
-| **`Cmd+I`** | **`Ctrl+I`** | **インラインチャット** |
+| `Cmd+T` | `Ctrl+T` | 新規タブを開く |
+| **`Cmd+L`** | **`Ctrl+L`** | **チャットを開き、選択中のコードを現在のセッションに追加する** |
+| **`Cmd+Shift+L`** | **`Ctrl+Shift+L`** | **選択中のコードで新しいチャットセッションを開始する** |
 | `F5` | `F5` | デバッグを開始 |
 
-> **`Cmd+L` と `Cmd+I` の違い**: `Cmd+L` はチャットパネルでの会話、`Cmd+I` はエディタ内でその場に書くインラインチャットです。
+> **`Cmd+L` と `Cmd+Shift+L` の違い**: `Cmd+L` は既存のセッションに選択コードを追加、`Cmd+Shift+L` は選択コードを持って**新しいセッションを始める**点が異なります。
 > チャットの使い方は [01_features/02_chat.md](../01_features/02_chat.md) を参照してください。
-
-> **`F5`（デバッグ開始）は AI features に分類されていますが**、Code OSS 由来の標準的なデバッグ機能です。
+>
+> **`F5`（デバッグ開始）は本節に分類されていますが**、Code OSS 由来の標準的なデバッグ機能です。
 > 公式ページの分類をそのまま反映しています。
+>
+> ⚠️ **`Cmd+I`（インラインチャット）は公式ショートカット一覧ページから削除されています。** 機能自体が廃止されたか、
+> 別ページに移動したかは本ページの範囲では確認できていません（**未確認**）。
 
 ---
 
@@ -96,7 +100,7 @@
 
 ## 📌 件数について
 
-本サイトはショートカット数 **29件**を検証対象の数値として持っています。公式ページで件数が変わった場合は本ページと [README.md](README.md) の両方を更新します。
+本サイトはショートカット数 **30件**を検証対象の数値として持っています。公式ページで件数が変わった場合は本ページと [README.md](README.md) の両方を更新します。
 
 **内訳**:
 
@@ -105,8 +109,8 @@
 | General | 9 |
 | Navigation | 11 |
 | Editing | 6 |
-| AI features | 3 |
-| **合計** | **29** |
+| Chat, tabs, and debugging | 4 |
+| **合計** | **30** |
 
 「Custom shortcuts」はカスタマイズ手順の説明で、表を持たないため件数に含めません。
 

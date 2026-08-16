@@ -2,9 +2,9 @@
 
 **組織で Kiro IDE を配るときに決めることをまとめます。バージョンの制御・ガバナンス・拡張機能レジストリが中心です。**
 
-- **一次情報**: [Onboarding quickstart](https://kiro.dev/docs/enterprise/getting-started/)・[Managed updates](https://kiro.dev/docs/enterprise/managed-updates/)・[Governance](https://kiro.dev/docs/enterprise/governance/)・[Settings](https://kiro.dev/docs/enterprise/settings/)・[Supported regions](https://kiro.dev/docs/enterprise/supported-regions/)・[Custom extension registry](https://kiro.dev/docs/editor/extension-registry/)
+- **一次情報**: [Onboarding quickstart](https://kiro.dev/docs/enterprise/getting-started/)・[Managed updates](https://kiro.dev/docs/enterprise/managed-updates/)・[Governance](https://kiro.dev/docs/enterprise/governance/)・[Settings](https://kiro.dev/docs/enterprise/settings/)・[Supported regions](https://kiro.dev/docs/enterprise/supported-regions/)・[Custom extension registry](https://kiro.dev/docs/ide/editor/extension-registry/)
 
-> **本ページの範囲**: エンタープライズ関連の公式ドキュメントは **IDE と CLI の共有領域**です（`/docs/enterprise/` と `/docs/cli/enterprise/` の内容は同一）。本ページは **Kiro IDE の管理者に必要な範囲**を扱います。AWS コンソール側の操作手順の細部は公式ページに委ねます。
+> **本ページの範囲**: エンタープライズ関連の公式ドキュメントは **IDE と CLI の共有領域**です（`/docs/cli/enterprise/` は `/docs/enterprise/` に統合されている）。本ページは **Kiro IDE の管理者に必要な範囲**を扱います。AWS コンソール側の操作手順の細部は公式ページに委ねます。
 
 ---
 

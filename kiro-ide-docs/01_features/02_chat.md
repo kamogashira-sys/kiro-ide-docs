@@ -2,7 +2,7 @@
 
 **自然言語で Kiro に指示する、すべての入口になる機能です。**
 
-- **一次情報**: [Chat](https://kiro.dev/docs/chat/)（公式ページ更新日: 2026-06-25）・[Vibe vs Spec sessions](https://kiro.dev/docs/chat/vibe/)・[Subagents](https://kiro.dev/docs/chat/subagents/)・[Summarization](https://kiro.dev/docs/chat/summarization/)・[Checkpoints](https://kiro.dev/docs/chat/checkpoints/)・[Export sessions](https://kiro.dev/docs/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/chat/chat-in-editor/)
+- **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-06-25）・[Vibe vs Spec sessions（⚠️ 公式は Setup & First Run ページに統合済み。内容の精査は別途対応）](https://kiro.dev/docs/ide/setup/)・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
 > 繰り返し作業を自動化する — これらを**プロジェクトの文脈を保ったまま**自然言語で行えます。
@@ -102,6 +102,8 @@ Kiro は**エディタで開いているファイル**（依存関係と構造�
 
 ## 6. コンテキストウィンドウと自動要約
 
+> **公式ドキュメント上の位置づけ**: 自動要約は 2026-08 の公式サイト再構成で `/docs/chat/summarization/` から `/docs/compaction/` へ移転・改称し、**IDE 固有機能から Compaction という共通機能**として位置づけ直されています。CLI 版・Web 版も同じ仕組みです。
+
 すべての言語モデルには「**コンテキストウィンドウ**」（一度に扱えるテキストの最大量）があります。長さはモデルによって異なります（[04_reference/05_models.md](../04_reference/05_models.md)）。
 
 Kiro は会話中の**過去のメッセージすべて**をコンテキストとしてモデルに送ります。そのため会話が長くなると上限に近づきます。
@@ -118,6 +120,8 @@ Kiro は会話中の**過去のメッセージすべて**をコンテキスト�
 ---
 
 ## 7. サブエージェント（並列実行と委譲）
+
+> **公式ドキュメント上の位置づけ**: サブエージェントは 2026-08 の公式サイト再構成で `/docs/chat/subagents/` から `/docs/custom-agents/subagents/` へ移転し、**IDE 固有機能から Custom agents 配下の共通機能**として位置づけ直されています。CLI 版も同じ仕様です。
 
 **サブエージェントは、複数のタスクを並列に実行したり、特定のタスクを専門のサブエージェントに委譲する仕組みです。** Kiro が適切に自動起動しますが、「Run subagents to...」のようなプロンプトで手動起動もできます。
 
@@ -211,6 +215,8 @@ Kiro はサブエージェントを起動するとき、**`description` フィ�
 ---
 
 ## 8. チェックポイント（変更を巻き戻す）
+
+> **公式ドキュメント上の位置づけ**: チェックポイントは 2026-08 の公式サイト再構成で `/docs/chat/checkpoints/` から `/docs/checkpoints/` へ移転し、**IDE 固有機能から共通機能**として位置づけ直されています。CLI 版の `/rewind` コマンドも同じ仕組みです。
 
 **プロンプトを送るたびに Kiro は「チェックポイント」を作ります。** チャット履歴に目印として現れ、**Restore** を押すと**コードベースと Kiro のコンテキストの両方**をその時点まで巻き戻せます。
 
