@@ -2,16 +2,17 @@
 
 **ファイル保存やツール呼び出しなどのイベントで、自動的に処理を走らせる仕組みです。**
 
-- **一次情報**: [Hooks](https://kiro.dev/docs/hooks/)（公式ページ更新日: 2026-07-09）・[Hook actions](https://kiro.dev/docs/hooks/actions/)・[Hook management](https://kiro.dev/docs/hooks/management/)
+- **一次情報**: [Hooks](https://kiro.dev/docs/hooks/)（公式ページ更新日: 2026-08-06）・[Hook actions](https://kiro.dev/docs/hooks/actions/)・[Hook management](https://kiro.dev/docs/hooks/management/)
 - **ファイル形式**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)
 - **1.0 で形式が変わりました**（`.hook` → **v1 JSON**）。移行は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)
 
 > ⚠️ **公式ドキュメント間の食い違いに注意**（本サイトの調査結果）:
-> [Hook types](https://kiro.dev/docs/hooks/types/) のページは**更新日が 2026-02-18（1.0 より前）**で、
-> 「Manual Trigger」「File Save」といった **0.x 時代のトリガー名**が載っています。
-> 一方 [Hooks](https://kiro.dev/docs/hooks/) の「Trigger reference」は**更新日 2026-07-09（1.0 以降）**で、
-> `PostFileSave`・`UserPromptSubmit` などの **v1 JSON の値**が載っています。
-> **本ページは新しい Hooks ページの記述を正としています。**
+> [Hook types](https://kiro.dev/docs/hooks/types/) のページ（更新日 2026-08-04）には、
+> 「Manual Trigger」という項目が**現在も掲載されています**（Agent Hooks パネルの「Quick run」ボタンで
+> 既存フックを手動起動する UI 機能）。ただしこれは v1 JSON の `trigger` フィールドの値としては存在しません。
+> [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/) の移行対応表に明記の通り、
+> **旧 `userTriggered` トリガーは manual ステアリングファイルに置き換えられ、v1 JSON の10種トリガーには含まれません**。
+> **本ページのトリガー一覧（第2節）は v1 JSON の `trigger` フィールドの値のみを記載しています。**
 > 特に **manual トリガは 1.0 で廃止**され、manual ステアリングファイルに置き換わりました（[06_steering.md](06_steering.md)）。
 
 ---
@@ -136,6 +137,56 @@
 | **Shell Command** | **消費しない** | **速い**（ローカルで実行され LLM を使わない） |
 
 **決定的な処理は Shell Command にする**のが基本です。
+
+### 3.4 `Stop` トリガーの確認プロンプト（`confirm`）
+
+**`Stop` トリガーの Shell Command は、実行前に確認を求められます。** `confirm` ブロックに質問文と選択肢を書きます。
+
+```json
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "submit-session-results",
+      "trigger": "Stop",
+      "action": { "type": "command", "command": "./submit.sh" },
+      "confirm": {
+        "question": "このセッションの結果を送信しますか？",
+        "options": [
+          { "id": "submit", "label": "はい、送信する", "run": true },
+          { "id": "dismiss", "label": "今回はしない", "run": false }
+        ]
+      }
+    }
+  ]
+}
+```
+
+各選択肢は `id`・ボタンに表示する `label`・選んだときにコマンドを実行するかを決める `run` フラグを持ちます。
+
+#### 3.4.1 動的な確認オプション（`confirmCommand`、1.0.288 で追加）
+
+**実行時に何を尋ねるかを動的に決めたい場合**、`confirm` ブロックに任意で `confirmCommand` を追加します。プロンプトが表示される前にこのコマンドが実行され、その `stdout` が JSON としてプロンプトを制御します。
+
+| `stdout` の JSON | 効果 |
+|-----------------|------|
+| `{ "skip": true }` | プロンプトを抑制し、このターンはフックをスキップする |
+| `{ "question": "...", "options": [...] }` | 静的な `question`・`options` を置き換える |
+
+```json
+{
+  "confirm": {
+    "question": "このセッションの結果を送信しますか？",
+    "confirmCommand": "./confirm-options.sh",
+    "options": [
+      { "id": "submit", "label": "はい、送信する", "run": true },
+      { "id": "dismiss", "label": "今回はしない", "run": false }
+    ]
+  }
+}
+```
+
+`confirmCommand` が**非ゼロで終了・タイムアウト・不正な JSON を出力**した場合、静的な `question`・`options` がフォールバックとして使われます。「今回のセッションでは二度と聞かない」というオプションでマーカーファイルを書き、次のターンから `{ "skip": true }` を返す、といった条件付きの確認に使えます。
 
 ---
 
