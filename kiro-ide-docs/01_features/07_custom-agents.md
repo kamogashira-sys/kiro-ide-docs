@@ -2,7 +2,7 @@
 
 **目的に特化したエージェントを Markdown ファイル1枚で作り、チームで共有できます。1.0 で導入されました。**
 
-- **一次情報**: [Custom agents](https://kiro.dev/docs/custom-agents/)（公式ページ更新日: 2026-07-01）・[Switching agents](https://kiro.dev/docs/custom-agents/creating/)
+- **一次情報**: [Custom agents](https://kiro.dev/docs/custom-agents/)（公式ページ更新日: 2026-08-04）・[Creating custom agents](https://kiro.dev/docs/custom-agents/creating/)
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#6-カスタムエージェント--kiroagentsmd)
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -146,6 +146,10 @@ mcpServers:
 
 MCP の詳細は [08_mcp.md](08_mcp.md) を参照してください。
 
+### 5.1 Kiro CLI 形式のフックも受け入れる（1.0.288 で追加）
+
+**カスタムエージェントプロファイルが、Kiro CLI の形式で書かれたフックを受け付けるようになりました。** Kiro CLI 用に作られたエージェントプロファイルを、フックを書き換えずに IDE でもそのまま読み込めます。IDE と CLI でエージェント定義を共有しやすくなりました。
+
 ---
 
 ## 6. エージェントの切り替え（Agent selector）
@@ -221,6 +225,15 @@ MCP の詳細は [08_mcp.md](08_mcp.md) を参照してください。
 | 6 | 保存する（**即座にエージェントセレクタに現れます**） |
 
 チームで共有したい場合は `~/.kiro/agents/` ではなく **`.kiro/agents/`** に置いてコミットします。
+
+---
+
+## 9. 名前の長さと安定性（1.0.288 で改善）
+
+| # | 内容 |
+|---|------|
+| 1 | **エージェント名が長いと、以前は spec タスクとサブエージェントの dispatch が `Invalid tool use format` で失敗することがありました。** 現在は、長い名前のプロファイルは**警告付きで短縮された名前で登録される**ため、この問題は起きません |
+| 2 | **要求したエージェントが使用できない場合、Kiro は「見つからない」ではなく理由を示すようになりました。**（例: front matter の設定エラーなど） |
 
 ---
 
