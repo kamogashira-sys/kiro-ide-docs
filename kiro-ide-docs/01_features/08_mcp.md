@@ -112,13 +112,34 @@
 | `env` | Object | 任意 | サーバプロセスの環境変数 |
 | `oauth` | Object | 任意 | 事前登録クライアントが必要なサーバ向けの OAuth 設定 |
 | `oauth.clientId` | String | 任意 | **動的クライアント登録（DCR）に対応しないサービス**向けの、事前登録された OAuth クライアント ID |
-| `oauth.redirectUri` | String | 任意 | ローカルの OAuth コールバックリスナのホストとポート（例: `"127.0.0.1:8080"`）。**Kiro が完全なリダイレクト URI を組み立てる**。省略時はランダムなポートが使われる |
+| `oauth.redirectUri` | String | 任意 | OAuthコールバック用のカスタムloopback redirect URI。hostは`127.0.0.1`または`localhost`、schemeは`http`。完全URL（例: `"http://localhost:7778/oauth/callback"`）・hostとport・portのみを指定でき、省略時はOSが空きportを割り当てる |
+| `oauth.clientMetadataUrl` | String | 任意 | ホストされたClient ID Metadata Documentの**HTTPS URL**。設定すると、Kiroはクライアントを登録する代わりにそのURLをクライアントIDとして認証する |
 | `oauthScopes` | Array | 任意 | 認可時に要求する OAuth スコープ |
 | `disabled` | Boolean | 任意 | サーバを無効にするか（既定 `false`） |
 | `autoApprove` | Array | 任意 | 自動承認するツール名 |
 | `disabledTools` | Array | 任意 | 除外するツール名 |
 
-### 2.5 環境変数
+### 2.5 エンタープライズで固定したOAuthクライアントIDを使う（1.0.395）
+
+Dynamic Client Registrationを使えない環境では、ホストしたClient ID Metadata DocumentのURLと固定したloopback redirect URIを組み合わせられます。`oauth.clientMetadataUrl`を使う設定では、`oauth.clientId`との置換・併用関係を推測せず、組織が提供するmetadata文書を指定してください。
+
+```json
+{
+  "mcpServers": {
+    "enterprise-server": {
+      "url": "https://mcp.example.com",
+      "oauth": {
+        "clientMetadataUrl": "https://login.example.com/kiro-client-metadata.json",
+        "redirectUri": "http://localhost:7778/oauth/callback"
+      }
+    }
+  }
+}
+```
+
+この例の`redirectUri`は、事前登録されたcallbackのportとpathを固定する完全URLです。公式が示す範囲では、hostは`127.0.0.1`または`localhost`、schemeは`http`です。
+
+### 2.6 環境変数
 
 多くの MCP サーバは認証や設定のために環境変数を必要とします。**`${...}` 構文で実行時に展開されます。**
 
@@ -367,6 +388,9 @@ project-b/
 | 6 | **`kiro://` リンクからの MCP 導入は書き込み前に確認ダイアログが表示されます（1.0.288）**。コマンド・引数・環境変数またはヘッダ名を表示し、**値は隠されます** |
 | 7 | **MCP サーバの接続に失敗した場合、具体的な理由が MCP 出力チャンネルとサーバのツールチップに表示されます（1.0.288）**。以前は単に「Connection Failed」とだけ表示されていました |
 | 8 | **User-Agent ヘッダーを要求する CDN・ファイアウォールの背後にあるエンタープライズ MCP レジストリで HTTP 403 が発生する問題は 1.0.309 で修正されました** |
+| 9 | **1.0.395はMCP protocol revision `2026-07-28`に対応し、OAuthまたはenterprise registry経由で提供される資格情報を使うサーバーのサインイン・接続の信頼性を改善しました** |
+| 10 | **1.0.395では低速または到達不能なMCPサーバーがセッション開始を妨げなくなりました** |
+| 11 | **1.0.395ではホストしたClient ID Metadata Documentを`oauth.clientMetadataUrl`に指定し、固定した`oauth.redirectUri`と組み合わせてDCRを使わずに認証できます** |
 
 ---
 
