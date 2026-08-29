@@ -17,7 +17,8 @@
 
 .PHONY: help \
         check-kiro-ide-all check-kiro-ide-quick check-kiro-ide-ignore \
-        check-kiro-ide-links check-kiro-ide-changelog check-kiro-ide-structure \
+        check-kiro-ide-links check-kiro-ide-changelog check-kiro-ide-changelog-order \
+        check-kiro-ide-structure \
         check-kiro-ide-coverage check-kiro-ide-counts check-kiro-ide-notation \
         check-kiro-ide-consistency check-kiro-ide-urls check-kiro-ide-urls-important \
         check-kiro-ide-freshness \
@@ -46,6 +47,7 @@ help:
 	@echo "個別に実行（ネットワーク不要）:"
 	@echo "  make check-kiro-ide-links      # 内部リンク実在＋アンカー＋kiro.dev URL 書式"
 	@echo "  make check-kiro-ide-changelog  # changelog の構造・日付・記述粒度（D9）"
+	@echo "  make check-kiro-ide-changelog-order # 1.0系の一覧表・本文の版順と対応"
 	@echo "  make check-kiro-ide-structure  # ディレクトリ構成・H1・公開境界・CLI リンク"
 	@echo "  make check-kiro-ide-coverage   # 一次情報との突き合わせ（版・日付・説明の転記漏れ）"
 	@echo "                                 #   HTML_DIR=<dir> で一次情報の場所を指定（既定 $(HTML_DIR)）"
@@ -68,7 +70,8 @@ help:
 # ネットワーク障害やレート制限で CI が赤くなるのを避けるため、それらは
 # push / nightly / 手動でのみ実行する（q-cli-docs と同じ運用）。
 # G3（公開判定）ではこのターゲットの exit 0 を条件とする。
-check-kiro-ide-all: check-kiro-ide-links check-kiro-ide-changelog check-kiro-ide-structure \
+check-kiro-ide-all: check-kiro-ide-links check-kiro-ide-changelog check-kiro-ide-changelog-order \
+                    check-kiro-ide-structure \
                     check-kiro-ide-coverage check-kiro-ide-counts check-kiro-ide-notation \
                     check-kiro-ide-consistency
 	@echo ""
@@ -78,7 +81,7 @@ check-kiro-ide-all: check-kiro-ide-links check-kiro-ide-changelog check-kiro-ide
 
 # 高速チェック。執筆中に繰り返し回す用（構造とリンクだけを見る）。
 # コミット前は check-kiro-ide-all を使う。
-check-kiro-ide-quick: check-kiro-ide-links check-kiro-ide-structure
+check-kiro-ide-quick: check-kiro-ide-links check-kiro-ide-changelog-order check-kiro-ide-structure
 	@echo ""
 	@echo "✅ kiro-ide-docs 高速チェックが完了しました"
 	@echo "   （これは全チェックではありません。コミット前に make check-kiro-ide-all を実行してください）"
@@ -99,6 +102,11 @@ check-kiro-ide-links:
 # changelog の構造（版番号書式・降順・アンカー整合・ISO 日付・D9 の記述粒度）
 check-kiro-ide-changelog:
 	@$(SCRIPTS)/check-changelog.sh
+
+# 1.0系changelogの一覧表と本文アンカーの版集合・降順・見出し階層。
+# 0.x系は表形式パッチを含み本文アンカーと1対1ではないため対象外。
+check-kiro-ide-changelog-order:
+	@$(SCRIPTS)/check-changelog-order.py
 
 # ディレクトリ構成（公開5セクション・README の有無・H1 見出し・04_reference の軸・
 # ローカル管理領域へのリンク禁止）
