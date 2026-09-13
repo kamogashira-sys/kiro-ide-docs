@@ -1,0 +1,103 @@
+name: Release kiro-ide-docs
+
+# リリース公開は Actions が担う（人の承認点は「PR のマージ」に一元化する）。
+#
+# 契機: `.github/release-notes/v<版>.md` が main に入ったとき。
+#       エージェント（Kiro Web のクラウドセッション）はリリースノートを PR に含めるだけで、
+#       タグ作成とリリース公開は行わない。
+#
+# 冪等性: 既に同名タグがある版はスキップする（再実行しても二重に作らない）。
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/release-notes/*.md'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'リリースする版（例: v1.0.437）'
+        required: true
+
+permissions:
+  contents: write   # タグ作成とリリース公開に必要（既定の read では足りない）
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # タグの有無を判定するため全履歴を取る
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # リリース前の最終ゲート。ここが落ちたらリリースしない。
+      # ⚠️ coverage は一次情報スナップショットが無いためスキップされる。
+      #    網羅性はクラウドセッション（make check-kiro-ide-cloud）または
+      #    ローカルで検証済みであることを PR 本文で確認する運用とする。
+      - name: 検証（公開範囲・全チェック）
+        run: |
+          make check-kiro-ide-ignore
+          make check-kiro-ide-all
+
+      # 対象リリースノートの列挙。1回の push で複数版が入る場合に備えて全件拾う。
+      # before がゼロ SHA（初回 push・force push 後）のときは差分が取れないため全件対象にする。
+      - name: 対象リリースノートの決定
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            printf '%s\n' ".github/release-notes/${{ github.event.inputs.version }}.md" > /tmp/targets.txt
+          elif [ "${{ github.event.before }}" = "0000000000000000000000000000000000000000" ]; then
+            ls .github/release-notes/v*.md | sort -V > /tmp/targets.txt
+          else
+            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" \
+              | grep '^\.github/release-notes/v.*\.md$' | sort -V > /tmp/targets.txt || true
+          fi
+          if [ ! -s /tmp/targets.txt ]; then
+            echo "::error::対象のリリースノートを特定できません"; exit 1
+          fi
+          echo "対象:"; cat /tmp/targets.txt
+
+      # リリースノートの版と changelog の最新版が一致することを確認する。
+      # 一致しないままタグを打つと blob/<tag>/ のリンクが未更新の文書を指してしまう。
+      - name: バージョン整合の確認
+        run: |
+          latest=$(grep -oP '^## (?:🔹|▫️|🎉) \K[0-9]+\.[0-9]+(\.[0-9]+)?' \
+                   kiro-ide-docs/02_update/01_changelog.md | head -1)
+          newest=$(tail -1 /tmp/targets.txt | sed 's|.*/v\(.*\)\.md|\1|')
+          echo "changelog の最新版=$latest / リリースノートの最新=$newest"
+          if [ "$latest" != "$newest" ]; then
+            echo "::error::changelog の最新版（$latest）とリリースノート（$newest）が一致しません"
+            exit 1
+          fi
+
+      - name: タグ作成とリリース公開
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          newest=$(tail -1 /tmp/targets.txt)
+          while read -r notes; do
+            v=$(basename "$notes" .md)
+            if [ ! -f "$notes" ]; then
+              echo "::error::$notes がありません"; exit 1
+            fi
+            if git ls-remote --tags origin "refs/tags/$v" | grep -q .; then
+              echo "::notice::$v は既に存在するためスキップします"
+              continue
+            fi
+            # 1行目を H1 タイトルとして扱い、2行目以降を本文にする
+            title=$(head -1 "$notes" | sed 's/^#\+ *//')
+            tail -n +2 "$notes" > /tmp/body.md
+            latest_flag=""
+            if [ "$notes" = "$newest" ]; then latest_flag="--latest"; fi
+            git tag -a "$v" -m "$title"
+            git push origin "$v"
+            gh release create "$v" --title "$title" --notes-file /tmp/body.md $latest_flag
+            echo "::notice::$v を公開しました"
+          done < /tmp/targets.txt

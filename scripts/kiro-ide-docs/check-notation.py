@@ -66,6 +66,14 @@ def public_docs():
     return docs
 
 
+# リリースノート（`.github/release-notes/v<版>.md`）は **Git タグ名**を書く場所で、
+# 本リポジトリのタグは v プレフィックス付き（`v1.0.242` 以降の実績）。
+# 1行目がリリースタイトルになるため `# v1.0.437 — …` と書く必要があり、
+# 規則 (d)（v プレフィックス禁止）とは両立しない。**規則 (d) だけを対象外**にし、
+# 見逃しを allowed_hits に明示する（他の規則は通常どおり適用する）。
+RELEASE_NOTES_DIR = ".github/release-notes/"
+
+
 def strip_fences(lines):
     """フェンスコードブロックの中身を空行にする（行番号を保つ）。
 
@@ -173,6 +181,13 @@ def main():
 
             for label, pattern, correct, allows in RULES:
                 target = ln if label.startswith("(g)") else no_code
+                # リリースノートはタグ名（v 付き）を書く場所なので規則 (d) を免除する。
+                # 免除も allowed_hits に出して、暗黙に見逃さないようにする。
+                if label.startswith("(d)") and doc.replace(os.sep, "/").startswith(RELEASE_NOTES_DIR):
+                    for m in pattern.finditer(target):
+                        allowed_hits.append(
+                            f"{doc}:{i + 1}: {label} '{m.group(0)}' … リリースノートのタグ名")
+                    continue
                 # 1行に複数の違反があり得るので全件見る（先頭だけ見ると残りを見逃す）
                 for m in pattern.finditer(target):
                     # 許可判定は**一致箇所の直前まで**の文字列に対して行う。

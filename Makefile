@@ -22,6 +22,7 @@
         check-kiro-ide-coverage check-kiro-ide-counts check-kiro-ide-notation \
         check-kiro-ide-consistency check-kiro-ide-urls check-kiro-ide-urls-important \
         check-kiro-ide-freshness \
+        check-kiro-ide-cloud fetch-kiro-ide-primary \
         extract-kiro-ide-changelog
 
 SCRIPTS := ./scripts/kiro-ide-docs
@@ -32,6 +33,12 @@ SCRIPTS := ./scripts/kiro-ide-docs
 # スナップショットを持たない環境（CI・クローン直後）ではスキップされ、
 # 「exit 0 = 網羅性を検証した」ではないことに注意する。
 HTML_DIR ?= kiro-ide-docs/06_embedded-docs
+
+# スナップショットを持たない環境（Kiro Web のクラウドセッションなど）で
+# 一次情報を取り直すときの置き場と取得元。詳細は fetch-kiro-ide-primary。
+CLOUD_HTML_DIR ?= /tmp/kiro-ide-primary
+SITEMAP_URL := https://kiro.dev/sitemap.xml
+UA := Mozilla/5.0
 
 # ------------------------------------------------------------
 # ヘルプ
@@ -59,6 +66,10 @@ help:
 	@echo "  make check-kiro-ide-urls           # 外部 URL の到達性（全件）"
 	@echo "  make check-kiro-ide-urls-important # 重要 URL のみ（切り分け用）"
 	@echo "  make check-kiro-ide-freshness      # 新バージョン検知（3情報源の和集合）"
+	@echo ""
+	@echo "クラウドセッション用（★外部サイトに依存。スナップショットが無い環境向け）:"
+	@echo "  make check-kiro-ide-cloud          # 公開範囲＋全チェック＋一次情報取得＋網羅性＋新版検知＋重要URL"
+	@echo "  make fetch-kiro-ide-primary        # 一次情報 HTML を sitemap から導出して取得（既定 $(CLOUD_HTML_DIR)）"
 	@echo ""
 	@echo "保守用:"
 	@echo "  make extract-kiro-ide-changelog FILES=\"<html...>\"  # 公式 changelog HTML から一次情報を抽出"
@@ -90,6 +101,58 @@ check-kiro-ide-quick: check-kiro-ide-links check-kiro-ide-changelog-order check-
 # 各コミット前に実行し exit 0 を必須とする（作業計画書 Phase 1-5 / 4-1 / 5-3）。
 check-kiro-ide-ignore:
 	@$(SCRIPTS)/check-ignore.sh
+
+# ------------------------------------------------------------
+# クラウドセッション用（★外部サイトに依存）
+# ------------------------------------------------------------
+# 一次情報スナップショット（06_embedded-docs/）は .gitignore 対象で clone されない。
+# そのため clone 直後の環境（Kiro Web のクラウドセッション）では
+# check-kiro-ide-coverage が「スキップして exit 0」になり、**網羅性は未検証**になる。
+# このターゲットはセッション内で一次情報を取り直し、網羅性まで実測する。
+#
+# ⚠️ 取得対象を決め打ちにしないこと。次の2点を実測で確認している:
+#    - 0.2 系は**系列ランディングページが存在しない**（/changelog/ide/0-2/ は 404）。
+#      専用ページ4本（0-2-13・0-2-38・0-2-59・0-2-68）でしか列挙できない
+#    - 0-10 / 0-11 / 0-12 のような後発系列が増える
+#    sitemap を正とすれば両方に自動追随する（実測: sitemap の /changelog/ide/ 配下は
+#    06_embedded-docs/ の 29 スラッグと完全一致し、coverage が 68/68 で exit 0）。
+#
+# Kiro Web で使う場合は Sandbox > Internet Access の allow-list に .kiro.dev が必要。
+fetch-kiro-ide-primary:
+	@mkdir -p "$(CLOUD_HTML_DIR)"
+	@echo "🔍 sitemap から取得対象を導出中... ($(SITEMAP_URL))"
+	@curl -sSL -A "$(UA)" --max-time 30 "$(SITEMAP_URL)" \
+	  | grep -oE 'https://kiro\.dev/changelog/ide/[a-z0-9./-]+' \
+	  | sed 's|https://kiro.dev/changelog/ide/||; s|/$$||' \
+	  | grep -vE '^(page/[0-9]+)?$$' | sort -u > "$(CLOUD_HTML_DIR)/slugs.txt"
+	@n=$$(wc -l < "$(CLOUD_HTML_DIR)/slugs.txt"); \
+	 echo "   $$n スラッグを検出"; \
+	 if [ "$$n" -lt 25 ]; then \
+	     echo "❌ 検出数が少なすぎます（sitemap の構造変更か取得失敗の疑い）"; exit 1; \
+	 fi
+	@fail=0; while read -r s; do \
+	    code=$$(curl -sSL -A "$(UA)" --max-time 30 \
+	            -o "$(CLOUD_HTML_DIR)/$$(echo $$s | tr '/' '_').html" \
+	            -w "%{http_code}" "https://kiro.dev/changelog/ide/$$s/"); \
+	    printf "   %s  %s\n" "$$code" "$$s"; \
+	    [ "$$code" = "200" ] || fail=1; \
+	 done < "$(CLOUD_HTML_DIR)/slugs.txt"; \
+	 if [ "$$fail" != "0" ]; then \
+	     echo "❌ 取得に失敗したページがあります（末尾スラッシュと UA を確認）"; exit 1; \
+	 fi
+	@echo "✅ 一次情報を $(CLOUD_HTML_DIR) に取得しました"
+
+# クラウドセッションの「テスト」段で実行する唯一のターゲット。
+# check-kiro-ide-all だけでは網羅性が未検証（coverage がスキップ）になるため、
+# こちらを完了条件にする。coverage の実数値（一次情報 N / 文書 N）を PR 本文へ転記する。
+check-kiro-ide-cloud: check-kiro-ide-ignore check-kiro-ide-all fetch-kiro-ide-primary
+	@echo ""
+	@$(SCRIPTS)/check-coverage.py --html-dir "$(CLOUD_HTML_DIR)"
+	@$(MAKE) --no-print-directory check-kiro-ide-freshness
+	@$(MAKE) --no-print-directory check-kiro-ide-urls-important
+	@echo ""
+	@echo "✅ クラウドセッション用の全検証が完了しました"
+	@echo "   （coverage はスキップしていません。上の「一次情報 N / 文書 N」を PR 本文に転記してください）"
 
 # ------------------------------------------------------------
 # 個別ターゲット（ネットワーク不要）

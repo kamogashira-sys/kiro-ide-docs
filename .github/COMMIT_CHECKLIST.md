@@ -114,6 +114,41 @@ make check-kiro-ide-freshness
 
 ---
 
+## ☁️ クラウドセッション（Kiro Web）で作業する場合
+
+クラウドセッションはリポジトリを clone して動くため、**`.gitignore` 対象のファイルは存在しません**。次の3点が変わります。
+
+### 1. 検証は `make check-kiro-ide-cloud` を使う
+
+```bash
+make check-kiro-ide-cloud    # 公開範囲＋全チェック＋一次情報取得＋網羅性＋新版検知＋重要URL
+```
+
+**`make check-kiro-ide-all` だけでは網羅性が未検証です。** 一次情報スナップショット（`kiro-ide-docs/06_embedded-docs/`）が clone されないため `check-kiro-ide-coverage` は「スキップして exit 0」になります。**スキップは合格ではありません。**
+
+`check-kiro-ide-cloud` は sitemap から取得対象を導出して一次情報を取り直し、網羅性を実測します。**出力の「一次情報 N / 文書 N」を PR 本文に転記してください**（人が「本当に検証したか」を判断できるようにするため）。
+
+> Kiro Web で使う場合、**Sandbox > Internet Access の allow-list に `.kiro.dev` が必要**です（`Common dependencies` の許可ドメインに kiro.dev は含まれません）。
+
+### 2. `main` へ直接コミットしない
+
+フィーチャーブランチ＋PR で出し、**人のマージを承認行為**とします。
+
+### 3. タグ作成・リリース公開をしない
+
+`.github/release-notes/v<版>.md` を PR に含めるだけにします。マージ後に **`Release kiro-ide-docs` ワークフロー**がタグとリリースを作ります。
+
+- 1行目が H1 でリリースタイトルになります（例: `# v1.0.437 — …`）
+- **ファイル名の版と `02_update/01_changelog.md` の最新版が一致していること**（不一致はワークフローが検出して失敗します）
+
+### 4. 触ってはいけないもの
+
+- ローカル管理領域（`kiro-ide-docs/work_plans/`・`kiro-ide-docs/05_meta/`・`kiro-ide-docs/06_embedded-docs/`・`work_records/`）の追加・変更
+- 正準値（機能数・ショートカット数・capability 数・コンテキストプロバイダ数）の根拠なき変更 → **変更せず PR 本文に理由を書いて人に委ねる**
+- 旧版番号の一括置換（`01_features/10_editor.md`・`01_features/08_mcp.md` の履歴参照は残す）
+
+---
+
 ## 📝 コミットメッセージガイドライン
 
 ### フォーマット
