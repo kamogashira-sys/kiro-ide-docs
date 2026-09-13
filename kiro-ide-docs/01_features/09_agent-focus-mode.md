@@ -2,7 +2,7 @@
 
 **チャットを画面の中心に据えた、エージェント前提のレイアウトです。1.0 で導入されました。**
 
-- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-08-11）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
+- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-09-02）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-09-02）・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
 - **導入バージョン**: **1.0**（2026-06-25）
 - **位置づけ**: **実験的機能**（公式の `Experimental features` セクションに分類）
 
@@ -138,6 +138,15 @@ Cloud Session もローカルセッションと同様に pin できます。コ�
 
 詳細な仕組み・データの境界・クラウド設定の同期は [12_cloud-sessions.md](12_cloud-sessions.md) を参照してください。
 
+#### 1.0.437 での修正と、クラウド設定の表示
+
+| 内容 | 詳細 |
+|------|------|
+| **ドラフトが保持される** | Settings や別のセッションを開いても、**作成途中の Cloud Session ドラフトが破棄されなくなった**。セッション作成はバックグラウンドで完了し、**失敗した場合はドラフトの行に表示される** |
+| **welcome view が消えない** | Cloud configuration のセットアップがセッションのトランスクリプトに現れる場合に、最初のプロンプトを送る前に新規セッションの welcome view が消えてしまう問題が修正された |
+| **クラウド設定の出所表示** | Cloud configuration の項目について、**Agent Focus の設定**でもクラウドの出所と Kiro Web での管理リンクが表示される。ただしクラウドの Steering・Skills・フックは読み取り専用プレビューであり、**編集は Kiro Web 側（Edit in web）**で行う（[12_cloud-sessions.md](12_cloud-sessions.md) §6.1） |
+| **MCP Servers タブの通知** | 個人の Cloud configuration に MCP サーバーは含まれないにもかかわらず、**MCP Servers** タブに Cloud configuration の通知が表示されていた問題が修正された（スコープの整理は [12_cloud-sessions.md](12_cloud-sessions.md) §6.2） |
+
 ---
 
 ## 6. チャットから spec が生まれる（Chat-first specs）
@@ -181,6 +190,10 @@ Agent Focus Mode では、**spec が会話から自然に生まれます**。フ
 | **ファイルの直接編集** |
 
 **MCP サーバの設定やターミナル作業をするときは Editor View に戻る**必要があります。Agent Focus だけで一日を過ごせるわけではない、という前提で使ってください。
+
+> ⚠️ **公式の記述に食い違いがあります。** 上の一覧（公式 Agent Focus Mode ページ「What's not in Agent Focus yet」の6項目）は 2026-09-02 更新時点でも「設定と環境設定」「MCP サーバの管理」を挙げています。一方で**同じページ**は Agent Focus に **Settings ペイン**があること（§5.5 の戻る・進むの対象、§11 の Check for Updates）を説明し、公式 [Cloud sessions](https://kiro.dev/docs/cloud-sessions/) ページは「**Agent Focus の設定**にクラウド項目の出所と管理リンクが表示される」と書いています。1.0.437 の修正内容も Agent Focus に **MCP Servers** タブがあることを前提にしています。
+>
+> **読み方**: 設定ペイン自体は Agent Focus にありますが、**設定・環境設定の全機能や MCP サーバの管理には IDE の画面が必要**、という整理になります。両ページの更新日は同じ（2026-09-02）で日付による優劣がつかないため、本サイトでは公式の列挙を残したうえで、この食い違いの存在を明記しています。
 
 ---
 

@@ -2,7 +2,7 @@
 
 **ローカルマシンではなく管理されたクラウドサンドボックスでエージェントを実行し、IDE・CLI・Web・Mobile のどこからでも同じセッションを継続できる仕組みです。1.0.293 でプレビュー導入されました。**
 
-- **一次情報**: [Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-08-14）
+- **一次情報**: [Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-09-02）・[Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/)（公式ページ更新日: 2026-09-02）
 - **導入バージョン**: **1.0.293**（2026-08-11）
 - **位置づけ**: **プレビュー機能**
 - **Kiro CLI 版の対応ページ**: 共通仕様。CLI からの作成・接続には **Kiro CLI 2.17 以降**が必要（[`docs/cloud-sessions/`](https://kiro.dev/docs/cloud-sessions/) が正。CLI 固有の個別ページはない）
@@ -112,11 +112,39 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 
 設定は他の場所と同じ[スコープ](../04_reference/01_kiro-directory.md)に従いますが、次の点に注意してください。
 
+> **Cloud Session と「個人の Cloud configuration」は別のものです。** どちらもアカウントに紐づく仕組みですが、**Cloud Session は「エージェントがどこで動くか」**を決め、**個人の Cloud configuration は「アカウントレベルのどの設定を各サーフェスで使えるようにするか」**を決めます。
+
 | 種別 | 挙動 |
 |------|------|
 | **プロジェクト設定** | リポジトリ内の `.kiro/` にコミットされた steering・spec・カスタムエージェント・フック・MCP サーバは、サンドボックスがリポジトリをクローンするため**自動的に適用される** |
-| **個人設定** | `~/.kiro/` ディレクトリは**自動適用されない**。個人の steering・カスタムエージェント・Skills・フックを Cloud Session に持ち込むには、Kiro Web の設定にある **Cloud configuration** から同期する |
+| **個人設定** | `~/.kiro/` ディレクトリはローカルに留まり、Cloud Session には**自動適用されない**。個人の設定を持ち込むには、Kiro Web の **Settings > Configuration Sync** でアップロードする。クラウド側の写しは機能ごとの設定ページで管理し、アカウントに紐づく Powers は **Settings > Powers** で扱う（対応フォルダとアップロード手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照） |
 | **サンドボックス環境** | インターネットアクセス・環境変数・セットアップコマンドは Sandbox ドキュメントで扱う |
+
+### 6.1 IDE の各面に現れるクラウドの個人設定（1.0.437）
+
+**Kiro IDE 1.0.437 以降**では、アカウントで Cloud configuration が有効で、**かつクラウド管理の項目が実際に供給されている**場合、個人の **Steering・カスタムエージェント・Skills・Powers・フック**を、それぞれ通常の IDE の画面から利用できます。
+
+| 挙動 | 内容 |
+|------|------|
+| **クラウドインジケータ** | Kiro Web で管理されている項目にはクラウドを示すインジケータが付く |
+| **読み取り専用プレビュー** | クラウドの Steering・Skills・フックは読み取り専用のプレビューとして開き、**Edit in web** アクションで Kiro Web 側の編集に移る。**IDE 側では編集しない** |
+| **Agent Focus** | [Agent Focus](09_agent-focus-mode.md) の**設定**でも、同じクラウドの出所と Kiro Web での管理リンクが表示される |
+| **クラウド項目が無い場合** | Cloud configuration が有効でも、アカウントがクラウド項目を供給していなければ、インジケータも管理操作も現れず、IDE の各面は変わらない |
+
+また、Configuration Sync のページで **Apply your cloud configuration to local sessions** を有効にすると、**新しく開始したローカルセッション**でもクラウドの Steering・カスタムエージェント・Skills・Powers・フックが読み込まれます。このトグルは**ローカルの `.kiro` ディレクトリに書き込まず、既存のローカルファイルを置き換えません**（公式はこの適用先を IDE と CLI の両方として説明しています）。
+
+### 6.2 MCP サーバーの扱い（4つのスコープ）
+
+MCP サーバーは他の設定と扱いが異なります。**「Cloud configuration は MCP サーバーを扱わない」わけではなく、行き先が別**です。
+
+| スコープ | MCP サーバーの扱い |
+|---------|-----------------|
+| **IDE の個人 Cloud configuration** | **単独の MCP サーバは含まれない**。IDE のクラウド個人設定の面には現れない |
+| **Configuration Sync でアップロードした `settings/mcp.json`** | **Kiro Web サンドボックスの MCP サーバー設定**に送られる。IDE のクラウド管理 MCP サーバーになるわけではない |
+| **Power に束ねられた MCP 構成** | その [Power](11_powers.md) に付随し、**Power が有効になったときに使える**。単独の同期 MCP サーバではない |
+| **プロジェクトの `.kiro/settings/mcp.json`** | プロジェクト設定のままリポジトリとともに移動する |
+
+> 1.0.437 では、個人の Cloud configuration に MCP サーバーが含まれないにもかかわらず、Agent Focus が **MCP Servers** タブに Cloud configuration の通知を表示していた問題が修正されました。
 
 ---
 
@@ -166,5 +194,5 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 
 ---
 
-**最終更新**: 2026-08-16
-**対象バージョン**: Kiro IDE 1.0.293+
+**最終更新**: 2026-09-13
+**対象バージョン**: Kiro IDE 1.0.293+（§6.1・§6.2 のクラウド個人設定は 1.0.437 以降）

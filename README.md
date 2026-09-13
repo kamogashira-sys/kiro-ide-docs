@@ -22,11 +22,11 @@
 |-----------|------|
 | [00_information](kiro-ide-docs/00_information/) | **基本情報・公式情報源**。公式サイトの構造マップ・`llms.txt` や changelog の性質と使い分け |
 | [01_features](kiro-ide-docs/01_features/) | **機能詳細ガイド（12機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 / Powers / Cloud Sessions |
-| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.0 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全66バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
+| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.0 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全68バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
 | [03_deployment](kiro-ide-docs/03_deployment/) | **インストール・認証・VS Code 移行・エンタープライズ配布・セキュリティ** |
 | [04_reference](kiro-ide-docs/04_reference/) | **リファレンス**: `.kiro/` ファイル仕様・キーボードショートカット（30件）・権限（capability 15種）・チャットの `#` コンテキストプロバイダ（14種）・モデル・起動オプション |
 
-**カバー範囲**: 0.1（2025-07-14）〜 **1.0.395**（2026-08-27）の**全66バージョン**。公式が説明を公開しているものは省略せず掲載しています。
+**カバー範囲**: 0.1（2025-07-14）〜 **1.0.437**（2026-09-01）の**全68バージョン**。公式が説明を公開しているものは省略せず掲載しています。
 
 ## 📢 Kiro IDE とは
 

@@ -2,7 +2,7 @@
 
 **MCP サーバ・Skills・ステアリングをバンドルし、会話の文脈に応じて動的に読み込む仕組みです。1.0.288 で導入されました。**
 
-- **一次情報**: [Powers](https://kiro.dev/docs/powers/)（公式ページ更新日: 2026-08-06）・[Install powers](https://kiro.dev/docs/powers/installation/)・[Create powers](https://kiro.dev/docs/powers/create/)
+- **一次情報**: [Powers](https://kiro.dev/docs/powers/)（公式ページ更新日: 2026-09-02）・[Install powers](https://kiro.dev/docs/powers/installation/)・[Create powers](https://kiro.dev/docs/powers/create/)
 - **導入バージョン**: **1.0.288**（2026-08-07 ※§4.1.1 参照）
 - **Kiro CLI 版の対応ページ**: CLI 3.0（Early Access）で対応（利用・作成とも `v3` 扱い）。[`docs/cli/v3/`](https://kiro.dev/docs/cli/v3/) 配下に個別の Powers ページはなく、共通ページ [`docs/powers/`](https://kiro.dev/docs/powers/) が正
 
@@ -106,6 +106,21 @@ my-power/
 | Install and use powers | ✓ | v3 | ✓ | — |
 | Create powers | ✓ | v3 | — | — |
 
+### 6.1 クラウドと同期された Powers を IDE で試す（1.0.437）
+
+クラウドと同期された Powers は**アカウントに紐づく設定（account-backed configuration）**であり、エージェントをクラウドのサンドボックスで動かす [Cloud Sessions](12_cloud-sessions.md) とは**別の仕組み**です。ローカルの Power を Kiro Web アカウントに上げるには、Kiro Web の **Settings > Configuration Sync** を使います（手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照）。
+
+**Kiro IDE 1.0.437 以降**では、Kiro Web の **Settings > Powers** で管理している Powers が、IDE のインストール済み Powers の一覧に表示されます。
+
+| 挙動 | 内容 |
+|------|------|
+| **クラウドインジケータ** | クラウドと同期された各 Power にインジケータが付く |
+| **Try power** | 選ぶとその Power をそのまま使える |
+| **詳細の確認** | 詳細を開くと、束ねられた Skills と MCP 構成を確認できる |
+| **管理** | これらの Powers は Kiro Web（**Settings > Powers**）で管理する |
+
+**束ねられた MCP 構成はその Power に付随します。** Power が有効になったときに使えるようになるもので、**単独で同期される MCP サーバではありません**。リポジトリの `.kiro/settings/mcp.json` に置いたプロジェクトの MCP サーバは、これまでどおりプロジェクト設定としてリポジトリとともに移動します（スコープの全体像は [12_cloud-sessions.md](12_cloud-sessions.md) §6.2 を参照）。
+
 ---
 
 ## 関連リンク
@@ -117,5 +132,5 @@ my-power/
 
 ---
 
-**最終更新**: 2026-08-16
-**対象バージョン**: Kiro IDE 1.0.288+
+**最終更新**: 2026-09-13
+**対象バージョン**: Kiro IDE 1.0.288+（§6.1 のクラウド同期 Powers は 1.0.437 以降）
