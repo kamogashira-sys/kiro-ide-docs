@@ -44,9 +44,9 @@
 
 | # | 前提 |
 |---|------|
-| 1 | **Windows の ARM は非対応**（64bit の x64 のみ）。Linux は **glibc 2.39 以上**が必要です |
+| 1 | **1.1 から Windows と Linux のネイティブ ARM64 版があります**（x64 版もあり）。IDE の Linux 版が求める glibc の版は現行の公式ページに記載がありません（[01_installation.md](01_installation.md#1-対応環境システム要件)） |
 | 2 | **拡張機能は Open VSX レジストリ**から入れます。VS Code Marketplace 専用の拡張機能は入れられません |
-| 3 | **自動更新は段階的に展開中**です。1.0 系では公式が「[downloads ページ](https://kiro.dev/downloads/)から直接ダウンロード」を案内しています |
+| 3 | **自動更新はバックグラウンドで行われ**、準備ができると再起動を促す通知が出ます。手動では **Check for Updates...** で確認できます（[01_installation.md](01_installation.md#5-更新)） |
 | 4 | **Supervised モードはセキュリティ機構ではありません**（公式が明記）。エージェントのアクセス範囲を絞るには権限設定を使います |
 
 ---

@@ -12,7 +12,7 @@
 |------|-------|
 | 🚀 **はじめて Kiro IDE を使う** | [インストール・環境構築](03_deployment/) → [機能詳細ガイド](01_features/) |
 | ⚠️ **0.x から 1.0 に上げたら動かなくなった** | [1.0 移行ガイド](02_update/03_migration-to-1.0.md)（フックの形式変更・セッション移行） |
-| 📖 **最新版で何が変わったか知りたい** | [アップデート情報（1.0 系）](02_update/01_changelog.md) |
+| 📖 **最新版で何が変わったか知りたい** | [アップデート情報（1.x 系）](02_update/01_changelog.md) |
 | 📚 **機能の使い方を知りたい** | [機能詳細ガイド](01_features/) |
 | 🔍 **設定ファイルやショートカットを引きたい** | [リファレンス](04_reference/) |
 | 🏢 **組織に導入したい** | [エンタープライズ配布・セキュリティ](03_deployment/) |
@@ -25,7 +25,7 @@
 |-----------|------|
 | [00_information](00_information/) | Kiro IDE の基本情報・公式サイトの構造・情報源一覧 |
 | [01_features](01_features/) | **機能詳細ガイド（12機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 / Powers / Cloud Sessions |
-| [02_update](02_update/) | **アップデート情報**: [1.0 系](02_update/01_changelog.md)・[0.x 系](02_update/02_changelog-0x.md)・[1.0 移行ガイド](02_update/03_migration-to-1.0.md) |
+| [02_update](02_update/) | **アップデート情報**: [1.x 系](02_update/01_changelog.md)・[0.x 系](02_update/02_changelog-0x.md)・[1.0 移行ガイド](02_update/03_migration-to-1.0.md) |
 | [03_deployment](03_deployment/) | インストール・認証・VS Code からの移行・エンタープライズ配布・セキュリティ |
 | [04_reference](04_reference/) | **リファレンス**: `.kiro/` ファイル仕様・キーボードショートカット・権限・コンテキストプロバイダ・モデル |
 

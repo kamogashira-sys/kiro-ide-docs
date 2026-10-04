@@ -101,7 +101,7 @@ def read_doc(path):
 # changelog から正準情報を取る
 # ------------------------------------------------------------
 def changelog_versions():
-    """(最新版, 全バージョン集合) を返す。最新版は 1.0 系目次の先頭。"""
+    """(最新版, 全バージョン集合) を返す。最新版は 1.x 系目次（01_changelog.md）の先頭。"""
     latest, versions = None, set()
     for path in (CHANGELOG, CHANGELOG_0X):
         if not os.path.isfile(path):
@@ -192,8 +192,10 @@ def main():
     ver_refs = 0
     for doc in docs:
         for i, ln in enumerate(read_doc(doc)):
-            # 「1.0.52 で」「1.0.116 から」のように版に言及する箇所
-            for m in re.finditer(r"(?<![\w.])(1\.0\.\d+|0\.\d+\.\d+)\s*(?:で|から|以降|時点|より)", ln):
+            # 「1.0.52 で」「1.1.70 から」のように版に言及する箇所。
+            # 1.x 系はマイナーを1桁に限る（Kiro IDE の系列は 1.0〜1.2）。`1\.\d+` にすると
+            # Code OSS（1.109.5）や Kiro CLI（1.25.0・1.28.2）の版まで拾い、警告が水増しされる。
+            for m in re.finditer(r"(?<![\w.])(1\.\d\.\d+|0\.\d+\.\d+)\s*(?:で|から|以降|時点|より)", ln):
                 ver_refs += 1
                 if m.group(1) not in versions:
                     warnings.append(

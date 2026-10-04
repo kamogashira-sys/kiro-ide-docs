@@ -19,6 +19,11 @@
 | **AWS IAM Identity Center** | エンタープライズ向けの認証 | 組織 |
 | **外部 ID プロバイダ** | 組織の IdP（Microsoft Entra ID・Okta など）経由で接続 | 組織 |
 
+> **組織の管理端末では、表示される方法が絞られていることがあります**（1.2 以降）。管理者はサインイン制御で
+> 許可する方法を制限し、組織のサインイン情報を事前入力し、サインイン画面に **Need help signing in?** のリンクを出せます。
+> 許可されていない方法を選ぶと、Kiro は許可されている選択肢を示します（公式 [Sign-in controls](https://kiro.dev/docs/enterprise/governance/sign-in/)・
+> 公式ページ更新日: 2026-09-30）。管理者向けの設定は [04_enterprise.md](04_enterprise.md#7-サインイン制御12-以降) を参照してください。
+
 ---
 
 ## 2. 方式ごとの手順

@@ -2,7 +2,7 @@
 
 **チャットを画面の中心に据えた、エージェント前提のレイアウトです。1.0 で導入されました。**
 
-- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-09-02）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-09-02）・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
+- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-09-30）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-09-02）・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
 - **導入バージョン**: **1.0**（2026-06-25）
 - **位置づけ**: **実験的機能**（公式の `Experimental features` セクションに分類）
 
@@ -32,7 +32,9 @@
 |-------|------|------|
 | **Sessions** | **左** | エージェントセッションの起動・移動・監視 |
 | **Chat** | **中央** | **主要な操作面**（サイドバーより広い） |
-| **Auxiliary** | **右** | spec・コードの差分・成果物（**必要になるまで隠れている**） |
+| **Auxiliary** | **右** | spec・コードの差分・成果物（Artifacts）（**必要になるまで隠れている**） |
+
+エージェントが変更したファイルは、チャット内に**インラインの差分**として表示されます。差分をクリックすると、補助パネルでファイル全体を表示します。**コードを直接編集するときは Editor View に切り替えます**（公式は「Agent Focus Mode はファイルを手で編集するためではなく、エージェントを指揮するためのもの」と説明しています）。
 
 ---
 
@@ -132,7 +134,7 @@ Agent Focus は、開いたセッション・**Settings** ペイン・プロジ�
 
 **Agent Focus Mode は、IDE が [Cloud Sessions](12_cloud-sessions.md) を表示する場所です。** アカウントで Cloud Sessions が利用可能な場合、セッションパネルに **Cloud Sessions** セクションが現れます。
 
-**＋**（**New Cloud Session**）で新規作成し、任意でリポジトリを **Select repos** で紐づけ、モデルと自律レベル（**Autopilot** または **Autonomous**）を選んで最初のプロンプトを送信します。Kiro がサンドボックスを準備し、選んだリポジトリをサーバー側でクローンします（**ローカルのファイルはアップロードされません**）。
+**＋**（**New Cloud Session**）で新規作成し、任意でリポジトリを **Select repos** で紐づけ、モデルと自律レベル（**Autopilot** または **Autonomous**）を選んで最初のプロンプトを送信します。Kiro がサンドボックスを準備し、選んだリポジトリをサーバー側でクローンします（**ローカルのファイルはアップロードされません**）。Cloud Session は**管理されたクラウドのサンドボックスで動き、ウィンドウを閉じても作業を続けます**。実行中は、紐づけたリポジトリがチャット入力欄の下に表示され続けます。
 
 Cloud Session もローカルセッションと同様に pin できます。コンテキストメニューには **Open in Kiro Web**・**Open with Kiro CLI** が追加され、ブラウザやターミナルで同じセッションを継続できます。**ファイルがサンドボックスにあるため**、ファイル・差分を開く操作・チェックポイント・ローカルのコンテキストピッカー・クリック可能な spec タスクのアクションは使えず、**Supervised モードも提供されません**。
 
@@ -161,6 +163,8 @@ Agent Focus Mode では、**spec が会話から自然に生まれます**。フ
 | 4 | 実行を開始し、**セッションをまたいで進捗を監視する** |
 
 
+spec のドキュメントはプロジェクトの `.kiro/specs` ディレクトリに置かれます。要件・設計・個々のタスクを全体で確認するときは、Editor View で開きます。
+
 **「まず話して、固まったら形式化する」**という進め方ができます。Editor View の spec が「フェーズを順に進める」のに対し、こちらは「会話が先」です。
 
 ---
@@ -182,18 +186,18 @@ Agent Focus Mode では、**spec が会話から自然に生まれます**。フ
 
 | 機能 |
 |------|
-| **設定と環境設定** |
+| **設定の全機能**（Agent Focus にはセッションと更新を制御する**限定的な設定ペイン**がある） |
 | **[Powers](11_powers.md) と [Skills](../04_reference/01_kiro-directory.md#7-agent-skills--kiroskills名前skillmd)** |
 | **MCP サーバの管理** |
 | **ターミナルへのアクセス** |
 | **完全な git ワークフロー** |
 | **ファイルの直接編集** |
 
-**MCP サーバの設定やターミナル作業をするときは Editor View に戻る**必要があります。Agent Focus だけで一日を過ごせるわけではない、という前提で使ってください。
+**MCP サーバの設定やターミナル作業をするときは Editor View に戻る**必要があります。右上の **IDE** ボタンでいつでも IDE の画面に戻れます。Agent Focus だけで一日を過ごせるわけではない、という前提で使ってください。
 
-> ⚠️ **公式の記述に食い違いがあります。** 上の一覧（公式 Agent Focus Mode ページ「What's not in Agent Focus yet」の6項目）は 2026-09-02 更新時点でも「設定と環境設定」「MCP サーバの管理」を挙げています。一方で**同じページ**は Agent Focus に **Settings ペイン**があること（§5.5 の戻る・進むの対象、§11 の Check for Updates）を説明し、公式 [Cloud sessions](https://kiro.dev/docs/cloud-sessions/) ページは「**Agent Focus の設定**にクラウド項目の出所と管理リンクが表示される」と書いています。1.0.437 の修正内容も Agent Focus に **MCP Servers** タブがあることを前提にしています。
+> **「設定」についての食い違いは公式で解消されました。** 以前の公式ページ（2026-09-02 更新）はこの一覧に「設定と環境設定」を挙げつつ、同じページで Agent Focus の **Settings** ペインを説明しており、本サイトはその食い違いを注記していました。現行のページ（2026-09-30 更新）は「**設定の全機能**（Agent Focus にはセッションと更新を制御する限定的な設定ペインがある）」と書き改めています。
 >
-> **読み方**: 設定ペイン自体は Agent Focus にありますが、**設定・環境設定の全機能や MCP サーバの管理には IDE の画面が必要**、という整理になります。両ページの更新日は同じ（2026-09-02）で日付による優劣がつかないため、本サイトでは公式の列挙を残したうえで、この食い違いの存在を明記しています。
+> ⚠️ **公式の記述に食い違いがあります。** MCP サーバの管理について、一覧は現行のページ（2026-09-30 更新）でも「MCP サーバの管理」を IDE の画面が必要なものとして挙げていますが、1.0.437 の修正内容（「Agent Focus が **MCP Servers** タブに Cloud configuration の通知を表示していた問題」）は Agent Focus に MCP Servers タブがあることを前提にしています。**読み方**: Agent Focus に MCP Servers タブ自体はありますが、そこでどこまで操作できるか（公式の言う「MCP サーバの管理」との境界）は公式に記載がなく、**未確認**です。
 
 ---
 
@@ -234,6 +238,31 @@ Agent Focus Mode は 1.0 で加わった UI 変更の1つです。関連する2�
 
 ---
 
+## 12. セッション詳細パネル（Artifacts と Workflows）
+
+**セッションの Artifacts と Workflows を、チャットの横で確認するパネルです。** Artifacts は 1.1、専用ビューの作り直しは 1.2.4 で入りました。
+
+| 項目 | 内容（公式） |
+|------|------------|
+| **Artifact を開く** | エージェントが Artifact を作ると、会話にコンパクトなプレビューが表示される。選ぶとセッション詳細パネルでその Artifact がその場でプレビューされ、作業中もセッションの Workflows と Artifacts を参照できる |
+| **Open in IDE** | どの Artifact でも **Open in IDE** でエディタで開ける |
+| **専用ビュー（1.2.4）** | Workflows と Artifacts に専用のビューがある。ステップのアクティビティ・Artifact のプレビュー・すべての Artifact への **Open in IDE** を備える |
+| コンテキストパネル（1.1） | Agent Focus のコンテキストパネルから Artifact に戻れる。1.1 では、特定の構成でこのパネルが Artifacts・Specs・Changed Files を読み込めない問題も修正された |
+
+Artifact の対応形式・サイズ上限・保存先は [02_chat.md](02_chat.md#12-agent-artifacts11-で追加)、Workflows の有効化と操作は [02_chat.md](02_chat.md#13-workflows124-で追加) を参照してください。**Workflows は既定で無効**で、プロジェクトの **Workspace Configuration** から有効にします。
+
+---
+
+## 13. 再起動・復元時の継続性（1.1・1.1.70）
+
+| 版 | 内容 |
+|----|------|
+| **1.1** | 再起動後も、Agent Focus が**同じウィンドウスタイルとサイズで開き直す**。復元（revert）後も、チェックポイント履歴のページ送りが正しく続く |
+| **1.1.70** | 前回のセッションを選択した状態で開き直したときに、チャット画面の初期化が終わるまで**チャット欄が空白になる問題**を修正。復元したセッションは空白のまま残らずに再接続される |
+| **1.1.70** | プロジェクトを切り替えると、**`#File` と `#Folder` のピッカー**がアクティブなセッションのプロジェクトのファイルを一覧するようになった |
+
+---
+
 ## 関連ドキュメント
 
 - [02_chat.md](02_chat.md) - Dockable chat・セッションの書き出し・サブエージェント
@@ -242,4 +271,4 @@ Agent Focus Mode は 1.0 で加わった UI 変更の1つです。関連する2�
 - [07_custom-agents.md](07_custom-agents.md) - 組み込みエージェントとの対応
 - [11_powers.md](11_powers.md) - Agent Focus からはまだ使えない機能
 - [12_cloud-sessions.md](12_cloud-sessions.md) - Agent Focus 内での Cloud Sessions の全詳細
-- [02_update/01_changelog.md](../02_update/01_changelog.md) - 1.0 での導入・1.0.288/293 での加筆
+- [02_update/01_changelog.md](../02_update/01_changelog.md) - 1.0 での導入・1.0.288/293 での加筆・1.1/1.1.70/1.2.4 の改善

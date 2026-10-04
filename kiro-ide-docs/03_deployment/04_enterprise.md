@@ -1,8 +1,9 @@
 # エンタープライズ配布とガバナンス
 
-**組織で Kiro IDE を配るときに決めることをまとめます。バージョンの制御・ガバナンス・拡張機能レジストリが中心です。**
+**組織で Kiro IDE を配るときに決めることをまとめます。バージョンの制御・ガバナンス・拡張機能レジストリ・サインイン制御が中心です。**
 
-- **一次情報**: [Onboarding quickstart](https://kiro.dev/docs/enterprise/getting-started/)・[Managed updates](https://kiro.dev/docs/enterprise/managed-updates/)・[Governance](https://kiro.dev/docs/enterprise/governance/)・[Settings](https://kiro.dev/docs/enterprise/settings/)・[Supported regions](https://kiro.dev/docs/enterprise/supported-regions/)・[Custom extension registry](https://kiro.dev/docs/ide/editor/extension-registry/)
+- **一次情報**: [Onboarding quickstart](https://kiro.dev/docs/enterprise/getting-started/)・[Managed updates](https://kiro.dev/docs/enterprise/managed-updates/)・[Governance](https://kiro.dev/docs/enterprise/governance/)・[Settings](https://kiro.dev/docs/enterprise/settings/)・[Supported regions](https://kiro.dev/docs/enterprise/supported-regions/)・[Custom extension registry](https://kiro.dev/docs/ide/editor/extension-registry/)（公式ページ更新日: 2026-08-04）
+- **1.1 以降の追加分の一次情報**: [Sign-in controls](https://kiro.dev/docs/enterprise/governance/sign-in/)（公式ページ更新日: 2026-09-30）・[Governance](https://kiro.dev/docs/enterprise/governance/)（公式ページ更新日: 2026-09-30）・changelog [1.1](https://kiro.dev/changelog/ide/1-1/)・[1.2](https://kiro.dev/changelog/ide/1-2/)
 
 > **本ページの範囲**: エンタープライズ関連の公式ドキュメントは **IDE と CLI の共有領域**です（`/docs/cli/enterprise/` は `/docs/enterprise/` に統合されている）。本ページは **Kiro IDE の管理者に必要な範囲**を扱います。AWS コンソール側の操作手順の細部は公式ページに委ねます。
 
@@ -41,6 +42,11 @@
 ### 2.2 IAM Identity Center 側で使えるリージョン（19）
 
 US East (Ohio) / US East (N. Virginia) / US West (N. California) / US West (Oregon) / Asia Pacific (Mumbai) / Asia Pacific (Osaka) / Asia Pacific (Seoul) / Asia Pacific (Singapore) / Asia Pacific (Sydney) / **Asia Pacific (Tokyo)** / Canada (Central) / Europe (Frankfurt) / Europe (Ireland) / Europe (London) / Europe (Paris) / Europe (Stockholm) / South America (São Paulo) / AWS GovCloud (US-East) / AWS GovCloud (US-West)
+
+> **プロファイルのリージョンへの送信（1.1・1.2.4）**: 1.1 から、エンタープライズの ID でサインインすると、
+> ID プロバイダーが別の場所に登録されていても**選択したプロファイルのリージョンにサービスリクエストを送る**ようになりました。
+> 1.2.4 からは**テレメトリとアクティビティのデータも、選択したエンタープライズプロファイルの AWS リージョンに送ります**。
+> あわせて 1.2.4 で、`us-east-1` 以外のプロファイルへのリクエストがアカウントやプロファイルの切り替え後にウィンドウを再読み込みするまで失敗する問題が修正されています。
 
 > **東京リージョンの位置づけ**: Asia Pacific (Tokyo) は **IAM Identity Center 側では使えます**が、
 > **Kiro プロファイル（＝データ保存と推論の場所）としては使えません**。
@@ -166,6 +172,7 @@ Kiro コンソールの **Settings > Shared settings** で管理します。組�
 | **MCP サーバ** | 利用者はどの MCP サーバも使える | MCP を完全に無効化するか、MCP レジストリで**審査済みサーバの許可リスト**を指定する |
 | **API キー** | **利用者は API キーを生成できない** | 生成を許可できる（Kiro CLI 用） |
 | **Web ツール** | 利用者は `web_search` と `web_fetch` を使える | アカウントまたは組織の全利用者に対して無効化できる。無効化すると**ツールが利用者から見えなくなり `/tools` に通知が出る** |
+| **サインイン方法**（1.2 以降） | 利用者は Kiro が対応するどの方法でもサインインできる | **コンソールではなく、管理端末に置く `managed-settings.json` で制御する**（§7） |
 
 ---
 
@@ -206,12 +213,152 @@ Kiro プロファイルで管理者が制御できる設定です。
 > **Windows のサンプルに含まれる情報**: 公式サンプルには `Kiro >= 0.11.133` という対応バージョン表記が入っています。
 > レジストリキーは `Software\Policies\Microsoft\Kiro` です（`Microsoft` を含むパスであることに注意）。
 
+> ⚠️ **公式の記述に食い違いがあります。** 1.1 の changelog（2026-09-14）は「管理された Windows ポリシーを、**VS Code のポリシーパスではなく Kiro のレジストリパス**から読むようになった」と説明していますが、具体的なパスは書いていません。公式ページのレジストリパスは次のとおり分かれています。
+>
+> | 公式ページ | 更新日 | Windows のレジストリパス |
+> |-----------|-------|----------------------|
+> | [Custom extension registry](https://kiro.dev/docs/ide/editor/extension-registry/)（`.admx` サンプルの `key`） | 2026-08-04（**1.1 より前**） | `Software\Policies\Microsoft\Kiro` |
+> | [Managed updates](https://kiro.dev/docs/enterprise/managed-updates/)（`UpdateUrl`） | 2026-09-04（1.1 より前） | `HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Kiro` |
+>
+> どちらのページも 1.1 より前の更新です。**1.1 以降に `ExtensionGalleryServiceUrl` をどのキーから読むかは公式に記載がなく、未確認です。** Windows で拡張機能レジストリのポリシーを配っている場合は、1.1 以降に更新したあとで設定が効いているか確認してください。
+
 > **`policy.json` は共用されます**: Linux では拡張機能レジストリの設定も管理更新の `UpdateUrl` も
 > 同じ `/etc/kiro/policy.json` に書きます。両方使う場合は1つのファイルにまとめてください。
 
 ---
 
-## 7. 管理者向けチェックリスト
+## 7. サインイン制御（1.2 以降）
+
+**管理端末で、Kiro のサインイン画面に出す方法を絞り、組織のサインイン情報を事前入力し、自社のヘルプページへのリンクを追加できます。** Kiro IDE **1.2 以降**（Kiro CLI は 2.25.0 以降）に適用されます。
+
+> ⚠️ **サインイン制御はインストールされたクライアントが適用するものです。** Kiro Web や、ファイルを置いていない端末ではサインインを制限しません。
+> サインイン制御より前の版のクライアントはこのルールを無視します。公式は「利用者を正しい方法に誘導するために使い、
+> **誰が Kiro を使えるかの制御は、ID プロバイダーと Kiro コンソールでのユーザー・サブスクリプション管理**で行う」よう案内しています。
+
+### 7.1 しくみ
+
+サインイン制御は、[権限ポリシー](../04_reference/03_permissions.md#22-システムが管理するスコープ)と**同じ `managed-settings.json`** の2か所を読みます。
+
+| 場所 | 役割 |
+|------|------|
+| `rules` 配列の **`"capability": "signin_method"`** のルール | サインイン画面に出す方法を絞る。**`effect` は常に `deny`**。`match` に外す方法、`exclude` に残す方法を書く。一部の方法だけを許すときは `"match": ["*"]` ですべてを拒否し、許す方法を `exclude` に並べる |
+| **`settings`** オブジェクト | 組織のサインイン情報の事前入力と、ヘルプリンク |
+
+**Kiro はサインインを始めるときにファイルを読む**ため、変更は次のサインインから効きます。ブラウザのサインインページには許可された方法だけが、情報を事前入力した状態で表示されます。**ブラウザから結果が戻ったときにもクライアントが方法を再確認し、拒否された方法はトークン発行前に拒否する**ため、サインイン URL を書き換えても回避できません。
+
+**すべての方法を拒否した場合やルールを読めない場合は、制限を外してすべての方法を出します**（利用者を締め出さない。§7.6）。
+
+### 7.2 置き場所
+
+| OS | パス |
+|----|------|
+| **macOS** | `/Library/Application Support/Kiro/managed-settings.json` |
+| **Windows** | `C:\ProgramData\Kiro\managed-settings.json` |
+| **Linux** | `/etc/kiro/managed-settings.json` |
+
+これらのパスの変更には管理者（root）権限が必要です。**すでに権限ポリシーを配っている場合は、同じファイルに `signin_method` ルールと `settings` を追加します**（IDE と CLI の両方がこのファイルを読む）。配布は macOS なら MDM（Jamf・Kandji など）、Windows ならグループポリシー・SCCM・MDM で行えます。
+
+> **Windows の注意**: **BOM なしの UTF-8** で保存してください。Kiro は UTF-16 のファイル（Windows PowerShell の `Out-File` の既定）と、BOM で始まるファイルを拒否します。
+
+> **`rules` 配列は必ず置く**: `settings` だけを設定する場合も `rules` 配列を残します（追加するルールがなければ `"rules": []`）。権限ポリシーの読み取り側が `rules` を前提にしているためです。
+
+```json
+{
+  "rules": [
+    {
+      "capability": "signin_method",
+      "match": ["*"],
+      "exclude": ["idc"],
+      "effect": "deny"
+    }
+  ],
+  "settings": {
+    "idc_start_url": "https://my-org.awsapps.com/start",
+    "idc_region": "us-east-1",
+    "signin_help_url": "https://it.example.com/kiro-help"
+  }
+}
+```
+
+### 7.3 ルールの形式
+
+| フィールド | 内容 | 必須 |
+|-----------|------|-----|
+| `capability` | 常に `signin_method` | ✅ |
+| `match` | 拒否する方法の名前。省略するか `["*"]` にするとすべてを拒否する（許す方法を `exclude` に並べるときの一般的な形） | — |
+| `exclude` | 残す方法の名前。ここに書いた方法は、`match` が拒否してもサインイン画面に残る | — |
+| `effect` | **常に `deny`**。`allow`・`ask`・`Deny` など**それ以外の値は制限を無視して利用者に警告する** | ✅ |
+
+`match` と `exclude` には glob パターンではなく**方法の名前**を書きます。**大文字・小文字を区別し、サインイン画面の表示名は受け付けません。**
+
+| 方法の名前 | サインイン方法 |
+|-----------|-------------|
+| `idc` | AWS IAM Identity Center（サインイン画面の表示は **Your organization**） |
+| `external_idp` | 組織の外部 ID プロバイダー（Okta・Microsoft Entra ID など） |
+| `builder_id` | AWS Builder ID |
+| `google` | Google |
+| `github` | GitHub |
+| `social` | Google と GitHub の両方 |
+
+1つのルールが `match` と `exclude` に書ける名前は合計 **16個まで**です。`signin_method` のルールが複数ある場合、**どれか1つでも拒否した方法は拒否されます**。
+
+> サインイン画面の表示名（**Your organization**・**AWS Builder ID**）や内部識別子の `awsidc`・`builderid` は**方法の名前として使えません**。
+> 警告には受け付ける名前（`google`・`github`・`builder_id`・`idc`・`external_idp`・`social`）が表示されます。
+
+### 7.4 settings のキー
+
+**すべて任意**です。値は**2,048文字以内で制御文字を含まない文字列**、URL は **`https`** でなければなりません。条件を満たさない値はその値だけが捨てられ、ファイルの残りは適用されます。
+
+| キー | 内容 |
+|------|------|
+| `idc_start_url` | **Your organization** を選んだときに事前入力される AWS IAM Identity Center の開始 URL |
+| `idc_region` | Identity Center のディレクトリがある AWS リージョン（開始 URL と一緒に事前入力される） |
+| `external_idp_domain` | 外部 ID プロバイダーでのサインインで組織を識別するドメイン |
+| `external_idp_start_url` | 組織の外部 ID プロバイダー接続の開始 URL |
+| `external_idp_region` | 外部 ID プロバイダー接続を設定した AWS リージョン。省略すると、Kiro はリージョンをまたいで組織を探す |
+| `signin_help_url` | サインインに困ったときに開くページ。サインイン画面と拒否メッセージに表示される。**クライアントが描画し、サインインサービスには送られない**ため、社内 URL でもよい |
+
+### 7.5 設定例（公式）
+
+| 目的 | 書き方 | 結果 |
+|------|-------|------|
+| **IAM Identity Center だけを許す** | `"match": ["*"]`・`"exclude": ["idc"]` ＋ `idc_start_url`・`idc_region` | サインイン画面には **Your organization** だけが、開始 URL とリージョンを事前入力した状態で出る |
+| **Identity Center か外部 ID プロバイダーを許す** | `"match": ["*"]`・`"exclude": ["idc", "external_idp"]` ＋ `external_idp_domain`・`external_idp_region` | — |
+| **個人向けのサインイン方法を止める** | `"match": ["social", "builder_id"]`（`exclude` なし） | Google・GitHub・AWS Builder ID が消え、Identity Center と外部 ID プロバイダーが残る |
+| **方法は絞らずヘルプリンクだけ出す** | `"rules": []` ＋ `signin_help_url` | すべての方法が残り、リンクが表示される |
+
+### 7.6 利用者に見えるもの・エラー時の扱い
+
+| 場面 | 挙動（公式。IDE に関するもの） |
+|------|---------------------------|
+| サインイン画面 | 許可された方法だけが表示され、Identity Center の欄は `settings` から事前入力される。ヘルプリンクはサインインボタンの下に **Need help signing in?** として表示され、ブラウザで開く |
+| 拒否された方法で完了しかけたとき | トークン発行前に拒否し、許可された方法を画面の表示名で示す（例: `Google sign-in is not permitted by your administrator. Sign in with "Your organization" instead.`）。ヘルプ URL を設定していれば次の行に続く |
+| ファイルの誤り | **サインイン制御は fail open**（誤りがあってもサインインを止めず、該当する制御を外して警告する）。IDE は**ファイル名と原因を示す通知**を出す |
+
+**誤りの種類ごとの扱い**:
+
+| 誤り | 扱い |
+|------|------|
+| **ファイルを読めない・無効**（JSON として不正・BOM で始まる・UTF-8 でない・既知のキーの型が違う） | サインイン制御は何も適用されない。**同じファイルが権限ポリシーも持つため、無効なファイルは修正するまでエージェントのツールもブロックする** |
+| **ルールを捨ててすべての方法を出す** | `effect` が `deny` 以外・`exclude` に認識できない名前がある・`match` に認識できる名前が1つもない・ルール全体ですべての方法を拒否した・1つも拒否していない（例: `exclude` が `match` の拒否をすべて覆う）・1つのルールが16個を超える名前を持つ。このとき `settings` のキーは適用される |
+| **ルールを狭める** | `match` に認識できる名前とできない名前が混ざっている場合、認識できる名前は拒否され、項目を捨てたことを利用者に警告する |
+| **設定値を捨てる** | `https` でない URL・長すぎる値・制御文字を含む値は、その値だけが無視される |
+| **未知のキー** | `settings` の余分なキーは無視される（新しいファイルが古いクライアントでも動く） |
+
+### 7.7 確認手順（公式）
+
+| 順 | 確認すること |
+|----|------------|
+| 1 | テスト端末にファイルを配り、IDE のアカウントメニューからサインアウトして、新しくサインインを始める |
+| 2 | ブラウザのページに許可された方法だけが、開始 URL とリージョンを事前入力した状態で表示される |
+| 3 | IDE のサインイン画面にヘルプリンクが表示される |
+| 4 | 管理設定ファイルについての警告が出ない（警告が出たらファイルの一部が適用されておらず、原因が示されている） |
+
+利用者側のサインイン手順は [02_authentication.md](02_authentication.md) を参照してください。
+
+---
+
+## 8. 管理者向けチェックリスト
 
 | # | 決めること | 参照 |
 |---|----------|------|
@@ -221,7 +368,8 @@ Kiro プロファイルで管理者が制御できる設定です。
 | 4 | 使わせるモデル・MCP サーバ・Web ツール | §4 |
 | 5 | プロンプトログ・暗号化キー・利用状況の追跡 | §5 |
 | 6 | 拡張機能レジストリを社内に限定するか | §6 |
-| 7 | ファイアウォールで許可する URL | [05_security.md](05_security.md) |
+| 7 | サインイン方法を組織の方法に絞るか・ヘルプリンクを出すか | §7 |
+| 8 | ファイアウォールで許可する URL | [05_security.md](05_security.md) |
 
 ---
 

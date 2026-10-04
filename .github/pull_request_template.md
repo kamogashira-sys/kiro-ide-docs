@@ -54,6 +54,36 @@ Which Kiro IDE version does this change concern? (e.g., 1.0.242 / N/A)
 - [ ] I have verified that all links work correctly
 - [ ] I have checked that Mermaid diagrams and tables render properly (if applicable)
 
+## クラウドセッション（Kiro Web）で作業した場合
+
+`make check-kiro-ide-all` だけでは**網羅性が未検証**です（一次情報スナップショットが clone されないため `coverage` がスキップされます）。**`make check-kiro-ide-cloud` を実行し、次の4節を必ず記入してください。**
+
+- [ ] `make check-kiro-ide-cloud` が exit 0（`coverage` がスキップされていない）
+- [ ] ローカル管理領域（`work_plans/` / `05_meta/` / `06_embedded-docs/` / `work_records/`）を変更していない
+- [ ] タグ作成・リリース公開を行っていない（`.github/release-notes/v<版>.md` を含めるだけ）
+
+### 更新計画
+
+- 対象版と記述粒度の判定（L2 / L3b と、根拠の HTTP ステータス）:
+- 出典 URL（changelog・公式機能ページは更新日も）:
+- 更新対象ファイル:
+
+### 実施内容
+
+- ファイル別の変更点:
+
+### 検証結果
+
+- `coverage` の実数値（**一次情報 N / 文書 N**）:
+- `counts` の4値（機能 / ショートカット / capability / プロバイダ）:
+- `freshness` の未掲載版:
+- `urls-important` のエラー件数:
+
+### 未確認・据え置き
+
+- 公式に確認できず「未確認」と書いた事項とその理由:
+- 人の判断が必要な事項（正準値の変更・公式間の食い違いの扱い・公開方針）:
+
 ## Related Issues
 
 Closes #(issue number)

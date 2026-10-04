@@ -182,8 +182,9 @@
 1. **0.2 系には系列ランディングがない**。`/changelog/ide/0-2/` は存在せず、専用ページ4本（`0-2-13`・`0-2-38`・`0-2-59`・`0-2-68`）だけがあります。
 2. **同じビルドが2箇所に載る**。系列ページのパッチ一覧（例: `/changelog/ide/1-0#patch-1-0-242`）と専用ページ（`/changelog/ide/1-0-242/`）の両方に存在するバージョンがあります。
 3. **URL からバージョンが読めないページが1本ある**。0.9.40 は `/changelog/ide/external-identity-provider-support-for-kiro-ide/` というスラッグ形式です。バージョン番号を URL から機械抽出する処理では既知の例外として扱う必要があります。
+4. **系列ランディングの版表記が URL と一致しないことがある**。`/changelog/ide/1-2/` の版表記は **`1.2.4`**（ダウンロードページのインストーラ名も 1.2.4）で、URL やフィードからは `1.2` に見えます。一方 `/changelog/ide/1-1/` の版表記は `1.1`、`/changelog/ide/1-0/` は `1.0.0` です。本サイトは公式ページの版表記に従います。
 
-各バージョンの内容は [02_update/01_changelog.md](../02_update/01_changelog.md)（1.0 系）と [02_update/02_changelog-0x.md](../02_update/02_changelog-0x.md)（0.x 系）にまとめています。
+各バージョンの内容は [02_update/01_changelog.md](../02_update/01_changelog.md)（1.x 系）と [02_update/02_changelog-0x.md](../02_update/02_changelog-0x.md)（0.x 系）にまとめています。
 
 ---
 
