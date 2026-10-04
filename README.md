@@ -10,7 +10,7 @@
 |------|-------|
 | 🚀 **はじめて Kiro IDE を使う** | [インストール](kiro-ide-docs/03_deployment/01_installation.md) → [認証](kiro-ide-docs/03_deployment/02_authentication.md) → [機能を知る](kiro-ide-docs/01_features/) |
 | ⚠️ **0.x から 1.0 に上げたら動かなくなった** | [1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md)（フックの形式変更・セッション移行） |
-| 📖 **最新版で何が変わったか知りたい** | [アップデート情報（1.0 系）](kiro-ide-docs/02_update/01_changelog.md) |
+| 📖 **最新版で何が変わったか知りたい** | [アップデート情報（1.x 系）](kiro-ide-docs/02_update/01_changelog.md) |
 | 📚 **機能の使い方を知りたい** | [機能詳細ガイド（12機能）](kiro-ide-docs/01_features/) |
 | 🔍 **設定ファイルやショートカットを引きたい** | [リファレンス](kiro-ide-docs/04_reference/) |
 | 🖥️ **VS Code から乗り換えたい** | [VS Code からの移行](kiro-ide-docs/03_deployment/03_migrating-from-vscode.md) |
@@ -22,11 +22,11 @@
 |-----------|------|
 | [00_information](kiro-ide-docs/00_information/) | **基本情報・公式情報源**。公式サイトの構造マップ・`llms.txt` や changelog の性質と使い分け |
 | [01_features](kiro-ide-docs/01_features/) | **機能詳細ガイド（12機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 / Powers / Cloud Sessions |
-| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.0 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全68バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
+| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.x 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全71バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
 | [03_deployment](kiro-ide-docs/03_deployment/) | **インストール・認証・VS Code 移行・エンタープライズ配布・セキュリティ** |
 | [04_reference](kiro-ide-docs/04_reference/) | **リファレンス**: `.kiro/` ファイル仕様・キーボードショートカット（30件）・権限（capability 15種）・チャットの `#` コンテキストプロバイダ（14種）・モデル・起動オプション |
 
-**カバー範囲**: 0.1（2025-07-14）〜 **1.0.437**（2026-09-01）の**全68バージョン**。公式が説明を公開しているものは省略せず掲載しています。
+**カバー範囲**: 0.1（2025-07-14）〜 **1.2.4**（2026-09-30）の**全71バージョン**。公式が説明を公開しているものは省略せず掲載しています。
 
 ## 📢 Kiro IDE とは
 
@@ -43,6 +43,8 @@
 | **[MCP](kiro-ide-docs/01_features/08_mcp.md)** | 外部のツールやサービスと連携する |
 
 **1.0（GA・2026-06-25）で加わった主なもの**: [capability ベースの Permissions](kiro-ide-docs/01_features/03_permissions.md)・[Markdown で定義する Custom Agents](kiro-ide-docs/01_features/07_custom-agents.md)・[Agent Focus Mode](kiro-ide-docs/01_features/09_agent-focus-mode.md)（実験的）。
+
+**1.1・1.2 で加わった主なもの**: [Agent Artifacts](kiro-ide-docs/01_features/02_chat.md#12-agent-artifacts11-で追加)・Windows / Linux の[ネイティブ ARM64 版](kiro-ide-docs/03_deployment/01_installation.md#2-配布形態)（1.1）、[Workflows](kiro-ide-docs/01_features/02_chat.md#13-workflows124-で追加)・[信頼していないワークスペースの保護強化](kiro-ide-docs/04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust)・[エンタープライズのサインイン制御](kiro-ide-docs/03_deployment/04_enterprise.md#7-サインイン制御12-以降)（1.2.4）。
 
 **公式情報源**:
 

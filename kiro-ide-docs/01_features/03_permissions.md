@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを、1つのルールで全ツールに効かせる仕組みです。1.0 の中核機能です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-08-14）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-08-14。**§6 は 2026-10-01 更新版**で確認）
 - **辞書的な一覧**: [04_reference/03_permissions.md](../04_reference/03_permissions.md)（capability 15種・書式・既定の挙動）
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -168,14 +168,21 @@ rules:
 
 ## 6. 緩められない境界（Kiro スコープ）
 
-**ハードコードされた不変条件**があり、利用者も管理者も上書きできません。
+**ハードコードされた不変条件**があり、利用者も管理者も上書きできません（公式 Permissions ページ・2026-10-01 更新版）。
 
-| 効果 | 対象 | 理由 |
-|------|------|------|
-| **常に拒否** | `~/.kiro/settings/`・`.kiro/settings/`・`~/.kiro/workspace-roots/` への書き込み | **エージェントが自身の権限ファイルを書き換えるのを防ぐ** |
-| **常に確認** | `.git/**`・`.kiro/agents/**`・`.kiro/hooks/**`・`.kiroignore` への書き込み | 設定やエージェント定義の意図しない変更を防ぐ |
+| 効果 | 主な対象 |
+|------|---------|
+| **常に拒否** | `~/.kiro/settings/`・`.kiro/settings/`・`~/.kiro/workspace-roots/` への書き込み（**エージェントが自身の権限ファイルを書き換えるのを防ぐ**）。インストール済み Power の MCP 構成や Kiro 自身の状態ストアも含む |
+| **常に確認** | `.git/**`・`.vscode/**`・`**/*.code-workspace`・`.kiroignore`、および `.kiro` と `~/.kiro` の `agents`・`hooks`・`workflows`・`powers` ディレクトリへの書き込み |
+| **信頼していない間だけ確認** | `.kiro/steering`・`.kiro/skills`・`.kiro/extensions` などへの書き込み |
 
-**「エージェントに権限を緩めさせる」ことは構造上できません。**
+**「エージェントに権限を緩めさせる」ことは構造上できません。** 全パスの一覧は [04_reference/03_permissions.md](../04_reference/03_permissions.md#71-kiro-スコープの不変条件上書き不可) を参照してください。
+
+### 6.1 信頼していないワークスペース（1.2.4 で強化）
+
+クローンしたリポジトリには、エージェントの振る舞いを変える入力（カスタムエージェント・Steering・MCP 構成・Skills・Workflow ファイル）が含まれ得ます。**Kiro はワークスペースを信頼するまで、これらを読み込みません。** さらに信頼していない間は、**以前に許可したコマンドでも、シェルコマンドの実行前に毎回確認します**（MCP ツールの呼び出し・Power の利用も同様）。
+
+全項目は [04_reference/03_permissions.md](../04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust) を参照してください。
 
 ---
 

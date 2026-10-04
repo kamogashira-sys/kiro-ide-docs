@@ -2,8 +2,8 @@
 
 **対応環境の確認からインストール・初回起動・旧版へのダウングレードまでを扱います。**
 
-- **一次情報**: [Installation](https://kiro.dev/docs/getting-started/installation/)・[ダウンロードページ](https://kiro.dev/downloads/)・[Setup & First Run](https://kiro.dev/docs/ide/setup/)（公式ページ更新日: 2026-08-04。第4節の初回起動とプロジェクトの開き方）
-- **本ページの基準バージョン**: **1.0.242**（2026-07-28）
+- **一次情報**: [Installation](https://kiro.dev/docs/getting-started/installation/)（公式ページ更新日: 2026-10-01。第1・5・6節）・[ダウンロードページ](https://kiro.dev/downloads/)（第2・6節）・[Setup & First Run](https://kiro.dev/docs/ide/setup/)（公式ページ更新日: 2026-08-04。第4節の初回起動とプロジェクトの開き方）
+- **本ページの基準バージョン**: **1.2.4**（2026-09-30。第1・2節の対応環境と配布形態）
 
 ---
 
@@ -11,18 +11,22 @@
 
 | OS | 要件 |
 |----|------|
-| **macOS** | Intel / Apple Silicon の両方。**最新のセキュリティ更新が適用されていること** |
-| **Windows** | Windows 10 / 11 の **64bit のみ**。**ARM は現時点で非対応** |
-| **Linux** | **glibc 2.39 以上**。公式が例として挙げるディストリビューション: Ubuntu 24 以降・Debian 13 以降・Fedora 40 以降・Arch Linux・Linux Mint 22 以降 |
+| **macOS** | Intel / Apple Silicon の両方 |
+| **Windows** | Windows 10 / 11 の **x64 または ARM64** |
+| **Linux** | Ubuntu 24 以降・Debian 13 以降・Fedora 40 以降・Arch・Mint 22 以降の **x86_64 または ARM64** |
 
-> **Linux で最初に確認すること**: glibc のバージョンは `ldd --version` で確認できます。
-> 2.39 未満のディストリビューション（Ubuntu 22.04 など）では動きません。
+> **1.1 でネイティブ ARM64 版が加わりました。** Windows と Linux で、x64 エミュレーションに頼らずネイティブの ARM64 版を使えます（[1.1](../02_update/01_changelog.md#v1-1)）。
+> 1.0 系の時点では Windows は 64bit（x64）のみで、ARM は非対応でした。
+
+> **公式ページの記述が変わった点**: 以前の Installation ページは Linux の要件を「glibc 2.39 以上」、macOS の要件を「最新のセキュリティ更新が適用されていること」と書いており、本サイトもそれを掲載していました。
+> 現行のページ（2026-10-01 更新）の IDE の要件には、**glibc の版と macOS のセキュリティ更新についての記述がありません**（同ページにある「glibc 2.34 以上」は **Kiro CLI** の要件です）。
+> IDE の Linux 版が求める glibc の版は、現行の公式ページでは確認できません（**未確認**）。
 
 ---
 
 ## 2. 配布形態
 
-[ダウンロードページ](https://kiro.dev/downloads/)から入手します。1.0.242 で提供されているのは次の7種類です。
+[ダウンロードページ](https://kiro.dev/downloads/)から入手します。1.2.4 で提供されているのは次の**10種類**です（1.0.242 の時点では7種類。1.1 で Windows と Linux の ARM64 版が加わりました）。
 
 | プラットフォーム | 形式 | ダウンロードページの表記 |
 |---------------|------|--------------------|
@@ -30,15 +34,21 @@
 | macOS（Intel） | `.dmg` | macOS (Intel) |
 | macOS（Apple Silicon） | `.pkg` | macOS (Apple Silicon, pkg) |
 | macOS（Intel） | `.pkg` | macOS (Intel, pkg) |
-| Windows | `.exe` | Windows (x64) |
-| Linux | `.deb` | Linux (Debian/Ubuntu 24+) |
-| Linux | `.tar.gz` | Linux (Universal) |
+| Windows（x64） | `.exe` | Windows (x64) |
+| **Windows（ARM64）** | `.exe` | Windows (ARM64) |
+| Linux（x64） | `.deb` | Linux (x64, Debian/Ubuntu 24+) |
+| Linux（x64） | `.tar.gz` | Linux (x64, Universal) |
+| **Linux（ARM64）** | `.deb` | Linux (ARM64, Debian/Ubuntu 24+) |
+| **Linux（ARM64）** | `.tar.gz` | Linux (ARM64, Universal) |
 
 **`.dmg` と `.pkg` の使い分け**: `.pkg` はコマンドラインや MDM から無人インストールできる形式です。個人利用なら `.dmg`、組織配布なら `.pkg` が扱いやすくなります（配布については [04_enterprise.md](04_enterprise.md) を参照）。
 
 **配信チャネル**: ダウンロード URL は `releases/**stable**/...` の形をしており、**stable チャネルのみ**が公開されています。beta や insiders 相当のチャネルについて公式の記述はありません（未確認）。
 
-**旧版**: ダウンロードページには最新版のほかに **1.0.228・1.0.212・1.0.203・1.0・0.12・0.11** が並んでいます（2026-08-01 時点）。
+**旧版**: ダウンロードページには最新版（IDE 1.2.4）のほかに **IDE 1.1.70・1.1.14・1.0.437・1.0.411・1.0.395・1.0.337・1.0・0.12・0.11** が並んでいます。
+
+> **1.1.14 について**: ダウンロードページには「IDE 1.1.14」がありますが、公式 changelog に 1.1.14 のエントリはありません（1.1 系の changelog は系列ページ「1.1」と専用ページ「1.1.70」のみ）。
+> 1.1.14 が系列ページ「1.1」のリリースのビルド番号かどうかは公式に記載がなく、**未確認**です。
 
 > **Kiro CLI を入れる場合**: `curl -fsSL https://cli.kiro.dev/install | bash` です（IDE とは別の製品。CLI の解説は姉妹サイト [q-cli-docs](https://github.com/kamogashira-sys/q-cli-docs) を参照）。
 
@@ -93,12 +103,15 @@
 
 ## 5. 更新
 
-| 方式 | 現状 |
+| 方式 | 現状（公式 Installation ページ・2026-10-01 更新） |
 |------|------|
-| **自動更新** | **段階的に展開中**。公式は「Auto-updates are being rolled out gradually to users.」と記載 |
-| 手動更新 | [downloads ページ](https://kiro.dev/downloads/)から最新版を入れる |
+| **自動更新** | Kiro IDE は**バックグラウンドで更新を自動的にダウンロード**し、準備ができると再起動して適用するよう通知する |
+| **手動で確認** | **Kiro** メニューの **Check for Updates...**。Windows・Linux ではコマンドパレット（`Ctrl + Shift + P`）で **`Kiro: Check for Updates`** を実行する |
+| 手動で入れ直す | [downloads ページ](https://kiro.dev/downloads/)から最新版を入れる |
 
-1.0 系のリリースノートでは、公式が「最新の 1.0.x を入れるには kiro.dev/downloads から直接ダウンロードしてください」と案内しています。**自動更新が来るのを待つ運用は現時点では前提にできません。**
+> **公式ページの記述が変わった点**: 以前の公式ページは自動更新を「Auto-updates are being rolled out gradually to users.」（段階的に展開中）と書いており、
+> 1.0 系のリリースノートでも「最新の 1.0.x を入れるには kiro.dev/downloads から直接ダウンロードしてください」と案内していました。
+> 現行の Installation ページは上の表のとおり、自動更新を前提とした説明に変わっています。
 
 更新の設定項目・チャネル・確認周期についての公式記述は見つかっていません（**未確認**）。組織側で更新を制御する方法は [04_enterprise.md](04_enterprise.md) の管理更新を参照してください。
 
@@ -128,6 +141,9 @@
 | Linux | パッケージマネージャに応じて `sudo apt remove kiro` または `sudo dnf remove kiro` |
 
 **設定・拡張機能・サインイン状態は再インストールをまたいで保持されます。**
+
+> ⚠️ **古い版はサービスに接続できなくなります。** ダウンロードページは「**2026-11-09** 以降、**0.11.133 より前の Kiro IDE**（と 1.28.2 より前の Kiro CLI）は Kiro のサービスに接続できなくなる。この日より前に最新版に更新してほしい」と告知しています。
+> ダウングレードで 0.11.133 より前の版に戻すと、この日以降は使えなくなります。
 
 > **0.x に戻す場合の注意**: 1.0 でフックの形式とセッションの保存形式が変わっています。
 > 1.0 で移行したセッションが 0.x で読めるかについて公式の記述はありません（**未確認**）。

@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""1.0系changelogの一覧表・本文の版順を検証する。
+"""1.x系changelogの一覧表・本文の版順を検証する。
 
-本文に明示アンカーを持つ1.0系では、一覧表と本文のリリース単位が
+本文に明示アンカーを持つ1.x系（1.0・1.1・1.2 …）では、一覧表と本文のリリース単位が
 同じ版集合かつ新しい版から古い版への同じ順序でなければならない。
 0.x系は表形式パッチを含み、全版が本文アンカーを持たないため対象外。
+
+アンカーは `v1-0-437`（ビルド番号付き）と `v1-1`（系列ランディング。公式の版表記が
+2要素のもの）の両方を扱う。当初は `v1-0-` 固定だったため、1.1 系の追加で
+系列ランディングのアンカーが検査対象から外れる状態だった。
 """
 
 from __future__ import annotations
@@ -18,8 +22,8 @@ TOC_RE = re.compile(
     r"^\| \[([0-9]+(?:\.[0-9]+){1,2})\]\(#([a-z0-9-]+)\) \|",
     re.MULTILINE,
 )
-ANCHOR_RE = re.compile(r'<a id="(v1-0-[0-9]+)"></a>')
-HEADING_RE = re.compile(r"^## .*?([0-9]+\.[0-9]+\.[0-9]+)")
+ANCHOR_RE = re.compile(r'<a id="(v1-[0-9]+(?:-[0-9]+)?)"></a>')
+HEADING_RE = re.compile(r"^## \D*?([0-9]+\.[0-9]+(?:\.[0-9]+)?)")
 
 
 def version_key(version: str) -> tuple[int, ...]:
@@ -27,7 +31,7 @@ def version_key(version: str) -> tuple[int, ...]:
 
 
 def main(changelog: Path) -> int:
-    print("=== kiro-ide-docs 1.0系 changelog 本文順チェック ===")
+    print("=== kiro-ide-docs 1.x系 changelog 本文順チェック ===")
 
     if not changelog.is_file():
         print(f"❌ changelog が存在しません: {changelog}")
@@ -111,7 +115,7 @@ def main(changelog: Path) -> int:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="1.0系changelogの一覧表と本文の版順を検証する"
+        description="1.x系changelogの一覧表と本文の版順を検証する"
     )
     parser.add_argument(
         "path",

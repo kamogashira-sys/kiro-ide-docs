@@ -209,6 +209,14 @@ MCP の詳細は [08_mcp.md](08_mcp.md) を参照してください。
 > **サブエージェント内では Specs にアクセスできず、Hooks も発火しません。**
 > ステアリングと MCP はメインエージェントと同じように動きます。
 
+> **Workflows を有効にした場合（1.2.4 以降）**: メインセッションの委譲は Workflows（`run_workflow`）経由になり、
+> 1つのカスタムエージェントをバックグラウンドで動かすときは `run_workflow(agent://<name>)` を使います。
+> Workflow の各ステップにもカスタムエージェントを指定できます（公式 [Workflows](https://kiro.dev/docs/workflows/)・公式ページ更新日: 2026-10-02）。
+> 詳細は [02_chat.md](02_chat.md#13-workflows124-で追加) を参照してください。
+
+> **信頼していないワークスペースでは、ワークスペースのカスタムエージェント（`.kiro/agents/`）は読み込まれません**（1.2.4。[04_reference/03_permissions.md](../04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust)）。
+> また、`.kiro/agents/` と `~/.kiro/agents/` へのエージェントの書き込みは常に確認が求められます。
+
 ---
 
 ## 8. 作る手順の例

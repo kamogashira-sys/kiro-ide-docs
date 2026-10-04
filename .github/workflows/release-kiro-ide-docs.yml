@@ -66,7 +66,8 @@ jobs:
       # 一致しないままタグを打つと blob/<tag>/ のリンクが未更新の文書を指してしまう。
       - name: バージョン整合の確認
         run: |
-          latest=$(grep -oP '^## (?:🔹|▫️|🎉) \K[0-9]+\.[0-9]+(\.[0-9]+)?' \
+          # 🔷 は系列ランディング（1.1・1.2.4 など）。1.x 系では系列リリースが最新版になり得る
+          latest=$(grep -oP '^## (?:🔷|🔹|▫️|🎉) \K[0-9]+\.[0-9]+(\.[0-9]+)?' \
                    kiro-ide-docs/02_update/01_changelog.md | head -1)
           newest=$(tail -1 /tmp/targets.txt | sed 's|.*/v\(.*\)\.md|\1|')
           echo "changelog の最新版=$latest / リリースノートの最新=$newest"

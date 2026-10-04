@@ -389,7 +389,7 @@ Kiroは専用のextension hostで動作するため、サードパーティ拡�
 
 > Kiro は定期的なリベースによって VS Code の開発サイクルに同期しています。最新の機能や改善を取り込みますが、**安定した VS Code のリリースを戦略的に選んでいます**。
 
-取り込みは changelog で明示されます（例: **1.0.242 で Code OSS v1.108.2**・**1.0.288 で Code OSS v1.109.5**）。推移は [02_update/01_changelog.md](../02_update/01_changelog.md) で追えます。
+取り込みは changelog で明示されます（例: **1.0.242 で Code OSS v1.108.2**・**1.0.288 で Code OSS v1.109.5**・**1.1 で Code OSS 1.131**）。推移は [02_update/01_changelog.md](../02_update/01_changelog.md) で追えます。
 
 ### 7.1 Code OSS v1.109.5 での新設定（1.0.288 で追加）
 
@@ -398,6 +398,16 @@ Kiroは専用のextension hostで動作するため、サードパーティ拡�
 | `terminal.integrated.stickyScroll.ignoredCommands` | ターミナルのスティッキースクロールで、特定のコマンドを対象外にできる |
 | `editorBracketMatch.foreground` | 一致する括弧の色を変更できる |
 | `terminal.integrated.allowInUntrustedWorkspace` | 信頼していないワークスペースでもターミナルを使うことを選択できる |
+
+### 7.2 Code OSS 1.131 への移行（1.1）
+
+1.1 で **Code OSS 1.109.5 から 1.131** に移行しました。公式は「エディタ・ターミナル・アクセシビリティ・extension host の更新を含む、**22 回分のプラットフォームリリース**を取り込んだ」と説明しています。
+
+> 1.0.288 のときと違い、1.1 の changelog は**新しく使えるようになった設定キーを列挙していません**。個々の変更点は公式に記載がなく、本サイトでは**未確認**です。
+
+### 7.3 Electron の更新（1.2.4）
+
+1.2.4 で **Electron 44.4.3**（Chromium 152.0.7977.130 を含む）に更新され、CVE-2026-87491 に対処しました。同じ版で、**JavaScript デバッガーが Node.js 24.20 以降にアタッチできない問題**も修正されています。
 
 ---
 
