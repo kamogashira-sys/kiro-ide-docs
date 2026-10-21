@@ -6,7 +6,7 @@
 - **ファイル形式**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)
 - **1.0 で形式が変わりました**（`.hook` → **v1 JSON**）。移行は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)
 
-> ⚠ **公式の記述に食い違いがあります。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）が載せる 0.x のトリガー一覧（11種）と `when`／`then` のスキーマは、[Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10）の IDE 対応10種、および [Hooks](https://kiro.dev/docs/hooks/)（2026-10-10）の `trigger`／`matcher`／`action` を使う形式と異なります。以前は他の3ページの間にも食い違いがありましたが、現行では整合しています（本サイトの再確認結果。公式ページの更新日付き）:
+> ⚠️ **公式の記述に食い違いがあります。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）が載せる 0.x のトリガー一覧（11種）と `when`／`then` のスキーマは、[Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10）の IDE 対応10種、および [Hooks](https://kiro.dev/docs/hooks/)（2026-10-10）の `trigger`／`matcher`／`action` を使う形式と異なります。以前は他の3ページの間にも食い違いがありましたが、現行では整合しています（本サイトの再確認結果。公式ページの更新日付き）:
 >
 > **以前は、[Hooks](https://kiro.dev/docs/hooks/) ページがトリガー一覧を10種で示して manual フックが manual ステアリングファイルに置き換わったと書き、[Hook types](https://kiro.dev/docs/hooks/types/)・[Hook management](https://kiro.dev/docs/hooks/management/)・[IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) が「Manual Trigger」を IDE のトリガーとして載せていたため、公式ページ間で食い違っていました。**
 >
@@ -117,7 +117,7 @@
 
 > **1.2.56 で追加されたセレクタ**: 1.2.56 の changelog は、`PreToolUse`・`PostToolUse` のフックで、ツール ID を1つずつ挙げる代わりに、カテゴリとセレクタ（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）でツールのグループを指定できるようになったと説明しています（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
 >
-> ⚠ **公式の記述に食い違いがあります。** 1.2.56 の changelog は、カテゴリとセレクタを7種（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）だけ挙げています。Hook types ページ（2026-10-10）は、これに加えて `web`・`spec` のカテゴリと `@powers` のセレクタを載せています。**読み方**: 本ページは両方を載せ、Hook types ページの記述を詳細の出典としています。
+> ⚠️ **公式の記述に食い違いがあります。** 1.2.56 の changelog は、カテゴリとセレクタを7種（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）だけ挙げています。Hook types ページ（2026-10-10）は、これに加えて `web`・`spec` のカテゴリと `@powers` のセレクタを載せています。**読み方**: 本ページは両方を載せ、Hook types ページの記述を詳細の出典としています。
 >
 > **使えるツール名は Kiro に聞けます**（公式の案内）。
 

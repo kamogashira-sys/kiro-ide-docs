@@ -1099,6 +1099,8 @@ Kiro IDE の一般提供（GA）版です。**エージェントがアクセス�
 - **0.x のレガシーフックは Agent Hooks パネルから直接移行できる**
 - **manual hooks は manual steering ファイルに置き換えられた**
 
+> ⚠️ **公式の記述に食い違いがあります。** 1.0 の changelog は「manual hooks は manual steering ファイルに置き換えられた」と書いています。一方、現行の [Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10）は、IDE 0.x で作った manual フックが legacy として Agent Hooks パネルに残り、有効なものは実行できる一方で、IDE で Manual トリガーのフックを新規に作成することはできないと書いています。更新日の新しい現行ドキュメントを正とし、1.0 の changelog の記述はリリース時点の原文として残します。
+
 > Kiro CLI 版の対応ページは [Hooks](https://kiro.dev/docs/hooks/) です。
 > **CLI の非 v3 のフックはまったく別の仕組み**（標準入力の JSON によるライフサイクルフック）なので混同しないでください。
 

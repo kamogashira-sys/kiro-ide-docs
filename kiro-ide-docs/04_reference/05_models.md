@@ -154,7 +154,7 @@
 | GPT-5.6 Sol・Terra・Luna | `none` / Low / Medium / High / **XHigh** / Max（公式は GPT-5.6 の既定を `high` と説明） |
 | Claude Sonnet 5.5 | Low / Medium / High / **XHigh** / Max（下の注記を参照） |
 
-> ⚠ **公式の記述に食い違いがあります。** 公式 Reasoning effort ページ（2026-10-09）は、同じページの中で Claude Sonnet 5.5 の Effort を2通りに書いています。「Reasoning configuration examples」の表は `low`・`medium`・`high`・`xhigh`・`max` の5水準を載せ、`thinking.type` の説明は Sonnet 5.5 が `low`・`medium`・`high` の Effort に対応するとしています。**読み方**: どちらが現行の仕様かは公式に記載がなく、**未確認**です。実際に選べる水準はモデルピッカーと Effort の操作で確認してください。
+> ⚠️ **公式の記述に食い違いがあります。** 公式 Reasoning effort ページ（2026-10-09）は、同じページの中で Claude Sonnet 5.5 の Effort を2通りに書いています。「Reasoning configuration examples」の表は `low`・`medium`・`high`・`xhigh`・`max` の5水準を載せ、`thinking.type` の説明は Sonnet 5.5 が `low`・`medium`・`high` の Effort に対応するとしています。**読み方**: どちらが現行の仕様かは公式に記載がなく、**未確認**です。実際に選べる水準はモデルピッカーと Effort の操作で確認してください。
 
 この表は、公式 Reasoning effort ページ（公式ページ更新日: 2026-10-09）の「Reasoning configuration examples」を、IDE の水準の名前に直したものです。公式は、この例を**設定スキーマの代表例であって、対応モデルの網羅ではない**と書いており、実際に使えるモデルと水準はモデルピッカーと Effort の操作で確認するよう案内しています。Claude Sonnet 5.5 は、本ページ第1節の表にないモデルです（上の注記）。上の表に載っていないモデルの対応は、公式ページに記載がありません（**未確認**）。
 

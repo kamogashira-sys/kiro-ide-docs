@@ -151,7 +151,7 @@ inclusion: manual
 > （[05_hooks.md](05_hooks.md#5-フックの管理)・[02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)）。
 >
 > **Kiro CLI の固定スラッシュコマンド一覧を IDE に当てはめないでください。**
-> IDE のスラッシュコマンドは**すべてユーザー定義**です（[00_information/README.md](../00_information/README.md#-ide-と-cli-を混同しないために)）。
+> IDE のスラッシュコマンドの供給元は**ステアリングファイル・エージェント・スキル**で、Kiro が用意するステアリングコマンドと組み込みサブエージェントもあります（[00_information/README.md](../00_information/README.md#-ide-と-cli-を混同しないために)）。
 
 **向くもの**: 専門的なワークフロー・トラブルシューティングのガイド・移行手順・**たまにしか必要ないコンテキストの重い文書**。
 

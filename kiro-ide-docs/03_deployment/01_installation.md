@@ -2,7 +2,7 @@
 
 **対応環境の確認からインストール・初回起動・旧版へのダウングレードまでを扱います。**
 
-- **一次情報**: [Installation](https://kiro.dev/docs/getting-started/installation/)（公式ページ更新日: 2026-10-05。第1・5・6節）・[ダウンロードページ](https://kiro.dev/downloads/)（第2・6節）・[Setup & First Run](https://kiro.dev/docs/ide/setup/)（公式ページ更新日: 2026-08-04。第4節の初回起動とプロジェクトの開き方）・[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)（公式ページ更新日: 2026-10-20。第8節）・公式 changelog（第5・8節）
+- **一次情報**: [Installation](https://kiro.dev/docs/getting-started/installation/)（公式ページ更新日: 2026-10-05。第1・5・6節）・[ダウンロードページ](https://kiro.dev/downloads/)（第2・6節）・[Setup & First Run](https://kiro.dev/docs/ide/setup/)（公式ページ更新日: 2026-09-30。第4節の初回起動とプロジェクトの開き方）・[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)（公式ページ更新日: 2026-10-20。第8節）・公式 changelog（第5・8節）
 - **本ページの基準バージョン**: 第1節の対応環境は Installation ページ（公式ページ更新日: 2026-10-05）で再確認し、表の内容に変更はありません。第2節の配布形態（10種類）は **1.2.4**（2026-09-30）時点の記載のままで、最新版（1.4.10）の時点では確認できていません（第2節）
 
 ---
