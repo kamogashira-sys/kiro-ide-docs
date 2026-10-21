@@ -2,7 +2,8 @@
 
 **エージェントに何がどこまで許されるか・ネットワークで許可すべき URL・データがどこに保存されるかを扱います。**
 
-- **一次情報**: [Privacy and security](https://kiro.dev/docs/privacy-and-security/)・[Configuring a firewall, proxy server, or data perimeter](https://kiro.dev/docs/privacy-and-security/firewalls/)・[Data protection](https://kiro.dev/docs/privacy-and-security/data-protection/)・[Code references](https://kiro.dev/docs/privacy-and-security/code-references/)
+- **一次情報**: [Privacy and security](https://kiro.dev/docs/privacy-and-security/)・[Configuring a firewall, proxy server, or data perimeter](https://kiro.dev/docs/privacy-and-security/firewalls/)（公式ページ更新日: 2026-10-16。第4節）・[Data protection](https://kiro.dev/docs/privacy-and-security/data-protection/)・[Code references](https://kiro.dev/docs/privacy-and-security/code-references/)
+- **追記分の一次情報**: [Web tools](https://kiro.dev/docs/tools/web/)（公式ページ更新日: 2026-10-09。第8節）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。第7.2節）・公式 changelog [1.2.37](https://kiro.dev/changelog/ide/1-2/)・[1.2.56](https://kiro.dev/changelog/ide/1-2-56/)・[1.4.5](https://kiro.dev/changelog/ide/1-4/)（第5.6節・第8節）
 
 > **本ページの範囲**: これらの公式ページは **IDE/CLI 共有**ですが、内容は URL ツリーごとに描画が変わります。
 > 本ページの記述は **IDE ツリー（`/docs/privacy-and-security/...`）の表示内容**に基づいています。
@@ -150,16 +151,23 @@ Kiro は特定のパスへの書き込みに明示的な承認を求めます。
 | `telemetry.us-east-1.kiro.dev` | テレメトリ（US East） |
 | `telemetry.eu-central-1.kiro.dev` | テレメトリ（Europe） |
 
+> **`q.<region>.amazonaws.com` は旧来のエンドポイントです。** 公式は、将来のリリースで廃止予定だが、廃止が完了するまでは `runtime`・`management`・`telemetry` のエンドポイントと並べて許可リストに残す必要がある、と説明しています（公式ページ更新日: 2026-10-16）。
+
 > **`prod.download.desktop.kiro.dev` は更新の入口です。** [04_enterprise.md](04_enterprise.md) の
 > バージョン固定を確実にするには、この URL を**遮断**して自社の更新エンドポイントのみ許可します。
 
 ### 4.4 認証方式ごとに追加で必要な URL
 
-**ソーシャルサインイン（GitHub・Google・AWS Builder ID）**:
+**ソーシャルサインイン（Google・GitHub）**:
 
 | URL | 用途 |
 |-----|------|
 | `cognito-identity.us-east-1.amazonaws.com` | ソーシャルサインインのフェデレーテッド ID |
+| `*.awswaf.com` | GitHub サインインの CAPTCHA |
+
+GitHub のサインインは `*.awswaf.com` から AWS WAF の CAPTCHA を読み込みます。**ファイアウォールやプロキシがこのドメインを遮断すると、GitHub のサインインは失敗します**（公式）。ワイルドカードを1段のサブドメインにしか一致させないファイアウォールやプロキシでは、`*.captcha.awswaf.com` と `*.token.awswaf.com` も許可します。
+
+> **公式ページの記述が変わった点**: 以前の本ページは、Cognito のエンドポイントを「ソーシャルサインイン（GitHub・Google・AWS Builder ID）」の項に載せていました。現行のページ（公式ページ更新日: 2026-10-16）は、Cognito のエンドポイントを Google または GitHub でサインインする場合の項に載せており、AWS Builder ID が Cognito のエンドポイントを必要とするかどうかは、この項に書かれていません（**未確認**）。AWS Builder ID が現れるのは、次の「サブスクリプション管理」の Stripe の項です。
 
 **IAM Identity Center**（`<...>` の部分は環境ごとの値に置き換え）:
 
@@ -172,19 +180,27 @@ Kiro は特定のパスへの書き込みに明示的な承認を求めます。
 | `assets.sso-portal.<sso-region>.amazonaws.com` | SSO ポータルのアセット |
 | `oidc.<sso-region>.amazonaws.com` | OIDC のトークン交換 |
 
-**外部 ID プロバイダ**:
+**外部 ID プロバイダ**（IAM Identity Center と組み合わせる外部 ID プロバイダを使う場合、サインインの流れが ID プロバイダのドメインを経由するため、そのドメインも許可します）:
 
 | ID プロバイダ | 許可するドメイン |
 |-------------|--------------|
 | Microsoft Entra ID | `login.microsoftonline.com` |
 | Okta | `<your-org>.okta.com` |
 
-**AWS GovCloud (US)** を使う場合は、上の Core URLs にある商用の Kiro サービスエンドポイントの**代わりに** FIPS 準拠のエンドポイントを許可します。
+どの ID プロバイダが設定されているか分からないときは、正確なドメインを ID チームに確認するよう、公式は案内しています。
 
-- `q-fips.us-gov-east-1.amazonaws.com`
-- `q-fips.us-gov-west-1.amazonaws.com`
+**AWS GovCloud (US)** を使う場合は、組織が使うリージョンごとに、次の FIPS エンドポイントを許可します（公式ページ更新日: 2026-10-16）。
 
-> **GovCloud リージョンは `kiro.dev` の DNS 名に対応していません。** `q-fips.*.amazonaws.com` のみが利用できます。
+| URL | 用途 |
+|-----|------|
+| `runtime-fips.us-gov-east-1.kiro.dev` | Kiro サービス（AWS GovCloud (US-East)） |
+| `runtime-fips.us-gov-west-1.kiro.dev` | Kiro サービス（AWS GovCloud (US-West)） |
+| `management-fips.us-gov-east-1.kiro.dev` | 設定・アクセス管理（AWS GovCloud (US-East)） |
+| `management-fips.us-gov-west-1.kiro.dev` | 設定・アクセス管理（AWS GovCloud (US-West)） |
+
+**これらは、既存の `q` または `q-fips` のルールと並べて追加します。** 古い Kiro クライアントのバージョンは、引き続きそれらの Q エンドポイント（`q-fips.us-gov-east-1.amazonaws.com`・`q-fips.us-gov-west-1.amazonaws.com`）を必要とすることがある、と公式は説明しています。
+
+> **公式ページの記述が変わった点**: 以前の本ページは、GovCloud では商用の Kiro サービスエンドポイントの**代わりに** `q-fips.*.amazonaws.com` を許可し、「GovCloud リージョンは `kiro.dev` の DNS 名に対応していない」と書いていました。現行のページ（公式ページ更新日: 2026-10-16）は、上の `runtime-fips`・`management-fips`（`kiro.dev` 配下）の 4 つを挙げており、`q-fips` を置き換えず併記するよう案内しています。GovCloud の `kiro.dev` の DNS 名に関する以前の記述は、現行のページと一致しません。
 
 **サブスクリプション管理**（Google・GitHub・AWS Builder ID でサインインする場合。Stripe を使用）:
 
@@ -218,10 +234,27 @@ Kiro 内の **Settings > Proxy** でも設定できます。
 > この通信は OS のネットワークスタックを使うため、IDE のプロキシ設定に関わらず
 > **IAM Identity Center の URL と `app.kiro.dev` をネットワークレベルで許可する**必要があります。
 
-> **ワイルドカードでの簡略化について**: 公式ページには `*.kiro.dev` などのワイルドカード一覧表が
-> ありますが、これは **Kiro Web 向けの表示にのみ現れます**（IDE ツリーの表示には節そのものが存在しません）。
-> IDE 向けの本文には「Wildcard rules を参照」というリンクがありますが、**同じページ内に節がない**状態です。
-> IDE 環境でワイルドカードを使う場合は、上記の個別 URL を基準に自組織で判断してください（公式の IDE 向け記述としては**未確認**）。
+### 4.7 ワイルドカードでの簡略化（Wildcard rules）
+
+ネットワークのポリシーがワイルドカードのルールを許すなら、許可リストを簡略化できます（公式 [Configuring a firewall, proxy server, or data perimeter](https://kiro.dev/docs/privacy-and-security/firewalls/)・公式ページ更新日: 2026-10-16）。
+
+| ワイルドカード | 対象（公式） |
+|--------------|------------|
+| `*.kiro.dev` | 1 段のサブドメインの Kiro のドメインすべて |
+| `*.app.kiro.dev` | アプリケーションと CDN のアセット |
+| `*.kiro.aws.dev` | テレメトリのエンドポイント |
+| `*.amazonaws.com` | AWS のサービスのエンドポイントすべて（Kiro サービス・RUM・OIDC・SSO・Cognito） |
+| `*.awswaf.com` | GitHub サインインの AWS WAF CAPTCHA |
+| `*.captcha.awswaf.com` | GitHub サインインの入れ子の CAPTCHA ホスト（ワイルドカードを 1 段にしか一致させないファイアウォールで追加） |
+| `*.token.awswaf.com` | 同上 |
+| `*.shortbread.aws.dev` | Cookie の同意 |
+| `*.signin.aws` | IAM Identity Center のサインイン |
+
+- ワイルドカードを 1 段のサブドメインにしか一致させないファイアウォールでは、`*.kiro.dev` は `app.kiro.dev` を含みますが `assets.app.kiro.dev` を含みません。その場合は `*.app.kiro.dev` も追加するか、複数段のサブドメインを個別に挙げます（公式）
+- 一部のユーザーだけが接続できないときは、公式のトラブルシューティングの「Network connectivity issues」（TLS インスペクションが原因のことがある）を参照してください（[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)・公式ページ更新日: 2026-10-20。[02_authentication.md](02_authentication.md) 第5節に症状をまとめています）
+- AWS のデータ境界を使っている場合は、このページに挙げたエンドポイントへ Kiro のサービスプリンシパルが到達できるようにポリシーを調整します。VPC レベルの制御は公式の VPC endpoints (AWS PrivateLink) のページにあります（公式）
+
+> **公式ページの記述が変わった点**: 以前の本ページは、ワイルドカード一覧表が「Kiro Web 向けの表示にのみ現れ、IDE ツリーの表示には節そのものが存在しない」と書いていました。現行のページ（公式ページ更新日: 2026-10-16）は、`/docs/privacy-and-security/` の同じページに「Wildcard rules」の節を持ち、上の表を載せています。
 
 ---
 
@@ -290,6 +323,17 @@ Kiro は Amazon Bedrock を基盤とし、**リージョン間推論**でトラ�
 | **利用データ** | Kiro のバージョン・OS（Windows / Linux / macOS）・**匿名のマシン ID** |
 | **性能メトリクス** | 機能ごとのリクエスト数・エラー・レイテンシ（ログイン / タブ補完 / コード生成 / Steering / Hooks / Spec 生成 / ツール / MCP） |
 
+### 5.6 ローカルに保存される状態の保護（1.2.37・1.4.5）
+
+> 出典: 公式 changelog（[1.2.37](../02_update/01_changelog.md#v1-2-37)・[1.4.5](../02_update/01_changelog.md#v1-4-5)）。この項に対応する公式の機能ページは、ここで確認できていません（**未確認**）。
+
+| 版 | 対象 | 内容（changelog） |
+|----|------|----------------|
+| 1.2.37 | ローカル状態と保存済みの IDE セッション | macOS と Linux で、Kiro はこれらを OS のアカウントに限定する |
+| 1.4.5 | MCP 構成ファイル（サーバーの資格情報を含むことがある） | macOS と Linux で OS のアカウントに限定する。以前のバージョンのファイルは、次に Kiro を起動したときに保護される |
+
+changelog は、Windows についてこの保護を説明しておらず、Windows での扱いは公式の記述を確認できていません（**未確認**）。
+
 ---
 
 ## 6. コードリファレンス（公開コードとの類似の通知）
@@ -336,6 +380,14 @@ GitHub や Google の認証で Kiro を使う場合、エージェントは利�
 
 サードパーティ拡張機能（リモート拡張機能を含む）は Kiro が開発・保守・管理しているものではなく、安定性・互換性・継続的なサポートは保証されません。
 
+### 7.2 ローカルコマンドのサンドボックス（1.3.0）
+
+> 出典: [Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15）・[1.3.0](../02_update/01_changelog.md#v1-3-0)
+
+エージェントが実行するシェルコマンドと、その子プロセスが到達できる範囲を OS の境界で限定する機能です（Kiro IDE 1.3 以降・既定はオフ）。**エージェント本体と組み込みのファイルツール（読み書きできる範囲は権限ルールが決める）は、サンドボックスの外側です。** 公式は、**コマンドにできることを減らすものであって、隔離を保証するものではない**と明記しており、提案されたコマンドのレビューを続け、決して実行させたくない操作には `deny` ルールを残すよう案内しています。
+
+上の「Supervised モードはセキュリティ機構ではない」（§1）と同じく、これだけでエージェントのアクセス範囲が閉じるわけではありません。設定方法は [01_features/03_permissions.md](../01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加)、ネットワークの規則は [04_reference/03_permissions.md](../04_reference/03_permissions.md) の `sandbox_network` を参照してください。
+
 ---
 
 ## 8. URL の取得（`web_fetch`）について
@@ -343,6 +395,42 @@ GitHub や Google の認証で Kiro を使う場合、エージェントは利�
 チャットで URL を貼ると、その内容を取得してコンテキストとして使えます。公式は「**取得する URL の内容について、およびその利用が第三者の規約や法令に準拠していることについては利用者に責任がある**」と明記しています。
 
 Web ツールは組織側で無効化できます（[04_enterprise.md](04_enterprise.md) §4）。
+
+> 出典: [Web tools](https://kiro.dev/docs/tools/web/)（公式ページ更新日: 2026-10-09）・[1.2.56](../02_update/01_changelog.md#v1-2-56)
+
+### 8.1 URL の扱い（IDE）
+
+公式の URL handling は、IDE の `web_fetch` について次のように説明しています。
+
+- URL のクエリ文字列とフラグメントを**保持**する
+- 取得の前に、HTTP の URL を **HTTPS に上げる**
+- URL にユーザー名またはパスワードが含まれているときは、その認証情報を**削除**し、変更したことを結果に注記する
+
+1.2.56 の changelog は、`web_fetch` が URL のクエリ文字列とフラグメントを落とす問題を修正し、埋め込まれた資格情報も除去するようになったと説明しています。
+
+### 8.2 通信の出どころとプロキシ
+
+- ローカルの IDE セッションでは、`web_fetch` は**自分のマシンから**実行され、標準のプロキシ環境変数（`HTTP_PROXY`・`HTTPS_PROXY`・`ALL_PROXY`・`NO_PROXY`）に従います
+- Kiro Web・Mobile・クラウドセッション（IDE または CLI）では、管理されたサンドボックス内で実行され、サンドボックスのインターネットアクセス設定に従います
+- ローカルのファイアウォールの設定は第4節を参照してください
+
+### 8.3 取得の上限（公式）
+
+| 項目 | 値 |
+|------|-----|
+| 最大ページサイズ | 10 MB |
+| `selective` モードの最大出力 | 8,000 文字 |
+| タイムアウト | 30 秒 |
+| 最大リダイレクト数 | 10 |
+| コンテンツタイプ | text/HTML のみ |
+
+取得のモードは `selective`（既定。検索語に一致した箇所の周辺を最大 8,000 文字）・`truncated`（先頭 8,000 文字）・`full`（全体。最大 10 MB）です。特定の内容を求めないときは `truncated` になります。
+
+### 8.4 エージェントごとに無効にする
+
+公式は、エージェント単位で Web ツールを使えなくする方法として、`web` タグの除外（エージェント設定の `excludedTools` を使う JSON の例）と、権限での `web_fetch`・`web_search` への `deny` の2つを挙げています。権限の書き方は [04_reference/03_permissions.md](../04_reference/03_permissions.md) を参照してください。前者の JSON の例が IDE のエージェント定義（Markdown 形式）にそのまま当てはまるかは、公式の記述を確認できていません（**未確認**）。
+
+管理者が Kiro コンソールで Web ツールを無効にした場合の制限は、クライアント側で強制されます。公式は、利用者が回避できる可能性があると警告しています。
 
 ---
 

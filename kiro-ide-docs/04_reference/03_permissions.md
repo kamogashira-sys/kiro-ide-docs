@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを決める仕組みの辞書です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-08-14。**§7 の既定の挙動・Kiro スコープ・信頼していないワークスペースは 2026-10-01 更新版**で確認）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。`sandbox_network` の項目）
 - **収録件数**: capability **15種**
 - **導入バージョン**: **1.0**（0.x から更新する場合は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md) を参照）
 
@@ -29,6 +29,8 @@
 **`deny` > `ask` > `allow`**（制限が強いほうが勝つ）
 
 **より緩いルールが、より厳しいルールを上書きすることはできません。**
+
+> **例外は `sandbox_network` のホスト規則です。** `sandbox_network` は deny-overrides を使わず、**規則を順に適用して、最初に一致した規則が決めます**（§3・§5.4）。
 
 ---
 
@@ -66,6 +68,8 @@
 > ⚠️ **どのスコープの `deny` も、他のスコープの `allow` で上書きできません。**
 > `deny` ルールは慎重に書いてください。
 
+> **例外**: `sandbox_network` のホスト規則だけは、スコープをまたいで deny-overrides で決まらず、最初に一致した規則で決まります。順序で決まるため、`allow` が先にあれば、後ろの `deny` は効きません（§5.4）。
+
 ---
 
 ## 3. capability 一覧（15種）
@@ -84,8 +88,8 @@
 | `power` | **Powers** の有効化とツール呼び出し（MCP サーバ・ステアリング・フックのバンドルを動的に読み込む仕組み。[0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)・公式 [`/docs/powers`](https://kiro.dev/docs/powers/)） |
 | `diagnostics` | 診断ツール |
 | `context` | コンテキストおよびステアリングのツール |
-| `sandbox_network` | **公式は capability 名のみを列挙しており、制御対象の説明を公開していません**（**未確認**）。関連しそうな設定として Kiro Web のサンドボックスにネットワークアクセスレベルの設定があります（公式 [Internet access](https://kiro.dev/docs/web/sandbox/internet-access/)）が、**この capability と結びつける記述は公式にありません** |
-| `all` | **すべての capability**（メタ） |
+| `sandbox_network` | **ローカルコマンドのサンドボックスが有効なときだけ適用される**。サンドボックス内のシェルコマンドが到達できるホストを、`allow` と `deny` のルールで指定する（公式 [Permissions](https://kiro.dev/docs/permissions/)・[Local command sandbox](https://kiro.dev/docs/sandbox/)）。**ホスト規則は順に適用され、最初に一致した規則が決める**（他の capability の `deny` 優先とは逆）。**`all` に含まれない**。使い方は §5.4・[01_features/03_permissions.md](../01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加) |
+| `all` | **`sandbox_network` を除くすべての capability**（メタ） |
 | `builtin` | **すべての組み込みツール**（メタ） |
 
 ---
@@ -166,6 +170,36 @@ rules:
       - "my-server/*"
 ```
 
+### 5.4 サンドボックスのホスト規則（`sandbox_network`）
+
+`sandbox_network` の `match` にはホスト名を書きます（公式 [Local command sandbox](https://kiro.dev/docs/sandbox/)。公式ページ更新日: 2026-10-15）。
+
+| 項目 | 内容 |
+|------|------|
+| 書けるもの | 完全一致のホスト名、`*.suffix` 形式のワイルドカード |
+| 大文字・小文字 | 区別しない |
+| 評価の順序 | **規則を書いた順に適用し、最初に一致した規則が決める**。特定のホストの規則は、それにも一致する広いワイルドカードの**前**に置く |
+| `all` との関係 | `sandbox_network` は `all` に含まれない。`capability: all`・`effect: allow` を書いても、サンドボックスのネットワークアクセスは開かない |
+
+```yaml
+# ~/.kiro/settings/permissions.yaml
+rules:
+  - capability: sandbox_network
+    match: ['packages.internal.example.com']
+    effect: allow
+
+  # この規則は、下のワイルドカードより前に置く
+  - capability: sandbox_network
+    match: ['uploads.example-corp.net']
+    effect: deny
+
+  - capability: sandbox_network
+    match: ['*.example-corp.net']
+    effect: allow
+```
+
+ワークスペースの規則（`~/.kiro/workspace-roots/<hash>/permissions.yaml`）も、1つのプロジェクトについて同じように働きます。`fs_read` と `fs_write` のルールは、サンドボックス内のコマンドが見られる・書けるパスも決めます。`networkAccess` の 3 つのモード（`DEFAULT_BLOCKED`・`COMMON_DEPENDENCIES`・`DEFAULT_ALLOWED`）は [01_features/03_permissions.md](../01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加) にまとめています。
+
 ---
 
 ## 6. シェルコマンド固有の挙動（重要）
@@ -173,6 +207,8 @@ rules:
 **シェルコマンドはパターン照合の前に解析されます。** `;`・`&&`・`||`・`|` を使った複合コマンドは分割され、**サブコマンドごとに個別に評価**されます。
 
 これにより、`npm test *` のルールが `npm test ; curl attacker.com` にうっかり一致することを防ぎます。
+
+パーサーは、まとめて書いた短いオプションの中のフラグも評価します。たとえば `grep -iP` のようなコマンドは、フラグの1つが承認を必要とするなら、確認が出ます。**別のプログラムを起動できるオプションは、読み取り専用として扱われません**。`tar --use-compress-program` と `tar --to-command` は、基本の `tar` コマンドを信頼していても承認が必要です（公式 [Permissions](https://kiro.dev/docs/permissions/)・公式ページ更新日: 2026-10-20）。
 
 > **「信頼するコマンド」（Trusted Commands）とは別の仕組みです。**
 > 設定の **Kiro Agent: Trusted Commands** は**単純な前方一致で、構造を解析しません**。
@@ -246,6 +282,8 @@ rules:
 
 > **1.0.337での改善**: 保存済みルールが機能するとKiroが検証できないコマンドでは、**Always allow** と **Always deny** を表示せず、理由をプロンプトに示します。
 
+連結したコマンド（例: `cd /path && cargo build`）は、チェーン内のサブコマンドが**それぞれ別に**承認を求められます（公式 [Permissions](https://kiro.dev/docs/permissions/)・公式ページ更新日: 2026-10-20）。
+
 ### 8.1 判断を保存する
 
 「Always allow」「Always deny」を選ぶと、2つの追加コントロールが現れます。
@@ -281,7 +319,8 @@ rules:
 | **Custom agents** | エージェントごとにインラインで権限を持てる。`.kiro/agents/**` への書き込みは「常に確認」 |
 | **`.kiroignore`** | エージェントに見せないファイルの指定。書き込みは「常に確認」 |
 | **Trusted commands** | **別の仕組み**（§6 の注記） |
-| **Supervised モード** | **権限とは別物**。レビューのタイミングを変えるだけで、権限は Autopilot と同一（[03_deployment/05_security.md](../03_deployment/05_security.md)） |
+| **Supervised モード** | **権限とは別物**。レビューのタイミングを変えるだけで、権限は Autopilot と同一（[03_deployment/05_security.md](../03_deployment/05_security.md)）。公式は、権限の層は Agent Autonomy（設定キー `kiroAgent.agentAutonomy`）のモードが進めるかどうかを決めた**後に**適用される、と説明している |
+| **ローカルコマンドのサンドボックス**（1.3 以降） | 権限が、シェルコマンドを実行してよいかを開始前に決める。サンドボックスは、実行中のコマンドと子プロセスが到達できる範囲を限定する。**ネットワークの到達先は `sandbox_network` ルールで調整する**（§3・§5.4）。`fs_read` と `fs_write` のルールも、サンドボックス内のコマンドが見られる・書けるパスを決める。サンドボックスは隔離を保証するものではない。詳細は [01_features/03_permissions.md](../01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加) |
 
 ---
 

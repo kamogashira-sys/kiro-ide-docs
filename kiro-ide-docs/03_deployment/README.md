@@ -48,6 +48,7 @@
 | 2 | **拡張機能は Open VSX レジストリ**から入れます。VS Code Marketplace 専用の拡張機能は入れられません |
 | 3 | **自動更新はバックグラウンドで行われ**、準備ができると再起動を促す通知が出ます。手動では **Check for Updates...** で確認できます（[01_installation.md](01_installation.md#5-更新)） |
 | 4 | **Supervised モードはセキュリティ機構ではありません**（公式が明記）。エージェントのアクセス範囲を絞るには権限設定を使います |
+| 5 | **Ubuntu 24.04 以降では、`.deb` パッケージの利用が推奨されます。** 1.4.0 から `.deb` が AppArmor プロファイルを入れます（[01_installation.md](01_installation.md#8-linux-で-kiro-が起動しないときubuntu-2404-以降)） |
 
 ---
 

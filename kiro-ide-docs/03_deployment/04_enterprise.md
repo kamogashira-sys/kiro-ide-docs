@@ -3,7 +3,7 @@
 **組織で Kiro IDE を配るときに決めることをまとめます。バージョンの制御・ガバナンス・拡張機能レジストリ・サインイン制御が中心です。**
 
 - **一次情報**: [Onboarding quickstart](https://kiro.dev/docs/enterprise/getting-started/)・[Managed updates](https://kiro.dev/docs/enterprise/managed-updates/)・[Governance](https://kiro.dev/docs/enterprise/governance/)・[Settings](https://kiro.dev/docs/enterprise/settings/)・[Supported regions](https://kiro.dev/docs/enterprise/supported-regions/)・[Custom extension registry](https://kiro.dev/docs/ide/editor/extension-registry/)（公式ページ更新日: 2026-08-04）
-- **1.1 以降の追加分の一次情報**: [Sign-in controls](https://kiro.dev/docs/enterprise/governance/sign-in/)（公式ページ更新日: 2026-09-30）・[Governance](https://kiro.dev/docs/enterprise/governance/)（公式ページ更新日: 2026-09-30）・changelog [1.1](https://kiro.dev/changelog/ide/1-1/)・[1.2](https://kiro.dev/changelog/ide/1-2/)
+- **1.1 以降の追加分の一次情報**: [Sign-in controls](https://kiro.dev/docs/enterprise/governance/sign-in/)（公式ページ更新日: 2026-10-09）・[Governance](https://kiro.dev/docs/enterprise/governance/)（公式ページ更新日: 2026-09-30）・changelog [1.1](https://kiro.dev/changelog/ide/1-1/)・[1.2](https://kiro.dev/changelog/ide/1-2/)・[1.4.10](https://kiro.dev/changelog/ide/1-4-10/)
 
 > **本ページの範囲**: エンタープライズ関連の公式ドキュメントは **IDE と CLI の共有領域**です（`/docs/cli/enterprise/` は `/docs/enterprise/` に統合されている）。本ページは **Kiro IDE の管理者に必要な範囲**を扱います。AWS コンソール側の操作手順の細部は公式ページに委ねます。
 
@@ -285,7 +285,7 @@ Kiro プロファイルで管理者が制御できる設定です。
 | フィールド | 内容 | 必須 |
 |-----------|------|-----|
 | `capability` | 常に `signin_method` | ✅ |
-| `match` | 拒否する方法の名前。省略するか `["*"]` にするとすべてを拒否する（許す方法を `exclude` に並べるときの一般的な形） | — |
+| `match` | 拒否する方法の名前。省略するか `["*"]` にするとすべてを拒否する（許す方法を `exclude` に並べるときに使う形） | — |
 | `exclude` | 残す方法の名前。ここに書いた方法は、`match` が拒否してもサインイン画面に残る | — |
 | `effect` | **常に `deny`**。`allow`・`ask`・`Deny` など**それ以外の値は制限を無視して利用者に警告する** | ✅ |
 
@@ -334,6 +334,8 @@ Kiro プロファイルで管理者が制御できる設定です。
 | サインイン画面 | 許可された方法だけが表示され、Identity Center の欄は `settings` から事前入力される。ヘルプリンクはサインインボタンの下に **Need help signing in?** として表示され、ブラウザで開く |
 | 拒否された方法で完了しかけたとき | トークン発行前に拒否し、許可された方法を画面の表示名で示す（例: `Google sign-in is not permitted by your administrator. Sign in with "Your organization" instead.`）。ヘルプ URL を設定していれば次の行に続く |
 | ファイルの誤り | **サインイン制御は fail open**（誤りがあってもサインインを止めず、該当する制御を外して警告する）。IDE は**ファイル名と原因を示す通知**を出す |
+
+> **1.4.10 の修正**: `managed-settings.json` に `signin_method` ルールがあると、Kiro が「skipped some invalid rules」と報告してしまう問題が 1.4.10 で修正されました（[1.4.10](../02_update/01_changelog.md#v1-4-10)）。
 
 **誤りの種類ごとの扱い**:
 
