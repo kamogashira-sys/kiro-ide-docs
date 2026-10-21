@@ -1,13 +1,13 @@
 # Cloud Sessions（クラウドサンドボックスで動くセッション）
 
-**ローカルマシンではなく管理されたクラウドサンドボックスでエージェントを実行し、IDE・CLI・Web・Mobile のどこからでも同じセッションを継続できる仕組みです。1.0.293 でプレビュー導入されました。**
+**ローカルマシンではなく管理されたクラウドサンドボックスでエージェントを実行し、IDE・CLI・Web・Mobile のどこからでも同じセッションを継続できる仕組みです。1.0.293 で導入されました。**
 
-- **一次情報**: [Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-09-02）・[Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/)（公式ページ更新日: 2026-09-02）
+- **一次情報**: [Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-10-20）・[Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/)（公式ページ更新日: 2026-09-30）
 - **導入バージョン**: **1.0.293**（2026-08-11）
-- **位置づけ**: **プレビュー機能**
+- **位置づけ**: 1.0.293 の changelog は**プレビュー**として導入したと説明しています。現行の公式 Cloud sessions ページ（2026-10-20）には、この機能を「プレビュー」と位置づける記述がありません。現在の位置づけは、公式の記述からは確認できません（未確認）
 - **Kiro CLI 版の対応ページ**: 共通仕様。CLI からの作成・接続には **Kiro CLI 2.17 以降**が必要（[`docs/cloud-sessions/`](https://kiro.dev/docs/cloud-sessions/) が正。CLI 固有の個別ページはない）
 
-> ⚠️ **プレビュー機能です。** IDE からの作成・接続には **Kiro IDE 1.0.293 以降**が必要です。
+> IDE からの作成・接続には **Kiro IDE 1.0.293 以降**が必要です（公式 Cloud sessions ページ）。
 
 > **これは何か**: **セッションを実行する場所を、自分のマシンからクラウドのサンドボックスに移します。** セッションは特定のアプリではなく Kiro アカウントに属します。
 > ブラウザでセッションを始めて長いタスクを渡し、ノートパソコンを閉じても、後でスマートフォン・ターミナル・IDE から様子を確認できます。
@@ -38,6 +38,7 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 | **クライアントは着脱可能** | Web・Mobile・IDE・CLI はすべて同じセッションを映すビュー。クライアントの切断はエージェントを止めない。実行中のタスクは動き続ける |
 | **状態はマシンをまたいで残る** | 会話履歴・紐づけたリポジトリ・サンドボックスのファイル状態はクラウドに保持される。どのサーフェスから再接続しても、トランスクリプトは中断箇所から再生される |
 | **承認はユーザーを待つ** | 誰も接続していない間にエージェントが権限を必要とした場合、リクエストは保留され、次に接続したクライアントに提示される |
+| **Workflows は親セッションの中で動ける** | 宣言的な[ワークフロー](https://kiro.dev/docs/workflows/)は、独自の入れ子のステップセッションと永続的なグラフを持ち、クラウドの親の会話は利用できる状態のまま。進捗と結果は親セッションに返る（[02_chat.md §13](02_chat.md#13-workflows124-で追加)） |
 
 サンドボックス自体（ネットワークアクセス・環境変数・環境設定）の詳細は公式 [Sandbox](https://kiro.dev/docs/web/sandbox/) ドキュメントを参照してください。
 
@@ -47,15 +48,18 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 
 | # | 条件 |
 |---|------|
-| 1 | 有料の Kiro サブスクリプション（Pro 以上） |
+| 1 | **Pro・Pro+・Pro Max・Power** のいずれかのサブスクリプション。Cloud Sessions は既存のクレジットの仕組みを使い、クラウドの計算に別の料金はかからない |
 | 2 | リポジトリで作業する場合は、接続済みの GitHub または GitLab アカウント |
-| 3 | **AWS IAM Identity Center 組織の場合**: 管理者が Kiro の設定先 AWS アカウントの **Settings > Kiro Settings** で **Cloud Sessions (Preview)** を有効化する必要がある。プレビュー期間中は **US East (N. Virginia) `us-east-1`** でのみ実行される |
+| 3 | **AWS IAM Identity Center 組織の場合**: 管理者が Kiro の設定先 AWS アカウントの **Settings > Kiro Settings** で **Cloud Sessions** を有効化する必要がある。Cloud Sessions は **US East (N. Virginia) `us-east-1`** でのみ実行される |
+| 4 | **外部 ID プロバイダ（IdP）として Okta または Microsoft Entra ID を使う組織の場合**: 管理者が Cloud Sessions を有効にし、既存の Kiro OIDC アプリケーションに `https://app.kiro.dev/signin/oauth` を追加する必要がある。手順は公式の [Okta のリダイレクト URI の設定](https://kiro.dev/docs/enterprise/identity-provider/okta/#create-new-app-integration)と [Microsoft Entra ID のリダイレクト URI の設定](https://kiro.dev/docs/enterprise/identity-provider/microsoft-entra/#add-a-redirect-uri)を参照 |
+
+**利用の上限**: 同時に実行できる Cloud Session は**最大 10 個**です（公式）。
 
 ---
 
 ## 4. IDE での使い方
 
-**IDE では、Cloud Sessions は [Agent Focus Mode](09_agent-focus-mode.md) の中にあります。** IDE 右上から Agent Focus を開くと、セッションレールにローカルのプロジェクトと並んで **Cloud Sessions** セクション（**Preview** バッジ付き）が表示されます。このセクションは、アカウントで Cloud Sessions が利用可能な場合に現れます。
+**IDE では、Cloud Sessions は [Agent Focus Mode](09_agent-focus-mode.md) の中にあります。** IDE 右上から Agent Focus を開くと、セッションレールにローカルのプロジェクトと並んで **Cloud Sessions** セクションが表示されます。このセクションは、アカウントで Cloud Sessions が利用可能な場合に現れます。
 
 ### 4.1 Cloud Session を開始する
 
@@ -76,7 +80,7 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 |------|------|
 | **Pin Session** | セクションの先頭に固定する |
 | **Open in Kiro Web** | ブラウザで同じセッションを継続する |
-| **Open with Kiro CLI** | ターミナルから接続する（**Kiro CLI 2.16.2 以降**が必要） |
+| **Open with Kiro CLI** | ターミナルから接続する（**Kiro CLI 2.17 以降**が必要。公式 Cloud sessions ページ） |
 | **Delete Session** | セッションとそのサンドボックスを完全に削除する |
 
 ### 4.3 ローカルセッションと違う点（重要）
@@ -92,6 +96,8 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 | クリック可能な spec タスクのアクション |
 
 プロンプトへの添付（画像・文書）は使えます（内容はセッションに送信されます）。**Cloud Session のリネームと Supervised モードはまだ利用できません。**
+
+> **Effort（1.2.37）**: モデルパネルの Effort は、適用されない Agent Focus のドラフトとクラウドセッションでは**表示されません**（[1.2.37](../02_update/01_changelog.md#v1-2-37)・[04_reference/05_models.md](../04_reference/05_models.md)）。現行の公式 Cloud sessions ページ（2026-10-20）には、Effort についての記述がありません。
 
 ---
 
@@ -117,7 +123,7 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 | 種別 | 挙動 |
 |------|------|
 | **プロジェクト設定** | リポジトリ内の `.kiro/` にコミットされた steering・spec・カスタムエージェント・フック・MCP サーバは、サンドボックスがリポジトリをクローンするため**自動的に適用される** |
-| **個人設定** | `~/.kiro/` ディレクトリはローカルに留まり、Cloud Session には**自動適用されない**。個人の設定を持ち込むには、Kiro Web の **Settings > Configuration Sync** でアップロードする。クラウド側の写しは機能ごとの設定ページで管理し、アカウントに紐づく Powers は **Settings > Powers** で扱う（対応フォルダとアップロード手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照） |
+| **個人設定** | `~/.kiro/` ディレクトリはローカルに留まり、Cloud Session には**自動適用されない**。個人の設定を持ち込むには、Kiro Web の **Settings > Sync** でアップロードする。クラウド側の写しは機能ごとの設定ページで管理し、アカウントに紐づく Powers は **Settings > Powers** で扱う（対応フォルダとアップロード手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照） |
 | **サンドボックス環境** | インターネットアクセス・環境変数・セットアップコマンドは Sandbox ドキュメントで扱う |
 
 ### 6.1 IDE の各面に現れるクラウドの個人設定（1.0.437）
@@ -162,15 +168,17 @@ MCP サーバーは他の設定と扱いが異なります。**「Cloud configur
 
 ---
 
-## 8. 現在のプレビューの制限事項
+## 8. 現在の制限事項
 
-| # | 制限 |
+| # | 制限（公式 Cloud sessions ページ・2026-10-20） |
 |---|------|
-| 1 | **リポジトリの組み合わせは固定**: セッション作成時に選ぶ（CLI では後から `/repo` でも追加できる）。別のリポジトリで作業するには新しいセッションを開始する |
-| 2 | **ブランチの選択不可**: リポジトリ紐づけ時にブランチを選べない。セッション開始後にエージェントへチェックアウト・作成を依頼する |
-| 3 | **Supervised モード不可**: Cloud Session は Autopilot または Autonomous でのみ動作し、変更ごとの承認はできない |
-| 4 | **リネーム不可**: IDE・CLI からリネームできない |
-| 5 | **サーフェスごとの機能差**: 各サーフェスで使えないコマンド・機能があり、プレビューの成熟に伴って縮小が見込まれる |
+| 1 | **同時実行数の上限**: 並列に実行できる Cloud Session は最大 10 個 |
+| 2 | **Supervised モード不可**: Cloud Session は Autopilot または Autonomous でのみ動作し、変更ごとの承認はできない |
+| 3 | **リネーム不可**: IDE・CLI からリネームできない |
+| 4 | **サーフェスごとの機能差**: 各サーフェスで使えないコマンド・機能があり、この差はサーフェスとリリースによって異なることがある |
+| 5 | **リポジトリの組み合わせは作成時に決まる**（IDE のタブの記述）: 別のリポジトリで作業するには新しい Cloud Session を開始する |
+
+> 本サイトのこれまでの記述にあった「リポジトリ紐づけ時にブランチを選べない（セッション開始後にエージェントへチェックアウト・作成を依頼する）」と「CLI では後から `/repo` でもリポジトリを追加できる」は、現行の公式 Cloud sessions ページ（2026-10-20）に記述がありません。現在もそのとおりかは未確認です。
 
 ---
 
@@ -181,6 +189,7 @@ MCP サーバーは他の設定と扱いが異なります。**「Cloud configur
 | Create a cloud session | ✓ | ✓ | ✓ | ✓ |
 | Resume and steer an existing cloud session | ✓ | ✓ | ✓ | ✓ |
 | Autonomous mode | ✓ | ✓ | ✓ | ✓ |
+| Declarative workflows | ✓ | ✓ | ✓ | Not documented |
 | Scheduled automations | — | — | ✓ | — |
 
 ---

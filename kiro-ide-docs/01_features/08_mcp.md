@@ -2,7 +2,7 @@
 
 **外部のサーバに接続して、ツール・プロンプト・リソースを Kiro に追加する仕組みです。**
 
-- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-08-04）・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
+- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-10-02）・[Tool Search](https://kiro.dev/docs/mcp/tool-search/)（公式ページ更新日: 2026-10-15）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15）・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
 - **設定ファイル**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#8-mcp-サーバ定義--kirosettingsmcpjson)
 
 > **これは何か**: MCP は Kiro が外部サーバと通信して、専門的なツール・プロンプト・リソースにアクセスするためのプロトコルです。
@@ -395,6 +395,37 @@ project-b/
 | 13 | **1.1 から、MCP のツールアノテーションが既定の権限判断に使われます** |
 | 14 | **1.2.4 で、`oauth.redirectUri` にドキュメント記載の完全な URL 形式またはポートのみの形式を使うと OAuth サインインが失敗する問題が修正されました**。設定した値がそのまま使われ、使えない値はランダムなポートにフォールバックせず構成エラーとして表示されます |
 | 15 | **信頼していないワークスペースでは、ワークスペースの MCP サーバ構成が読み込まれず、MCP ツールを呼び出す前に毎回確認が求められます**（保存済みのルールや `autoApprove` が許可していても同じ。[04_reference/03_permissions.md](../04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust)） |
+| 16 | **1.2.56 で、キャンセルした stdio MCP サーバの接続が、プロセスを残したり、あとで起動してしまったりすることがある問題が修正されました。** あわせて、プロンプトの開始中（たとえば MCP サーバの起動中）に Stop を押しても、モデルに届くまで止まらない問題も修正されました（[1.2.56](../02_update/01_changelog.md#v1-2-56)） |
+| 17 | **1.3.0 で、ストリーム可能な HTTP サーバがセッションを落としたあとも、その MCP ツールが使えるように**なりました（[1.3.0](../02_update/01_changelog.md#v1-3-0)） |
+| 18 | **1.4.5 で、macOS と Linux では、サーバの資格情報を含み得る MCP 構成ファイルが、利用者の OS アカウントだけに限定される**ようになりました。以前の版のファイルは、次の起動時に保護されます（[1.4.5](../02_update/01_changelog.md#v1-4-5)） |
+| 19 | **1.4.10 で、固定した `oauth.redirectUri` のポートを使う MCP サーバに、2つ目の Kiro セッションがアドレス使用中のエラーで接続できない問題が修正されました。** サインインが必要でない場合も発生していました（[1.4.10](../02_update/01_changelog.md#v1-4-10)） |
+| 20 | **1.4.10 で、Power の MCP サーバが接続できなくても、ターンはそのサーバなしで実行され、チャットはエラーカードではなく警告を表示する**ようになりました。サインインが必要なサーバは、従来どおり確認します（[11_powers.md](11_powers.md)） |
+
+---
+
+## 9. Tool Search（MCP ツールの定義をオンデマンドで読み込む・1.3.0 で追加）
+
+**使っていない MCP ツールの定義を、各リクエストに入れないようにする仕組みです。** モデルのコンテキストを作業に多く残しながら、Kiro は必要なツールを読み込みます（公式 [Tool Search](https://kiro.dev/docs/mcp/tool-search/)・[1.3.0](../02_update/01_changelog.md#v1-3-0)）。
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 有効になる条件 | **Kiro IDE 1.3 以降は自動で Tool Search を使う**。設定は不要。[MCP サーバ](https://kiro.dev/docs/mcp/configuration/)を1つも構成していないときは、効果がない |
+| 確認のしかた | Tool Search が有効なとき、IDE のアクティビティで MCP ツールの `tool_call` の前に `tool_load` が表示されることがある |
+
+**しくみ**:
+
+| 段階 | 内容 |
+|------|------|
+| 索引 | 接続した MCP サーバのツールの名前と説明を索引にする |
+| 遅延カタログ | モデルには、すべてのツール定義の代わりに、簡潔な一覧を渡す |
+| 定義の読み込み | 必要になったツールの完全な説明と入力スキーマを読み込む（`tool_load` が正確なツール ID を読み込む） |
+| ツールの呼び出し | 読み込んだツールを、権限とフックの確認を経由して呼び出す（`tool_call`） |
+
+---
+
+## 10. stdio MCP サーバのサンドボックス（1.3.0 で追加）
+
+ローカルコマンドのサンドボックスで `mcpSandboxing` を `true` にすると、**stdio MCP サーバのプロセス**を、シェルコマンドと同じサンドボックス内で起動できます。リモートの HTTP／SSE MCP サーバはサンドボックスの外側に残り、そのネットワーク通信はサンドボックスの規則に従いません。設定ファイルとキー・サーバが対象外になったときの扱いは [03_permissions.md の §10](03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加) を参照してください。
 
 ---
 

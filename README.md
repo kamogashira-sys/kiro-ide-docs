@@ -46,7 +46,7 @@
 
 **1.1・1.2 で加わった主なもの**: [Agent Artifacts](kiro-ide-docs/01_features/02_chat.md#12-agent-artifacts11-で追加)・Windows / Linux の[ネイティブ ARM64 版](kiro-ide-docs/03_deployment/01_installation.md#2-配布形態)（1.1）、[Workflows](kiro-ide-docs/01_features/02_chat.md#13-workflows124-で追加)・[信頼していないワークスペースの保護強化](kiro-ide-docs/04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust)・[エンタープライズのサインイン制御](kiro-ide-docs/03_deployment/04_enterprise.md#7-サインイン制御12-以降)（1.2.4）。
 
-**1.3・1.4 で加わった主なもの**: [ローカルコマンドのサンドボックス](kiro-ide-docs/01_features/03_permissions.md)・[Markdown Review](kiro-ide-docs/01_features/10_editor.md)（1.3）、[Memory](kiro-ide-docs/01_features/02_chat.md)（1.4）。
+**1.3・1.4 で加わった主なもの**: [ローカルコマンドのサンドボックス](kiro-ide-docs/01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加)・[Markdown Review](kiro-ide-docs/01_features/10_editor.md#9-markdown-review1311-で追加)（1.3）、[Memory](kiro-ide-docs/01_features/02_chat.md#16-memory140-で追加)（1.4）。
 
 **公式情報源**:
 

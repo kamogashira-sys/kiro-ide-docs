@@ -9,17 +9,17 @@
 | # | 機能 | 概要 | 導入 |
 |---|------|------|------|
 | 1 | [Specs](01_specs.md) | **仕様駆動開発**。要件・設計・タスクの3成果物で機能を作る。Quick Spec・Bugfix Spec・要件分析 | 0.1 |
-| 2 | [Chat](02_chat.md) | **エージェントとの対話**。セッションの始め方（Free-flow chat・ワークフロー）・サブエージェント・チェックポイント・会話の書き出し | 0.1 |
-| 3 | [Permissions](03_permissions.md) | **capability ベースの権限**。1つのルールを全ツールに効かせる | **1.0** |
+| 2 | [Chat](02_chat.md) | **エージェントとの対話**。セッションの始め方（Free-flow chat・ワークフロー）・サブエージェント・チェックポイント・会話の書き出し・Workflows・**Memory**（1.4.0） | 0.1 |
+| 3 | [Permissions](03_permissions.md) | **capability ベースの権限**。1つのルールを全ツールに効かせる。**ローカルコマンドのサンドボックス**（1.3.0） | **1.0** |
 | 4 | [Autopilot・Supervised](04_autopilot-supervised.md) | **2つの実行モード**。レビューのタイミングを変える（**権限は同一**） | 0.x |
 | 5 | [Hooks](05_hooks.md) | **イベント駆動の自動化**。v1 JSON 形式・トリガー10種 | 0.x（**1.0 で形式変更**） |
 | 6 | [Steering](06_steering.md) | **持続的な指示**。読み込みタイミング4種・スラッシュコマンドの実体 | 0.1 |
 | 7 | [Custom Agents](07_custom-agents.md) | **専用エージェント**。Markdown 1枚にプロンプト・ツール・MCP・権限 | **1.0** |
 | 8 | [MCP](08_mcp.md) | **外部ツールの接続**。プロンプト・リソーステンプレート・elicitation | 0.1 |
 | 9 | [Agent Focus Mode](09_agent-focus-mode.md) | **チャット中心のレイアウト**（実験的）。並列セッション・Dockable chat | **1.0** |
-| 10 | [エディタ基盤](10_editor.md) | 画面構成・コードベース索引・Git 統合・`.kiroignore`・マルチルート | 0.1 |
+| 10 | [エディタ基盤](10_editor.md) | 画面構成・コードベース索引・Git 統合・`.kiroignore`・マルチルート・**Markdown Review**（1.3.11） | 0.1 |
 | 11 | [Powers](11_powers.md) | **動的に読み込まれる専門知識パッケージ**。Agent Plugins 仕様・MCP と Skills のバンドル | **1.0.288** |
-| 12 | [Cloud Sessions](12_cloud-sessions.md) | **クラウドサンドボックスで動くセッション**（プレビュー）。IDE/CLI/Web/Mobile 間で継続 | **1.0.293** |
+| 12 | [Cloud Sessions](12_cloud-sessions.md) | **クラウドサンドボックスで動くセッション**（1.0.293 でプレビューとして導入）。IDE/CLI/Web/Mobile 間で継続 | **1.0.293** |
 
 **「導入」列**: 機能が最初に登場したバージョンです。1.0 で追加された3機能（Permissions・Custom Agents・Agent Focus Mode）は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md) も参照してください。
 
@@ -37,6 +37,9 @@
 | **用途別のエージェントを作りたい** | [07_custom-agents.md](07_custom-agents.md) |
 | **外部のツールと連携したい** | [08_mcp.md](08_mcp.md) |
 | **複数の作業を並列に任せたい** | [09_agent-focus-mode.md](09_agent-focus-mode.md) → [02_chat.md](02_chat.md#7-サブエージェント並列実行と委譲) |
+| **セッションをまたいで文脈を覚えさせたい** | [02_chat.md の Memory](02_chat.md#16-memory140-で追加) |
+| **コマンドの到達範囲を OS の仕組みで限定したい** | [03_permissions.md のサンドボックス](03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加) |
+| **Markdown 文書にコメントして Kiro に直してもらいたい** | [10_editor.md の Markdown Review](10_editor.md#9-markdown-review1311-で追加) |
 
 ---
 
@@ -49,7 +52,7 @@
 | **Permissions と Autopilot/Supervised** | **別物**。Supervised はレビューのタイミングを変えるだけで、**権限は Autopilot と同一**。アクセス範囲を絞るのは Permissions |
 | **Permissions と Trusted Commands** | **別物**。Permissions は複合コマンドを分割して評価するが、Trusted Commands は**単純な前方一致で構造を解析しない** |
 | **Permissions と `.kiroignore`** | **別物**。`.kiroignore` はエージェントに見せないファイルの指定 |
-| **Hooks と Steering** | 1.0 で **manual トリガのフックが廃止**され、manual ステアリングファイルに置き換わった。**IDE のスラッシュコマンドはステアリング由来** |
+| **Hooks と Steering** | IDE 1.0 では **manual トリガーのフックを新規に作れず**、新しいオンデマンドの作業は manual ステアリングファイルで行う（0.x で作った manual フックは legacy として残り実行できる）。**IDE のスラッシュコマンドはステアリング由来** |
 | **Custom Agents とサブエージェント** | 同じ Markdown 定義を使う。サブエージェントは `description` で自動選択される |
 | **サブエージェントの制約** | **Specs にアクセスできず、Hooks も発火しない**。ステアリングと MCP は動く |
 

@@ -2,7 +2,7 @@
 
 **MCP サーバ・Skills・ステアリングをバンドルし、会話の文脈に応じて動的に読み込む仕組みです。1.0.288 で導入されました。**
 
-- **一次情報**: [Powers](https://kiro.dev/docs/powers/)（公式ページ更新日: 2026-09-02）・[Install powers](https://kiro.dev/docs/powers/installation/)・[Create powers](https://kiro.dev/docs/powers/create/)
+- **一次情報**: [Powers](https://kiro.dev/docs/powers/)（公式ページ更新日: 2026-10-08）・[Install powers](https://kiro.dev/docs/powers/installation/)（公式ページ更新日: 2026-10-09）・[Create powers](https://kiro.dev/docs/powers/create/)（公式ページ更新日: 2026-10-08）
 - **導入バージョン**: **1.0.288**（2026-08-07 ※§4.1.1 参照）
 - **Kiro CLI 版の対応ページ**: CLI 3.0（Early Access）で対応（利用・作成とも `v3` 扱い）。[`docs/cli/v3/`](https://kiro.dev/docs/cli/v3/) 配下に個別の Powers ページはなく、共通ページ [`docs/powers/`](https://kiro.dev/docs/powers/) が正
 
@@ -51,7 +51,6 @@ Stripe の Power をワンクリックでインストールした場合、「pay
 | **`plugin.json`**（必須） | Power を識別し、起動のためのキーワードを宣言するマニフェスト |
 | `skills/`（任意） | タスク固有の指示・スクリプト・参考資料を提供する **Agent Skills** |
 | `mcp.json`（任意） | ツール連携のための MCP サーバ設定 |
-| `dev.kiro/`（任意） | ステアリングファイルなど Kiro 固有の拡張 |
 
 ```
 my-power/
@@ -60,10 +59,10 @@ my-power/
 │   └── setup/
 │       ├── SKILL.md
 │       └── references/
-├── mcp.json             # MCP サーバ設定
-└── dev.kiro/            # Kiro 固有の拡張
-    └── steering/
+└── mcp.json             # MCP サーバ設定
 ```
+
+> 本サイトのこれまでの記述には、`dev.kiro/`（ステアリングファイルなど Kiro 固有の拡張を置く任意のディレクトリ）がありました。現行の公式 Powers ページと Create powers ページ（いずれも 2026-10-08）の構成の説明にはこのディレクトリの記述がなく、現在もそのとおりかは未確認です。
 
 > **旧形式（`POWER.md`）で作られた Power は引き続き動作します。** 新規に作る場合は Agent Plugins 形式が推奨されており、既存の Power は Power Builder で変換できます。
 
@@ -106,9 +105,22 @@ my-power/
 | Install and use powers | ✓ | v3 | ✓ | — |
 | Create powers | ✓ | v3 | — | — |
 
+### 6.0 IDE からインストールする手順と、Available Powers の検索（1.2.56）
+
+公式 [Install powers](https://kiro.dev/docs/powers/installation/#from-the-ide)（2026-10-09）の IDE での手順です。
+
+| 順 | 操作 |
+|----|------|
+| 1 | Powers パネルを開く（Ghosty のアイコンに稲妻が付いたアイコンを選ぶ） |
+| 2 | **Available Powers** で検索アイコンを選び、表示名で絞り込むために入力する。一致するものがないときは、空の結果のメッセージを表示する |
+| 3 | Power を選んで詳細を表示する |
+| 4 | **+ Install** を選ぶ |
+
+インストール後は **Try** で Power のオンボーディングを試せます。その Power に関係する質問をすると、Kiro のエージェントが自動で有効にして使います。Available Powers の名前での絞り込みは、1.2.56 で追加されました（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
+
 ### 6.1 クラウドと同期された Powers を IDE で試す（1.0.437）
 
-クラウドと同期された Powers は**アカウントに紐づく設定（account-backed configuration）**であり、エージェントをクラウドのサンドボックスで動かす [Cloud Sessions](12_cloud-sessions.md) とは**別の仕組み**です。ローカルの Power を Kiro Web アカウントに上げるには、Kiro Web の **Settings > Configuration Sync** を使います（手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照）。
+クラウドと同期された Powers は**アカウントに紐づく設定（account-backed configuration）**であり、エージェントをクラウドのサンドボックスで動かす [Cloud Sessions](12_cloud-sessions.md) とは**別の仕組み**です。ローカルの Power を Kiro Web アカウントに上げるには、Kiro Web の **Settings > Sync**（Configuration Sync）を使います（手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照）。
 
 **Kiro IDE 1.0.437 以降**では、Kiro Web の **Settings > Powers** で管理している Powers が、IDE のインストール済み Powers の一覧に表示されます。
 
@@ -120,6 +132,10 @@ my-power/
 | **管理** | これらの Powers は Kiro Web（**Settings > Powers**）で管理する |
 
 **束ねられた MCP 構成はその Power に付随します。** Power が有効になったときに使えるようになるもので、**単独で同期される MCP サーバではありません**。リポジトリの `.kiro/settings/mcp.json` に置いたプロジェクトの MCP サーバは、これまでどおりプロジェクト設定としてリポジトリとともに移動します（スコープの全体像は [12_cloud-sessions.md](12_cloud-sessions.md) §6.2 を参照）。
+
+### 6.2 Power の MCP サーバに接続できないとき（1.4.10）
+
+Power の MCP サーバが接続に失敗しても、**ターンはそのサーバなしで実行されます**。チャットは、エラーカードではなく**警告**を表示します。**サインインが必要なサーバは、従来どおりサインインを求めます**（[1.4.10](../02_update/01_changelog.md#v1-4-10)）。この項目の公式の機能ページは changelog からリンクされていません（未確認）。MCP 全般は [08_mcp.md](08_mcp.md) を参照してください。
 
 ---
 
