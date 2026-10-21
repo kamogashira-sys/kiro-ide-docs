@@ -2,7 +2,7 @@
 
 **Kiro IDE で選べる AI モデルと、その選び方です。**
 
-- **一次情報**: [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-07-31。第1〜4節・第6節・第7節の一覧と表の確認日）
+- **一次情報**: [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-07-31。第1〜4節・第6節・第7節の一覧と表は、この更新日の時点の内容）
 - **追記分の一次情報**: [Reasoning effort](https://kiro.dev/docs/models/effort/)（公式ページ更新日: 2026-10-09。第5節）・[Models](https://kiro.dev/docs/models/)の「Model fallback notices」節（公式ページ更新日: 2026-10-19。第8節）・公式 changelog [1.2.37](https://kiro.dev/changelog/ide/1-2/)・[1.2.56](https://kiro.dev/changelog/ide/1-2-56/)・[1.3.0](https://kiro.dev/changelog/ide/1-3/)
 - **選択可能なモデル**: **19種**（`Auto` を含む。第1節の表は 2026-07-31 時点の内容）
 
