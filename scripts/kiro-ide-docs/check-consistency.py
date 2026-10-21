@@ -193,7 +193,7 @@ def main():
     for doc in docs:
         for i, ln in enumerate(read_doc(doc)):
             # 「1.0.52 で」「1.1.70 から」のように版に言及する箇所。
-            # 1.x 系はマイナーを1桁に限る（Kiro IDE の系列は 1.0〜1.2）。`1\.\d+` にすると
+            # 1.x 系はマイナーを1桁に限る（Kiro IDE の系列は 1.0〜1.4）。`1\.\d+` にすると
             # Code OSS（1.109.5）や Kiro CLI（1.25.0・1.28.2）の版まで拾い、警告が水増しされる。
             for m in re.finditer(r"(?<![\w.])(1\.\d\.\d+|0\.\d+\.\d+)\s*(?:で|から|以降|時点|より)", ln):
                 ver_refs += 1
