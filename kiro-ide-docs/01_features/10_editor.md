@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-08-04）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-15）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-15）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は
@@ -56,7 +56,7 @@
 | **Extensions** | 拡張機能のインストールと管理（**Open VSX レジストリ**） |
 | **Kiro** | **AI 機能の専用ビュー**（下記） |
 
-**Kiro ビューの中身（4種）**:
+**Kiro ビューの中身（5種）**:
 
 | 項目 | 参照 |
 |------|------|
@@ -64,6 +64,9 @@
 | **Agent Hooks** の管理 | [05_hooks.md](05_hooks.md) |
 | **Agent Steering** の設定 | [06_steering.md](06_steering.md) |
 | **MCP サーバ** | [08_mcp.md](08_mcp.md) |
+| アクティブな親セッションの**宣言型ワークフローの実行** | [02_chat.md](02_chat.md#13-workflows124-で追加) |
+
+プロジェクトの **Workspace Configuration** を開くと、プロジェクト固有のエージェント機能を管理できます。アカウントでワークフローが利用できるときは、そこで **Workflows** を選ぶと、新しいチャットセッションで宣言型ワークフローを有効にできます（公式 Kiro Interface。有効にする手順は [02_chat.md の 13.1](02_chat.md#131-有効にする既定で無効)）。
 
 ### 1.4 Status Bar
 

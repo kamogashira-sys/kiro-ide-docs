@@ -254,7 +254,7 @@ Kiro 内の **Settings > Proxy** でも設定できます。
 - 一部のユーザーだけが接続できないときは、公式のトラブルシューティングの「Network connectivity issues」（TLS インスペクションが原因のことがある）を参照してください（[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)・公式ページ更新日: 2026-10-20。[02_authentication.md](02_authentication.md) 第5節に症状をまとめています）
 - AWS のデータ境界を使っている場合は、このページに挙げたエンドポイントへ Kiro のサービスプリンシパルが到達できるようにポリシーを調整します。VPC レベルの制御は公式の VPC endpoints (AWS PrivateLink) のページにあります（公式）
 
-> **公式ページの記述が変わった点**: 以前の本ページは、ワイルドカード一覧表が「Kiro Web 向けの表示にのみ現れ、IDE ツリーの表示には節そのものが存在しない」と書いていました。現行のページ（公式ページ更新日: 2026-10-16）は、`/docs/privacy-and-security/` の同じページに「Wildcard rules」の節を持ち、上の表を載せています。
+> **公式ページの記述が変わった点**: 以前の本ページは、ワイルドカード一覧表が「Kiro Web 向けの表示にのみ現れ、IDE ツリーの表示には節そのものが存在しない」と書いていました。現行のページ（公式ページ更新日: 2026-10-16）は、`/docs/privacy-and-security/firewalls/` の同じページに「Wildcard rules」の節を持ち、上の表を載せています。
 
 ---
 

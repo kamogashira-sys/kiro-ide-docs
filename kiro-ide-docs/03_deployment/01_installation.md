@@ -73,7 +73,7 @@
 
 | 順 | 内容 | 補足 |
 |----|------|------|
-| 1 | **サインイン** | ソーシャルログインと AWS のログイン方法から選びます。詳細は [02_authentication.md](02_authentication.md) |
+| 1 | **サインイン** | ソーシャルログインと AWS のログイン方法から選びます（公式 [Setup & First Run](https://kiro.dev/docs/ide/setup/) は、Google・GitHub・AWS Builder ID・組織の ID プロバイダを挙げています）。詳細は [02_authentication.md](02_authentication.md) |
 | 2 | **VS Code の設定と拡張機能のインポート** | VS Code 以外を使っていた場合はスキップできます。詳細は [03_migrating-from-vscode.md](03_migrating-from-vscode.md) |
 | 3 | **テーマの選択** | 用意されたテーマから選びます |
 | 4 | **シェル統合の許可** | これを許可すると**エージェントが利用者の代わりにコマンドを実行できる**ようになります |

@@ -6,7 +6,7 @@
 - **ファイル形式**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)
 - **1.0 で形式が変わりました**（`.hook` → **v1 JSON**）。移行は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)
 
-> ⚠️ **公式ドキュメント間の記述に差が残っています**（本サイトの再確認結果。公式ページの更新日付き）:
+> ⚠ **公式の記述に食い違いがあります。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）が載せる 0.x のトリガー一覧（11種）と `when`／`then` のスキーマは、[Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10）の IDE 対応10種、および [Hooks](https://kiro.dev/docs/hooks/)（2026-10-10）の `trigger`／`matcher`／`action` を使う形式と異なります。以前は他の3ページの間にも食い違いがありましたが、現行では整合しています（本サイトの再確認結果。公式ページの更新日付き）:
 >
 > **以前は、[Hooks](https://kiro.dev/docs/hooks/) ページがトリガー一覧を10種で示して manual フックが manual ステアリングファイルに置き換わったと書き、[Hook types](https://kiro.dev/docs/hooks/types/)・[Hook management](https://kiro.dev/docs/hooks/management/)・[IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) が「Manual Trigger」を IDE のトリガーとして載せていたため、公式ページ間で食い違っていました。**
 >
@@ -20,7 +20,7 @@
 >
 > **この3ページと [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（2026-08-21）は一致して、`userTriggered` に v1 のトリガー相当がなく、IDE では manual トリガーのフックを新規作成できない（新しいオンデマンドの作業には manual ステアリングファイルを使う）と説明しています。**
 >
-> **なお差が残っているページがあります。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）は、同ページ冒頭で 0.x の挙動を記述するページと説明したうえで、次を載せています。
+> **食い違いが残っているのは次のページです。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）は、同ページ冒頭で 0.x の挙動を記述するページと説明したうえで、次を載せています。
 >
 > | 該当節 | 記述 |
 > |--------|------|
@@ -29,7 +29,7 @@
 > | 「Legacy manual Hooks in 1.0」 | 既存の `userTriggered` フックは legacy ラベル付きで残り実行できる。1.0 では新規作成できない（上の3ページと一致） |
 >
 > **本ページのトリガー一覧（第2節）は、Hook types の IDE 対応（10種）と What's new in IDE 1.0 の表に従って、v1 JSON の `trigger` フィールドの値のみを記載しています。**
-> **manual トリガーは v1 JSON にありません。** 新規のオンデマンド実行は manual ステアリングファイルに置き換わりました（[06_steering.md](06_steering.md)）。
+> **manual トリガーは v1 JSON にありません。** 新規のオンデマンド実行には manual ステアリングファイルを使います（[06_steering.md](06_steering.md)）。
 > IDE 0.x で作った manual フックは、legacy として残り、有効なものは実行できます（第5節）。
 
 ---
@@ -117,7 +117,7 @@
 
 > **1.2.56 で追加されたセレクタ**: 1.2.56 の changelog は、`PreToolUse`・`PostToolUse` のフックで、ツール ID を1つずつ挙げる代わりに、カテゴリとセレクタ（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）でツールのグループを指定できるようになったと説明しています（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
 >
-> **公式の2つの記述は列挙が異なります。** 上の changelog は7種を挙げています。Hook types ページ（2026-10-10）は、これに加えて `web`・`spec` のカテゴリと `@powers` のセレクタを載せています。本ページは両方を載せ、Hook types ページの記述を詳細の出典としています。
+> ⚠ **公式の記述に食い違いがあります。** 1.2.56 の changelog は、カテゴリとセレクタを7種（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）だけ挙げています。Hook types ページ（2026-10-10）は、これに加えて `web`・`spec` のカテゴリと `@powers` のセレクタを載せています。**読み方**: 本ページは両方を載せ、Hook types ページの記述を詳細の出典としています。
 >
 > **使えるツール名は Kiro に聞けます**（公式の案内）。
 

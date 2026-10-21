@@ -2,8 +2,8 @@
 
 **自然言語で Kiro に指示する、すべての入口になる機能です。**
 
-- **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-06-25）・[Setup & First Run（セッションの始め方。旧 Vibe vs Spec sessions ページはここに統合され、二択ピッカー自体も廃止）](https://kiro.dev/docs/ide/setup/)（更新日: 2026-08-04）・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)（公式ページ更新日: 2026-10-13）・[Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)（公式ページ更新日: 2026-10-13）
-- **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-20）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-10-20）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-09-30）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
+- **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-09-30）・[Setup & First Run（セッションの始め方。旧 Vibe vs Spec sessions ページはここに統合され、二択ピッカー自体も廃止）](https://kiro.dev/docs/ide/setup/)（更新日: 2026-09-30）・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)（公式ページ更新日: 2026-10-13）・[Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)（公式ページ更新日: 2026-10-13）
+- **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-20）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-10-20）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-10-20）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
 - **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-10-20）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-19）の該当節
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
@@ -462,7 +462,7 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 | 起動 | 親チャットで Kiro に頼む。1.3.0 以降は `/workflow-run` で保存済みレシピを選ぶこともできる（[§13.2](#132-始め方)） |
 | 実行の一覧 | 親チャットの上にある **Workflows** に、そのセッションの実行が並ぶ。実行を展開するとステップのツリーと状態が見える |
 | ステップを開く | ステップを選ぶと専用の **Workflow step** タブが開く。ステップ・エージェント・モデル・effort・アクティビティと、**Message this step's agent** 欄を持ち、実行中も親チャットの横に置いておける |
-| 親チャットへのステップ通知（1.3.11） | ステップからのメッセージは、親チャットで**まず1行の状態行**（**Info**・**Completed**・**Needs input**・**Failed**）として表示される。行を展開すると全文が読める。行には、ステップ名・（異なる場合は）エージェント名・実行名・時刻も表示される。Kiro がそのステップのセッションを把握している場合、行から操作できる（**Info**／**Completed** は **Open step session**、**Needs input** は **Answer** に続けてステップ名、**Failed** は **Open** に続けてステップ名。いずれも実行中のステップセッションがある行のみ）。完了や停止といった実行の結果の行は1行のままで、展開できない |
+| 親チャットへのステップ通知（1.3.11） | ステップからのメッセージは、親チャットで**まず1行の状態行**（**Info**・**Completed**・**Needs input**・**Failed**）として表示される。行を展開すると全文が読める。行には、ステップ名・（異なる場合は）エージェント名・実行名・時刻も表示される。行から操作できる場合がある（**Info**／**Completed** は、Kiro がソースのセッションを把握しているときに **Open step session**。**Needs input** は **Answer** に続けてステップ名、**Failed** は **Open** に続けてステップ名で、どちらも実行中のステップセッションがある行のみ）。完了や停止といった実行の結果の行は1行のままで、展開できない |
 | 入力待ち | 入力が必要な実行は **Needs you** 状態になる。止まっているステップを選んで直接答えるか、通知行の **Answer** を選ぶか、親チャットのメインエージェントに答えを渡してもらう |
 | **操作** | **Pause**（次のノードの区切りで協調的に一時停止）・**Resume**（一時停止した実行を再開）・**Stop**（実行中の作業を中断し、実行を `aborted` にする） |
 | Retry | **現在の IDE の UI には Retry がない**。完了・失敗した後にもう一度実行するときは、ワークスペースを確認したうえで新しい実行として始める |
