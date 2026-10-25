@@ -2,7 +2,7 @@
 
 **Kiro の設定ファイルがどこに置かれ、どんな形式なのかをまとめた辞書です。**
 
-- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-07-22）・[Hooks](https://kiro.dev/docs/hooks/)・[Steering](https://kiro.dev/docs/steering/)・[Custom agents](https://kiro.dev/docs/custom-agents/)・[MCP Configuration](https://kiro.dev/docs/mcp/configuration/)・[Permissions](https://kiro.dev/docs/permissions/)・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Agent Skills](https://kiro.dev/docs/skills/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
+- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-10-15）・[Hooks](https://kiro.dev/docs/hooks/)・[Steering](https://kiro.dev/docs/steering/)・[Custom agents](https://kiro.dev/docs/custom-agents/)・[MCP Configuration](https://kiro.dev/docs/mcp/configuration/)・[Permissions](https://kiro.dev/docs/permissions/)・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。第12節）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Agent Skills](https://kiro.dev/docs/skills/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **このページの方針**: 引くときにリンクを往復しなくて済むよう、**IDE 版で完結**して書いています。
 > 各項目には Kiro CLI 版の対応ページも併記します。
@@ -27,7 +27,8 @@
 │   ├── agents/*.md            # カスタムエージェント
 │   ├── skills/<名前>/SKILL.md # Agent Skills
 │   └── settings/
-│       └── mcp.json           # MCP サーバ定義（ワークスペース）
+│       ├── mcp.json           # MCP サーバ定義（ワークスペース）
+│       └── sandbox.json       # ローカルコマンドのサンドボックス（ワークスペース・1.3 以降）
 └── .kiroignore                # エージェントに読ませないファイル
 
 ~/.kiro/
@@ -38,6 +39,7 @@
 ├── settings/
 │   ├── mcp.json               # MCP サーバ定義（ユーザー）
 │   ├── permissions.yaml       # 権限ルール（全ワークスペース）
+│   ├── sandbox.json           # ローカルコマンドのサンドボックス（全ワークスペース・1.3 以降）
 │   └── kiroignore             # グローバルな無視パターン（拡張子なし）
 └── workspace-roots/<hash>/
     └── permissions.yaml       # 権限ルール（そのワークスペースのみ）
@@ -61,6 +63,7 @@
 | **Agent Skills** | `.kiro/skills/<名前>/SKILL.md` | `~/.kiro/skills/<名前>/SKILL.md` | Markdown | — |
 | **MCP サーバ定義** | `.kiro/settings/mcp.json` | `~/.kiro/settings/mcp.json` | JSON | — |
 | **権限** | `~/.kiro/workspace-roots/<hash>/permissions.yaml` | `~/.kiro/settings/permissions.yaml` | YAML | [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions) |
+| **サンドボックス設定**（1.3 以降） | `.kiro/settings/sandbox.json`（`<workspace-root>/` 直下の `.kiro/`） | `~/.kiro/settings/sandbox.json` | JSON | — |
 | **無視ファイル** | `.kiroignore`（プロジェクトルート） | `~/.kiro/settings/kiroignore` | gitignore 構文 | — |
 
 > **CLI 版の対応ページは `docs/cli/v3/` を指しています。** IDE 1.0 の GA 機能に対応するのは CLI 3.0（Early Access）です。
@@ -158,7 +161,8 @@ inclusion: manual
 
 > **manual のステアリングファイルはスラッシュコマンドとしても現れます。** チャットで `/` を打つと選べます。
 > **これが Kiro IDE のスラッシュコマンドの正体です**（[00_information/README.md](../00_information/README.md#-ide-と-cli-を混同しないために)）。
-> 1.0 で manual トリガのフックが廃止され、この仕組みに置き換わりました。
+> スラッシュコマンドの供給元は、ステアリングファイル・エージェント・スキルです（公式 [Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)）。
+> 1.0 では、IDE で manual トリガのフックを新規作成できなくなりました。新しいオンデマンドの作業には、この manual のステアリングファイルを使います。0.x で作った manual フックは legacy ラベル付きで残り、実行できます（[05_hooks.md](../01_features/05_hooks.md)）。
 
 **(d) 説明に応じて自動で含める**
 
@@ -188,6 +192,8 @@ description: REST API design patterns and conventions. Use when creating or modi
 ```markdown
 #[[file:api/openapi.yaml]]
 ```
+
+行・行範囲・フォルダ一覧を参照する書き方（`#[[file:path:line]]`・`#[[file:path:start-end]]`・`#[[folder:path]]`）は [01_features/06_steering.md](../01_features/06_steering.md#61-行行範囲フォルダ一覧の参照1237-で追加) を参照してください。
 
 ### 4.4 `AGENTS.md` にも対応
 
@@ -387,6 +393,23 @@ private/
 | **フック** | 各ルートから取得し、**Agent Hooks** に統合表示 |
 | **MCP サーバ** | 各ルートから取得し、**MCP Servers** に統合表示。**Open MCP config** は既定でユーザーレベルを開き、**Workspace Config** を押すと**どのルートの設定を見るか選ぶ** |
 | コードベースの索引・リポジトリマップ | **すべてのルートフォルダのコードを含む**。プロンプトからの参照方法は単一ルートと同じ |
+
+---
+
+## 12. ローカルコマンドのサンドボックス — `sandbox.json`（1.3 以降）
+
+公式 [Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15）が、IDE の設定ファイルとして次の2つを挙げています。サンドボックスは既定でオフです。
+
+| 範囲 | パス（IDE） | 用途（公式） |
+|------|-----------|------------|
+| **グローバル** | `~/.kiro/settings/sandbox.json` | プロジェクトをまたぐ既定のポリシー |
+| **プロジェクト** | `<workspace-root>/.kiro/settings/sandbox.json` | 1つのリポジトリでサンドボックスを有効にする、または絞り込む |
+
+- マルチルートの IDE ワークスペースでは、**最初のワークスペースフォルダ**だけがプロジェクトのファイルを供給します
+- キーは `enabled`（必須）・`networkAccess`・`mcpSandboxing`。値・既定・グローバルとプロジェクトの組み合わせ方は [01_features/03_permissions.md](../01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加) にまとめています
+- どちらのファイルも `settings/` 配下にあるため、第9節のとおり、エージェントによる書き込みは常に拒否されます
+
+> **本ページに載せていないもの**: メモリのデータベース（`~/.kiro/memories/`）とセッションの保存先（既定は `~/.kiro/sessions/`）は、公式 [Permissions](https://kiro.dev/docs/permissions/) が信頼していないワークスペースでの書き込み拒否の対象として挙げるだけで、IDE のディレクトリ構成として説明した公式の記述を確認できていないため、一覧には載せていません（**未確認**）。
 
 ---
 

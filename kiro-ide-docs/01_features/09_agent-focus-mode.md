@@ -2,7 +2,7 @@
 
 **チャットを画面の中心に据えた、エージェント前提のレイアウトです。1.0 で導入されました。**
 
-- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-09-30）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-09-02）・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
+- **一次情報**: [Agent Focus Mode](https://kiro.dev/docs/ide/experimental/focus-mode/)（公式ページ更新日: 2026-09-30）・[Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-10-20）・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)（公式ページ更新日: 2026-10-13）・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)
 - **導入バージョン**: **1.0**（2026-06-25）
 - **位置づけ**: **実験的機能**（公式の `Experimental features` セクションに分類）
 
@@ -69,6 +69,8 @@ Agent Focus Mode で新しいセッションを作るとき、**任意でワー�
 | **Quick Spec** | 高速な spec ワークフロー（明確化した後、要件・設計・タスクを自動生成） |
 
 **ワークフローを選ぶと、そのセッションのエージェントモードが決まります。** ピッカーを飛ばして、直接入力してフリーフォームのチャットセッションを始めることもできます。
+
+> **Effort は新しいセッションの下書きでは表示されません（1.2.37）。** 1.2.37 の changelog は、モデルと Effort の操作を1つのパネルにまとめた変更について、Effort は適用されない Agent Focus の下書きとクラウドセッションでは非表示のままだと説明しています（[1.2.37](../02_update/01_changelog.md#v1-2-37)・[04_reference/05_models.md](../04_reference/05_models.md)）。
 
 > **Plan は「変更を行わない」**のが特徴です。実装せずに計画だけ立てさせたいときに使います。
 > Spec / Bug Fix / Quick Spec は [01_specs.md](01_specs.md) のワークフローに対応します。
@@ -249,6 +251,8 @@ Agent Focus Mode は 1.0 で加わった UI 変更の1つです。関連する2�
 | **専用ビュー（1.2.4）** | Workflows と Artifacts に専用のビューがある。ステップのアクティビティ・Artifact のプレビュー・すべての Artifact への **Open in IDE** を備える |
 | コンテキストパネル（1.1） | Agent Focus のコンテキストパネルから Artifact に戻れる。1.1 では、特定の構成でこのパネルが Artifacts・Specs・Changed Files を読み込めない問題も修正された |
 
+**Workflows と Artifacts の空のビュー（1.3.0）**: 空の **Workflows** ビューと **Artifacts** ビューは、そこに何が入るかと最初の項目の追加のしかたを表示するようになりました。あわせて、Workflow のレシピの表が狭い Agent Focus ウィンドウに収まり、操作部品がパネルの外に押し出されなくなりました（[1.3.0](../02_update/01_changelog.md#v1-3-0)）。
+
 Artifact の対応形式・サイズ上限・保存先は [02_chat.md](02_chat.md#12-agent-artifacts11-で追加)、Workflows の有効化と操作は [02_chat.md](02_chat.md#13-workflows124-で追加) を参照してください。**Workflows は既定で無効**で、プロジェクトの **Workspace Configuration** から有効にします。
 
 ---
@@ -260,6 +264,19 @@ Artifact の対応形式・サイズ上限・保存先は [02_chat.md](02_chat.m
 | **1.1** | 再起動後も、Agent Focus が**同じウィンドウスタイルとサイズで開き直す**。復元（revert）後も、チェックポイント履歴のページ送りが正しく続く |
 | **1.1.70** | 前回のセッションを選択した状態で開き直したときに、チャット画面の初期化が終わるまで**チャット欄が空白になる問題**を修正。復元したセッションは空白のまま残らずに再接続される |
 | **1.1.70** | プロジェクトを切り替えると、**`#File` と `#Folder` のピッカー**がアクティブなセッションのプロジェクトのファイルを一覧するようになった |
+
+---
+
+## 14. What's new の一覧（1.3.11 で追加）
+
+**ステータスバーの What's new と、Agent Focus のフッターの What's new が、お知らせの一覧を開きます。** 一覧には未読の件数、各項目の docs と changelog へのリンク、機能のリクエストへのリンクが表示されます（[1.3.11](../02_update/01_changelog.md#v1-3-11)）。
+
+| 項目 | 内容（1.3.11 の changelog） |
+|------|--------------------------|
+| 新規インストール | What's new の入口は**表示されない** |
+| 自動で開くとき | アップグレードで**まだ読んでいないお知らせ**が届いたときに限り、自動で開く |
+
+> この機能の公式の機能ページは、changelog からリンクされておらず確認できていません（未確認）。本サイトの記述は 1.3.11 の changelog だけが根拠です。
 
 ---
 

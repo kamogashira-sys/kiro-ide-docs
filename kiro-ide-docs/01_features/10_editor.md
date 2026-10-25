@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-08-04）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-15）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は
@@ -56,7 +56,7 @@
 | **Extensions** | 拡張機能のインストールと管理（**Open VSX レジストリ**） |
 | **Kiro** | **AI 機能の専用ビュー**（下記） |
 
-**Kiro ビューの中身（4種）**:
+**Kiro ビューの中身（5種）**:
 
 | 項目 | 参照 |
 |------|------|
@@ -64,6 +64,9 @@
 | **Agent Hooks** の管理 | [05_hooks.md](05_hooks.md) |
 | **Agent Steering** の設定 | [06_steering.md](06_steering.md) |
 | **MCP サーバ** | [08_mcp.md](08_mcp.md) |
+| アクティブな親セッションの**宣言型ワークフローの実行** | [02_chat.md](02_chat.md#13-workflows124-で追加) |
+
+プロジェクトの **Workspace Configuration** を開くと、プロジェクト固有のエージェント機能を管理できます。アカウントでワークフローが利用できるときは、そこで **Workflows** を選ぶと、新しいチャットセッションで宣言型ワークフローを有効にできます（公式 Kiro Interface。有効にする手順は [02_chat.md の 13.1](02_chat.md#131-有効にする既定で無効)）。
 
 ### 1.4 Status Bar
 
@@ -148,11 +151,11 @@
 
 ### 3.1 コミットメッセージの AI 生成
 
-**ステージした変更を AI が分析して、意味のあるコミットメッセージを自動生成します。**
+**変更を AI が分析して、意味のあるコミットメッセージを自動生成します。** ステージした変更があれば、メッセージは**ステージした変更だけ**を説明します。**何もステージしていないとき**は、新しい未追跡ファイルの内容を含む**作業ツリーの変更**を説明し、Kiro は「Nothing is staged, so the commit message describes all changes」と表示してそのことを伝えます（公式 [Source Control](https://kiro.dev/docs/ide/editor/source-control/#commit-message-generation)・[1.3.11](../02_update/01_changelog.md#v1-3-11)）。大きな変更は Kiro が読む前に切り詰められるため、網羅性が重要なときは絞った変更をステージするよう公式は案内しています。
 
 | 順 | 操作 |
 |----|------|
-| 1 | Source Control パネルで**変更をステージする** |
+| 1 | Source Control パネルで**コミットしたい変更をステージする**（ステージせずに、作業ツリーの変更全体を説明させることもできる） |
 | 2 | コミットメッセージ入力欄の隣の **🪄 ボタン**を押す |
 | 3 | 生成されたメッセージを確認する |
 | 4 | 必要なら編集する |
@@ -200,6 +203,23 @@ Hey Kiro, can you fix the merge conflicts? #Git Diff
 
 - Git の設定と資格情報を確認する
 - リポジトリに対する適切な権限があるか確認する
+
+### 3.5 コミットメッセージ生成が読む変更（公式）
+
+| 項目 | 内容 |
+|------|------|
+| 無視ルールで除外されたファイル | 名前も内容も対象外。Kiro は除外した変更ファイルの数を報告する。変更ファイルがすべて除外されたときは、メッセージを生成しなかったと伝える |
+| 除外されたファイルが追跡ファイルのとき | Kiro は**追跡ファイルの変更すべて**について diff を出さず、残りの追跡ファイルは名前と状態だけで説明する。未追跡ファイルは引き続き内容つきで説明する |
+| 未追跡ファイル | 内容つきの新しいファイルとして説明する。**バイナリファイルと 1 MB を超えるファイル**は、内容なしで名前だけを挙げる |
+| 読む量 | 変更は**最大 8,000 文字**。それを超えると diff は途中で切られて切り詰めと表示され、後ろの変更は説明されないことがある |
+| 変更を読めないとき | 「変更がない」とは言わず、理由を報告する |
+| 変更がまったくないとき | 「There are no changes to generate a commit message from.」と表示する |
+
+1.3.11 では、何もステージしていないときに追跡されていない無視されないファイルを含む作業ツリーの変更から生成でき、未ステージの変更を使ったことを Kiro が伝えるようになり、チャットを開く前でも生成が働くようになりました（[1.3.11](../02_update/01_changelog.md#v1-3-11)）。
+
+### 3.6 複数のリポジトリを開いているとき（1.2.56）
+
+複数のリポジトリを開いたワークスペースで、Generate Commit Message が誤ったリポジトリを使う問題が修正されました。**クリックしたリポジトリ**を使い、コマンドパレットから実行するときは、複数のリポジトリが開いていれば**どのリポジトリを使うかを尋ねます**（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
 
 ---
 
@@ -409,6 +429,10 @@ Kiroは専用のextension hostで動作するため、サードパーティ拡�
 
 1.2.4 で **Electron 44.4.3**（Chromium 152.0.7977.130 を含む）に更新され、CVE-2026-87491 に対処しました。同じ版で、**JavaScript デバッガーが Node.js 24.20 以降にアタッチできない問題**も修正されています。
 
+### 7.4 起動に関する案内（Linux・1.4.5）
+
+展開した tarball から Kiro を起動したときに、システムがユーザー名前空間を制限していて起動が失敗しそうな場合、Kiro は問題を説明して対処手順へのリンクを含む警告を表示します（[1.4.5](../02_update/01_changelog.md#v1-4-5)）。インストールと起動の案内は [03_deployment/01_installation.md](../03_deployment/01_installation.md) を参照してください。
+
 ---
 
 ## 8. ナビゲーションのコツ（公式）
@@ -420,9 +444,79 @@ Kiroは専用のextension hostで動作するため、サードパーティ拡�
 
 ---
 
+## 9. Markdown Review（1.3.11 で追加）
+
+**ワークスペース内の任意の Markdown ファイルを、コメントできる描画済みの文書として開き、コメントをまとめて Kiro に送る機能です。** 文書そのものが成果物のとき（spec・設計メモ・README・runbook など）に、チャットで変更を1つずつ説明する代わりに、該当の文章を指して何が問題かを書けます。Kiro はチャットセッションでファイルを修正し、レビューのパネルはファイルの変更に合わせて再描画されます（公式 [Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)・[1.3.11](../02_update/01_changelog.md#v1-3-11)）。
+
+### 9.1 開き方（4通り）
+
+`.md` ファイルがワークスペースのフォルダの中にあれば使えます。
+
+| 入口 | 操作（公式） |
+|------|------------|
+| **エディタのタイトルバー** | Markdown ファイルを開いて、タイトルバーの **Review Markdown** ボタンを選ぶ。diff エディタでは非表示 |
+| **コマンドパレット** | Markdown ファイルをアクティブにして **Kiro: Review Markdown** を実行する |
+| **Specs ビュー** | Kiro ペインの Specs の下で、requirements・design・tasks・bugfix の文書にカーソルを合わせ、インラインの **Review Markdown** アクションを選ぶ |
+| **spec 文書の Review ボタン** | `.kiro/specs` の requirements・design・bugfix・behavior の文書に、浮動する **Review** ボタンが表示される。**tasks の文書にはこのボタンがなく**、Specs ビューまたはエディタのタイトルバーから開く |
+
+requirements・design・bugfix の文書は Spec モードで、behavior の文書は対象のファイルだけを添付した一般の Markdown として開きます。パネルを開けないときは、Kiro は標準の Markdown プレビューを開きます。パネルはアクティブなエディタグループに開き、ヘッダーの **Review** バッジで読み取り専用の Markdown プレビューと区別できます。
+
+### 9.2 コメントして送る
+
+| 順 | 操作（公式） |
+|----|------------|
+| 1 | 描画された文書の文章を選ぶ。選択の隣にコメント欄が開き、選んだ文章が引用される |
+| 2 | **Comment for Kiro…** に直したい内容を書いて **Comment** を選ぶ。コメントは最も近い見出しの下の Comments パネルに現れる |
+| 3 | 直したい箇所ごとに繰り返す |
+| 4 | **Send N to Kiro**（N はコメント数）を選ぶ。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる |
+
+- コメントは送信するまで Comments パネルに残りますが、**メモリ上にだけ**保持されます。レビューのパネルやウィンドウを再読み込みすると、未送信のコメントは消えます。大事なコメントは再読み込みの前に送信またはコピーしてください。
+- Kiro が作業している間、ボタンは **Kiro is reviewing...** と表示され、再送信できません。進捗・必要な承認・最終の応答は、コメントを受け取ったチャットセッションに表示されます。ターンが成功するとパネルは送信したコメントを消し、作業中に編集したコメントは残します。失敗したときは、コメントがエラーとともに残るので、直して再送信できます。
+- 送信前にコメントを変えるには、Comments パネルで選んで編集または削除します。パネルのヘッダーのコメントアイコンで Comments パネルを隠せます（隠している間は件数をアイコンに表示）。
+
+**送信先**: コメントは、**最後にフォーカスしたチャットセッション**に届きます。Kiro のセッションが1つもなければ、新しく作ってフォーカスします。レビューのパネルはセッションを所有しないため、送信の間に別のチャットセッションへ切り替えると、次の送信はそのセッションに届きます。送りたいセッションにフォーカスしてから送信してください。
+
+**文書が変わったとき**: ファイルがディスク上で変わる（Kiro が修正した・自分が別の場所で編集した）と、パネルは文書を再描画します。パネルに残っているコメントの文章が文書から消えたときは **document updated** と表示されます。新しい文章を読んで、古いコメントを削除するか、現在の文章に対して新しく書きます。ファイルが削除された、または読めなくなったときは、空の文書の代わりにエラーを表示します。
+
+### 9.3 spec 文書とそのほかの Markdown
+
+| 種類 | 内容（公式） |
+|------|------------|
+| spec 文書 | `.kiro/specs/<feature>/` の requirements.md・design.md・tasks.md・bugfix.md。ヘッダーに機能名と文書の種類が表示され、レビューは Spec モードで動く。Kiro は同じ spec の兄弟文書をコンテキストとして添付できるので、design へのコメントを、実装する requirements に照らして答えられる |
+| それ以外の Markdown | 公式の表記で Vibe モードで動き、レビュー対象のファイルだけを添付する |
+
+spec の進め方は [01_specs.md](01_specs.md) を参照してください。
+
+### 9.4 長い文書・リッチな文書の読み方
+
+| 機能 | 内容（公式） |
+|------|------------|
+| アウトライン | 文書に見出しが複数あるとき、ヘッダーに **Show document outline** ボタンが表示される。見出しを一覧し、いま読んでいる見出しを強調し、選ぶとその節へ移動する。**Hide document outline** で閉じる |
+| Mermaid 図 | 図ごとに **Zoom in**・**Zoom out**・**Reset zoom and pan** と現在のズーム率を持つツールバーが付く。拡大した図はドラッグで移動できる |
+| 幅の広い表 | パネルより広い表は、折り返しや切り取りではなく**横にスクロール**する |
+
+**1.4.0 での find の改善**: Markdown Review の find は、文書が更新されても現在の一致位置を保ち、非表示の数式テキストや図のコントロールを無視し、一致が多い文書も扱えます。コメントは更新をまたいでも、対象の文章に固定されたままです（[1.4.0](../02_update/01_changelog.md#v1-4-0)）。
+
+### 9.5 レンダラーの設定
+
+既定では、Review Markdown は Kiro にインストールされた **Markdown レンダラー拡張機能**で文書を描画します。拡張機能が追加する構文が標準のプレビューと同じ見た目になります。拡張機能の出力を安全に表示できないとき、または描画がタイムアウトしたときは、Kiro 自身のレンダラーに切り替わります。**50 万文字を超える文書は描画されません**（文書が大きすぎてレビューできないというメッセージを表示）。
+
+Kiro のローカルレンダラーを常に使うには、次の設定をオフにします。
+
+```json
+{
+  "kiroAgent.markdownReview.extensionRendering": false
+}
+```
+
+この設定は**アプリケーション全体**に効き、ワークスペースごとには設定できません。
+
+---
+
 ## 関連ドキュメント
 
 - [02_chat.md](02_chat.md) - チャットパネルの使い方
+- [01_specs.md](01_specs.md) - spec 文書の Review ボタン
 - [04_reference/02_keyboard-shortcuts.md](../04_reference/02_keyboard-shortcuts.md) - ショートカット30件
 - [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md) - `.kiro/` と `.kiroignore` の仕様
 - [03_deployment/03_migrating-from-vscode.md](../03_deployment/03_migrating-from-vscode.md) - VS Code からの移行

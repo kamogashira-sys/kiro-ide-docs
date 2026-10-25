@@ -2,7 +2,7 @@
 
 **アイデアを「要件・設計・タスク」という3つの成果物に落として実装する、Kiro の中核機能です。**
 
-- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-08-12）・[Feature Specs](https://kiro.dev/docs/specs/feature-specs/)・[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)・[Analyze Requirements](https://kiro.dev/docs/specs/analyze-requirements/)・[Bugfix Specs](https://kiro.dev/docs/specs/bugfix-specs/)・[Correctness](https://kiro.dev/docs/specs/correctness/)
+- **一次情報**: [Specs](https://kiro.dev/docs/specs/)（公式ページ更新日: 2026-10-15）・[Feature Specs](https://kiro.dev/docs/specs/feature-specs/)・[Quick Spec](https://kiro.dev/docs/specs/quick-spec/)・[Analyze Requirements](https://kiro.dev/docs/specs/analyze-requirements/)・[Bugfix Specs](https://kiro.dev/docs/specs/bugfix-specs/)・[Correctness](https://kiro.dev/docs/specs/correctness/)
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#specs-dir)
 
 > **これは何か**: spec（仕様）は、機能追加やバグ修正の開発プロセスを**形式化した成果物**です。
@@ -44,6 +44,12 @@
 **Spec ワークフローは、フェーズが切り替わるたびに一時停止して check-in します。** 各フェーズの成果物ができたら、そのまま次のフェーズに進む前に確認を求められます。
 
 **Spec セッションには、Default エージェントと同じコードベース探索ツールが備わっています。** 要件や設計を書く際に、既存のコードベースを調べながら進められます。
+
+### 2.2 Review ボタンで文書にコメントする（1.3.11 で追加）
+
+各フェーズを進めるとき、requirements・design・bugfix・behavior の文書に表示される浮動 **Review** ボタンを選ぶと、[Markdown Review](10_editor.md#9-markdown-review1311-で追加) が開きます。文章を指してコメントを書き、まとめて Kiro に送れます（公式 [Specs](https://kiro.dev/docs/specs/)・2026-10-15）。
+
+**tasks の文書にはこのボタンがありません。** tasks の文書は、Specs ビューのインラインの **Review Markdown** アクション、またはエディタのタイトルバーから開きます（公式 [Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)・2026-10-15）。
 
 ---
 
@@ -200,7 +206,7 @@ Kiro は `tasks.md` のタスクから**依存グラフ**を作り、独立し�
 |----|------|
 | 1 | Kiro ペインの **Specs** の下にある `+` ボタンを押す（またはチャットペインで **Spec** を選ぶ） |
 | 2 | 機能開発かバグ修正かを聞かれる<br>・**Feature** を選んだ場合: 機能を説明し、**Requirements-First** か **Design-First** を選ぶ<br>・**Bug** を選んだ場合: バグを説明する |
-| 3 | 各フェーズを進めて実装まで到達する |
+| 3 | 各フェーズを進めて実装まで到達する（各フェーズの文書は浮動 **Review** ボタンからコメントできる。§2.2） |
 
 ---
 

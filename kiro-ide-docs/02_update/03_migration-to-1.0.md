@@ -39,7 +39,7 @@
 | | 0.x | **1.0** |
 |-|-----|--------|
 | ファイル形式 | **`.hook` ファイル** | **v1 JSON**（`.kiro/hooks/*.json`） |
-| manual トリガ | **あり** | **廃止**（manual ステアリングファイルに置換） |
+| manual トリガ | **あり** | **新規作成は不可**（既存の manual フックは legacy として残る。新しいオンデマンドの作業は manual ステアリングファイル） |
 
 > ⚠️ **レガシーフック（0.x 由来）は、移行するまで実行されません。**
 > Agent Hooks パネルに**アップグレードのバッジ付き**で表示されます。
@@ -69,16 +69,16 @@
 
 詳細は [01_changelog.md](01_changelog.md#v1-0-52) を参照してください。
 
-### 2.4 manual フックはステアリングファイルになる
+### 2.4 manual フックは新規作成できない（代わりに manual ステアリングファイルを使う）
 
-**manual トリガ（0.x の `Manual`）は manual ステアリングファイルに置き換わりました。**
+**IDE 1.0 では、manual トリガー（0.x の `Manual`／`userTriggered`）のフックを新規に作れません。新しいオンデマンドの作業には、manual ステアリングファイルを使います。**
 
-| | 0.x | **1.0** |
+| | 0.x で作った manual フック（1.0 でも legacy として残る） | **1.0 の新しいオンデマンドの作業**（manual ステアリングファイル） |
 |-|-----|--------|
 | 実体 | manual トリガのフック | **`.kiro/steering/` の Markdown ファイル**（`inclusion: manual`） |
 | 呼び出し方 | Agent Hooks パネルの再生ボタン | **`/<ファイル名>` スラッシュコマンド** |
 
-**0.x で manual フックを持っていた場合、それらはステアリングファイルに移行されます。**
+**0.x で作った manual フックは、legacy ラベル付きで Agent Hooks パネルに残ります。** 有効なものは、パネルの再生ボタン（`▷`）またはフックの画面の **Start Hook** で実行できます（公式 [Hook management](https://kiro.dev/docs/hooks/management/)・[What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)・いずれも更新日 2026-08-21。v1 のトリガー相当はありません）。0.x の manual フックがステアリングファイルへ自動で移されるかどうかは、これらのページに記述がありません。
 
 形式と機能は [01_features/06_steering.md](../01_features/06_steering.md#53-manual手動で含める) を参照してください。
 
@@ -109,13 +109,14 @@
 | File Delete | `PostFileDelete` |
 | Pre Task Execution | `PreTaskExec` |
 | Post Task Execution | `PostTaskExec` |
-| **Manual Trigger** | **廃止**（§2.4） |
+| **Manual Trigger** | **v1 に相当なし**（新規作成は不可。既存は legacy として実行可。§2.4） |
 | （なし） | `SessionStart`（**1.0 で追加**） |
 
-> ⚠️ **公式ドキュメントの [Hook types](https://kiro.dev/docs/hooks/types/) ページは更新日が 2026-02-18（1.0 より前）**で、
-> **0.x 時代のトリガー名が載ったまま**です。v1 JSON を書くときは
-> [Hooks](https://kiro.dev/docs/hooks/) ページの「Trigger reference」（更新日 2026-07-09）を参照してください。
-> 本サイトの一覧は [01_features/05_hooks.md](../01_features/05_hooks.md#2-トリガーの一覧10種) にあります。
+> ⚠️ **公式ドキュメントの [Hook types](https://kiro.dev/docs/hooks/types/) ページ（更新日 2026-10-10）は、トリガーを表示名（Prompt Submit など）の見出しで載せています。**
+> v1 JSON の値（`UserPromptSubmit` など）との対応は、上の表と
+> [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（更新日 2026-08-21）の「Migrating from 0.x trigger names」で確認できます。
+> 公式ページ間の記述の差（Hook types は IDE の manual を legacy のみとするのに対し、[IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) は 0.x の `when.type` を使う11種の一覧を載せる点など）と、現行の整理は
+> [01_features/05_hooks.md](../01_features/05_hooks.md) の冒頭にまとめています。
 
 ### 2.7 ファイル系トリガーの挙動が変わった（1.0.116）
 
@@ -300,7 +301,7 @@
 |---|---------|------|
 | 1 | **Agent Hooks パネルにアップグレードバッジのフックが残っていないか** | §2 |
 | 2 | **移行したフックが期待通り動くか**（互換性のないシェルコマンドはスキップされる） | §2.3 |
-| 3 | manual フックがステアリングファイルとして `/` から呼べるか | §2.4 |
+| 3 | 0.x の manual フックが legacy として Agent Hooks パネルに残り、実行できるか。新しいオンデマンドの作業は manual ステアリングファイルが `/` から呼べるか | §2.4 |
 | 4 | **セッション一覧に未移行のセッションが残っていないか** | §3 |
 | 5 | 権限の確認プロンプトに対する方針を決めたか | §4 |
 | 6 | **信頼するコマンドの設定を見直したか** | §4.2 |
@@ -314,5 +315,5 @@
 - [02_changelog-0x.md](02_changelog-0x.md) - 0.x 系のアップデート情報
 - [01_features/03_permissions.md](../01_features/03_permissions.md) - 権限の使い方
 - [01_features/05_hooks.md](../01_features/05_hooks.md) - v1 JSON 形式とトリガー一覧
-- [01_features/06_steering.md](../01_features/06_steering.md) - manual フックの後継
+- [01_features/06_steering.md](../01_features/06_steering.md) - manual トリガーの新規作成の代わりになるステアリングファイル
 - [03_deployment/01_installation.md](../03_deployment/01_installation.md) - 更新とダウングレード

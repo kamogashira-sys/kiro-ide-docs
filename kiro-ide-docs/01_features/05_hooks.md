@@ -2,29 +2,35 @@
 
 **ファイル保存やツール呼び出しなどのイベントで、自動的に処理を走らせる仕組みです。**
 
-- **一次情報**: [Hooks](https://kiro.dev/docs/hooks/)（公式ページ更新日: 2026-08-06）・[Hook actions](https://kiro.dev/docs/hooks/actions/)・[Hook management](https://kiro.dev/docs/hooks/management/)
+- **一次情報**: [Hooks](https://kiro.dev/docs/hooks/)（公式ページ更新日: 2026-10-10）・[Hook types](https://kiro.dev/docs/hooks/types/)（公式ページ更新日: 2026-10-10）・[Hook actions](https://kiro.dev/docs/hooks/actions/)・[Hook management](https://kiro.dev/docs/hooks/management/)（公式ページ更新日: 2026-08-21）・[What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（公式ページ更新日: 2026-08-21）
 - **ファイル形式**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)
 - **1.0 で形式が変わりました**（`.hook` → **v1 JSON**）。移行は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)
 
-> ⚠️ **公式ドキュメント間の食い違いに注意**（本サイトの調査結果）:
+> ⚠️ **公式の記述に食い違いがあります。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）が載せる 0.x のトリガー一覧（11種）と `when`／`then` のスキーマは、[Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10）の IDE 対応10種、および [Hooks](https://kiro.dev/docs/hooks/)（2026-10-10）の `trigger`／`matcher`／`action` を使う形式と異なります。以前は他の3ページの間にも食い違いがありましたが、現行では整合しています（本サイトの再確認結果。公式ページの更新日付き）:
 >
-> **本サイトは、更新日が最も新しく階層も上位の [Hooks](https://kiro.dev/docs/hooks/)（更新日 2026-08-06）を正としています。**
-> 同ページはトリガー一覧を**10種**で示し（Manual Trigger を含めず）、その直後に
-> 「**Manual hooks from earlier IDE versions have been replaced by manual steering files.**」と明記しています。
-> [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/) の移行対応表も
-> `userTriggered` → 「Replaced by manual steering files」と一致しています。
+> **以前は、[Hooks](https://kiro.dev/docs/hooks/) ページがトリガー一覧を10種で示して manual フックが manual ステアリングファイルに置き換わったと書き、[Hook types](https://kiro.dev/docs/hooks/types/)・[Hook management](https://kiro.dev/docs/hooks/management/)・[IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) が「Manual Trigger」を IDE のトリガーとして載せていたため、公式ページ間で食い違っていました。**
 >
-> 一方、次の2ページ（いずれも更新日 2026-08-04）には異なる記述が残っています。
+> **現行の公式ページでは、そのうち3ページが整合しています。**
 >
-> | 公式ページ | 記述 |
-> |-----------|------|
-> | [Hook types](https://kiro.dev/docs/hooks/types/) | 「Manual Trigger」を IDE・CLI 対応の**トリガーとして掲載**（11種類目）。[Hook management](https://kiro.dev/docs/hooks/management/) にも「Run manual trigger hooks」節があり、Agent Hooks パネルの `▷`（Quick run）・hook view の `Start Hook` で実行すると説明されている |
-> | [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/) | 「Available triggers（**unchanged from 0.x**）」という見出しで `userTriggered`（"Triggered manually by user"）を含む**11種**を掲載。さらに「Current format (1.0)」節は `when`/`then` + camelCase でv1形式を説明しており、`docs/hooks/` の `trigger`/`matcher`/`action`（PascalCase）と**スキーマの記述自体が食い違っています** |
+> | 公式ページ（更新日） | 現行の記述 |
+> |-------------------|-----------|
+> | [Hooks](https://kiro.dev/docs/hooks/)（2026-10-10） | トリガーの一覧は載せず、[Hook types](https://kiro.dev/docs/hooks/types/) を「the authoritative trigger list」（権威ある一覧）と案内している。以前の版にあった「Manual hooks from earlier IDE versions have been replaced by manual steering files.」の文は、現行ページに見当たらない |
+> | [Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10） | 「Availability by surface」の表で、IDE の対応は Prompt Submit・Agent Stop・Session Start・Pre Tool Use・Post Tool Use・File Create・File Save・File Delete・Pre Task Execution・Post Task Execution の**10種**。Manual は CLI V3 が一覧に載せるだけ（`/hooks` に実行の操作なし）で、IDE は「Legacy manual Hooks (IDE only)」として別に扱う |
+> | [Hook management](https://kiro.dev/docs/hooks/management/)（2026-08-21） | 「Run legacy manual hooks」節。IDE 0.x で作った manual フックは legacy ラベル付きで Agent Hooks パネルに残り、有効なら `▷`（Quick run）または Hook view の `Start Hook` で実行できる |
 >
-> **本ページのトリガー一覧（第2節）は、`docs/hooks/` に従って v1 JSON の `trigger` フィールドの値のみを記載しています。**
-> **manual トリガは 1.0 で廃止**され、manual ステアリングファイルに置き換わりました（[06_steering.md](06_steering.md)）。
-> なお「Manual Trigger」という**UI 操作**（既存フックの手動実行ボタン）について公式が上記のように記述している事実は
-> そのまま伝えますが、どのトリガーを持つフックに対して有効なのかは公式に明示がなく、**実機未確認**です。
+> **この3ページと [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（2026-08-21）は一致して、`userTriggered` に v1 のトリガー相当がなく、IDE では manual トリガーのフックを新規作成できない（新しいオンデマンドの作業には manual ステアリングファイルを使う）と説明しています。**
+>
+> **食い違いが残っているのは次のページです。** [IDE 0.x reference](https://kiro.dev/docs/ide/0x-reference/)（2026-08-21）は、同ページ冒頭で 0.x の挙動を記述するページと説明したうえで、次を載せています。
+>
+> | 該当節 | 記述 |
+> |--------|------|
+> | 「Available triggers（**unchanged from 0.x**）」 | `userTriggered`（"Triggered manually by user"）を含む**11種**を `when.type` の値（`sessionStart`・`fileEdited` など）で掲載 |
+> | 「Current format (1.0)」 | `when`／`then` を使う JSON 例を v1 形式として掲載。Hooks ページと What's new in IDE 1.0 の `trigger`／`matcher`／`action`（PascalCase）とは、スキーマの記述が異なる |
+> | 「Legacy manual Hooks in 1.0」 | 既存の `userTriggered` フックは legacy ラベル付きで残り実行できる。1.0 では新規作成できない（上の3ページと一致） |
+>
+> **本ページのトリガー一覧（第2節）は、Hook types の IDE 対応（10種）と What's new in IDE 1.0 の表に従って、v1 JSON の `trigger` フィールドの値のみを記載しています。**
+> **manual トリガーは v1 JSON にありません。** 新規のオンデマンド実行には manual ステアリングファイルを使います（[06_steering.md](06_steering.md)）。
+> IDE 0.x で作った manual フックは、legacy として残り、有効なものは実行できます（第5節）。
 
 ---
 
@@ -63,8 +69,8 @@
 |---------|------------|---------------|-----------------|
 | `SessionStart` | セッション開始時 | — | ❌ |
 | `Stop` | **エージェントがターンを完了したとき** | — | ❌ |
-| **`PreToolUse`** | **ツール実行の前** | **ツール名（正規表現）** | **✅ できる** |
-| `PostToolUse` | ツール実行の後 | ツール名（正規表現） | ❌ |
+| **`PreToolUse`** | **ツール実行の前** | **ツール名（ツール ID・カテゴリ・セレクタ・正規表現。§2.1）** | **✅ できる** |
+| `PostToolUse` | ツール実行の後 | ツール名（§2.1 と同じ） | ❌ |
 | **`PreTaskExec`** | spec タスクの開始前 | — | **✅ できる** |
 | `PostTaskExec` | spec タスクの終了後 | — | ❌ |
 | **`UserPromptSubmit`** | **ユーザーがプロンプトを送信したとき** | — | **✅ できる** |
@@ -81,7 +87,9 @@
 
 ### 2.1 `matcher` の書き方（ツール名の指定）
 
-`PreToolUse` / `PostToolUse` では**ツール名**で絞り込みます。組み込みのカテゴリが使えます。
+`PreToolUse` / `PostToolUse` では**ツール名**で絞り込みます。IDE のエディタでは **Tool name pattern** 欄に、正確なツール ID・組み込みカテゴリ・ソースセレクタ・正規表現のいずれかを指定します。複数のエントリを指定できます（公式 [Hook types](https://kiro.dev/docs/hooks/types/#pre-tool-use)・2026-10-10）。
+
+**組み込みのカテゴリ**:
 
 | 指定 | 内容 |
 |------|------|
@@ -90,18 +98,26 @@
 | `shell` | 組み込みのシェルコマンド関連ツールすべて |
 | `web` | 組み込みの Web ツールすべて |
 | `spec` | 組み込みの spec ツールすべて |
-| `*` | **すべてのツール**（組み込みと MCP） |
 
-**プレフィックスでツールの出自を絞る**こともできます。
+**ソースセレクタ**（ツールの出自で絞る）:
 
-| プレフィックス | 内容 |
-|-------------|------|
+| セレクタ | 内容 |
+|---------|------|
 | `@mcp` | すべての MCP ツール |
 | `@powers` | すべての **Powers** ツール（Powers = MCP サーバ・ステアリング・フックのバンドルを動的に読み込む仕組み。[0.7 の導入時の説明](../02_update/02_changelog-0x.md#powers)・公式 [`/docs/powers`](https://kiro.dev/docs/powers/)） |
 | `@builtin` | すべての組み込みツール |
+| `@<server>` | 1つの MCP サーバのすべてのツール（例: `@postgres`） |
+| `@<server>/<tool>` | 1つの MCP サーバの1つのツール（例: `@postgres/query`） |
 
-> **`@` で始まるプレフィックスは正規表現で照合されます。** `@mcp.*sql.*` のようなパターンで
-> 名前から特定の MCP ツールを狙えます。
+**照合のしかた**（公式）:
+
+- IDE のエディタは、各エントリを**正規表現**としてツール ID に照合します。このため `read` のような単純な名前は、そのテキストを含む任意のツール ID に一致し得ます。
+- **欄を空にすると、すべてのツールに一致**します。
+- Hook JSON ファイルでは**ワイルドカード**も使えます。`*` は任意の文字数に、`?` は1文字に一致します。IDE のエディタはこれらを無効な正規表現として拒否するため、使うときは Hook JSON ファイルを直接編集します。
+
+> **1.2.56 で追加されたセレクタ**: 1.2.56 の changelog は、`PreToolUse`・`PostToolUse` のフックで、ツール ID を1つずつ挙げる代わりに、カテゴリとセレクタ（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）でツールのグループを指定できるようになったと説明しています（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
+>
+> ⚠️ **公式の記述に食い違いがあります。** 1.2.56 の changelog は、カテゴリとセレクタを7種（`shell`・`read`・`write`・`@builtin`・`@mcp`・`@server`・`@server/tool`）だけ挙げています。Hook types ページ（2026-10-10）は、これに加えて `web`・`spec` のカテゴリと `@powers` のセレクタを載せています。**読み方**: 本ページは両方を載せ、Hook types ページの記述を詳細の出典としています。
 >
 > **使えるツール名は Kiro に聞けます**（公式の案内）。
 
@@ -267,7 +283,7 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 | **有効・無効の切り替え**（削除せず） | Agent Hooks パネルでフックの隣の**目のアイコン**をクリック／フックを選んで右上の **Hook Enabled** スイッチ |
 | **編集** | パネルでフックを選び、トリガー・ファイルパターン・指示・説明などを変更する。**更新は即座に反映される** |
 | **削除** | フックを選び、下部の **Delete Hook** → **delete**。**この操作は取り消せません** |
-| **手動実行**（manual trigger hooks） | Agent Hooks パネルでフック名の隣の **`▷`（Quick run）**／フックを選んで右上の **Start Hook**。**⚠️ 公式 [Hook management](https://kiro.dev/docs/hooks/management/) に「Run manual trigger hooks」として記載されている操作ですが、v1 JSON に manual トリガが存在しないため、どのフックに対して有効かは公式に明示がありません（実機未確認。冒頭の食い違い注記を参照）** |
+| **legacy manual フックの実行** | IDE 0.x で作った manual フック（`userTriggered`）は **legacy ラベル付き**で Agent Hooks パネルに残ります。**有効なものは**、パネルでフック名の隣の **`▷`（Quick run）**、またはフックを選んで右上の **Start Hook** で実行できます（公式 [Hook management](https://kiro.dev/docs/hooks/management/) の「Run legacy manual hooks」）。**IDE では manual トリガーのフックを新規作成できません。** 新しいオンデマンドの作業には manual ステアリングファイルを使います（冒頭の注記） |
 
 > JSON ファイルの `enabled` を `false` にしても同じことができます（[04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)）。
 
@@ -282,6 +298,8 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 
 > **グローバルフックは 1.0.182（2026-07-20）で追加されました。** フォーマットやリントのような
 > **プロジェクト横断の自動化**に使えます。
+>
+> 公式 [Hooks](https://kiro.dev/docs/hooks/) ページ（2026-10-10）の「File naming and location」は、グローバルの場所を「Global location (CLI V3): `~/.kiro/hooks/`」と記載しています。IDE のグローバルフックについては、このページに記述がありません。本ページの IDE のグローバルフックの記述は、1.0.182 の changelog が根拠です。
 
 マルチルートワークスペースでは、各ルートフォルダの `.kiro` からフックが集められ、**Agent Hooks** に統合表示されます（[04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#11-マルチルートワークスペースでの扱い)）。
 
@@ -311,8 +329,8 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 | 2 | **`.kiro/hooks/**` への書き込みは、エージェントに対して常に確認が求められます**（Kiro スコープの不変条件・上書き不可。[04_reference/03_permissions.md](../04_reference/03_permissions.md#71-kiro-スコープの不変条件上書き不可)） |
 | 3 | **Agent Prompt アクションはクレジットを消費します。** 高頻度のトリガー（`PostFileSave` など）に付けると消費が増えます |
 | 4 | **`timeout` は agent アクションでは無視されます**（command アクションのみ有効） |
-| 5 | **manual トリガは 1.0 で廃止**されました。以前 manual フックを使っていた場合は manual ステアリングファイルに移行されます（[06_steering.md](06_steering.md)） |
-| 6 | **`~/.kiro/hooks/` への書き込みも常に確認が求められます**（公式 Permissions ページの 2026-10-01 更新版では、ワークスペースの `.kiro` と `~/.kiro` の両方の `hooks` ディレクトリが対象） |
+| 5 | **v1 JSON に manual トリガーはありません。** IDE 0.x で作った manual フックは legacy として残り、有効なものは実行できますが、新規には作れません。新しいオンデマンドの作業は manual ステアリングファイルで行います（[06_steering.md](06_steering.md)） |
+| 6 | **`~/.kiro/hooks/` への書き込みも常に確認が求められます**（公式 Permissions ページの 2026-10-20 更新版では、ワークスペースの `.kiro` と `~/.kiro` の両方の `hooks` ディレクトリが対象） |
 
 ### 8.1 1.1 での信頼性の改善
 
@@ -323,11 +341,18 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 | **`SessionStart` フックのコンテキストが、すべてのターンで一貫して使えるようになった** |
 | **`UserPromptSubmit` フックが、ユーザーのメッセージ・フックの指示・環境コンテキストを重複してモデルに送る問題**が修正された |
 
+### 8.2 1.2.56 での改善
+
+| 内容 |
+|------|
+| **`PreToolUse`・`PostToolUse` のフックで、カテゴリとセレクタによるツールのグループ指定ができる**（§2.1） |
+| **`UserPromptSubmit` フックとクライアント側で実行されるコマンドフックの出力が、セッションの再読み込み後にモデルのコンテキストから落ちる問題**が修正された |
+
 ---
 
 ## 関連ドキュメント
 
-- [06_steering.md](06_steering.md) - manual トリガの後継（スラッシュコマンド）
+- [06_steering.md](06_steering.md) - manual トリガーの新規作成の代わりになるスラッシュコマンド
 - [01_specs.md](01_specs.md) - `PreTaskExec` / `PostTaskExec` が対象にする spec タスク
 - [03_permissions.md](03_permissions.md) - フック実行と権限の関係
 - [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md) - v1 JSON の全フィールド

@@ -2,7 +2,7 @@
 
 **チャットのたびに規約を説明せずに済むよう、Markdown ファイルで恒久的な文脈を渡す仕組みです。**
 
-- **一次情報**: [Steering](https://kiro.dev/docs/steering/)（公式ページ更新日: 2026-08-12）
+- **一次情報**: [Steering](https://kiro.dev/docs/steering/)（公式ページ更新日: 2026-10-06）
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#4-ステアリング--kirosteeringmd)
 
 > **これは何か**: ステアリングは Markdown ファイルを通じて、**ワークスペースについての持続的な知識**を
@@ -146,12 +146,12 @@ inclusion: manual
 | **スラッシュコマンドとして** | チャットで **`/`** を打つと一覧から選べる |
 
 > 🔑 **これが Kiro IDE のスラッシュコマンドの正体です。**
-> **1.0 で manual トリガのフックが廃止され、この仕組みに置き換わりました。**
-> 0.x で manual フックを使っていた場合、それらはステアリングファイルに移行されます
-> （[02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)）。
+> **IDE 1.0 では manual トリガーのフックを新規に作れなくなり、新しいオンデマンドの作業にはこの仕組みを使います。**
+> 0.x で作った manual フックは、legacy として Agent Hooks パネルに残り、有効なものは実行できます
+> （[05_hooks.md](05_hooks.md#5-フックの管理)・[02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)）。
 >
 > **Kiro CLI の固定スラッシュコマンド一覧を IDE に当てはめないでください。**
-> IDE のスラッシュコマンドは**すべてユーザー定義**です（[00_information/README.md](../00_information/README.md#-ide-と-cli-を混同しないために)）。
+> IDE のスラッシュコマンドの供給元は**ステアリングファイル・エージェント・スキル**で、Kiro が用意するステアリングコマンドと組み込みサブエージェントもあります（[00_information/README.md](../00_information/README.md#-ide-と-cli-を混同しないために)）。
 
 **向くもの**: 専門的なワークフロー・トラブルシューティングのガイド・移行手順・**たまにしか必要ないコンテキストの重い文書**。
 
@@ -188,11 +188,15 @@ description: REST API design patterns and conventions. Use when creating or modi
 
 `manual` と `auto` の違いは「**自動で判断させるか、必ず明示するか**」です。
 
+> **ステアリングのスラッシュコマンドは、プロンプトの先頭以外でも使えます（1.2.56）。** 1.2.56 の changelog は、ステアリングのスラッシュコマンドがプロンプトの先頭でしか働かなかった問題を修正し、空白の直後であれば**メッセージ中のどこでも**働くようになったと説明しています（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
+
 ---
 
 ## 6. ファイル参照（`#[[file:...]]`）
 
 **ワークスペースの実ファイルにリンクして、ステアリングを最新に保てます。**
+
+ファイル全体の参照は、サーフェスをまたいで使えます。
 
 ```markdown
 #[[file:<相対ファイル名>]]
@@ -207,6 +211,32 @@ description: REST API design patterns and conventions. Use when creating or modi
 | 設定のテンプレート | `#[[file:.env.example]]` |
 
 **ステアリングに内容をコピーするのではなく参照する**ことで、元ファイルの変更が自動的に反映されます。
+
+### 6.1 行・行範囲・フォルダ一覧の参照（1.2.37 で追加）
+
+**Kiro IDE と Kiro CLI V3 は、次の参照にも対応しています。** 公式 [Steering](https://kiro.dev/docs/steering/#file-references)（2026-10-06）は、これらを IDE と CLI V3 が対象と書いています。1.2.37 の changelog は「Live Steering references」として、現在のファイル内容や行範囲をステアリングに取り込む、または1階層のフォルダ一覧を追加することを、手でコピーせずにできると説明しています（[1.2.37](../02_update/01_changelog.md#v1-2-37)）。
+
+```markdown
+# 1 行、または両端を含む行範囲
+#[[file:<相対ファイル名>:<行>]]
+#[[file:<相対ファイル名>:<開始>-<終了>]]
+
+# 1 階層のフォルダ一覧
+#[[folder:<相対フォルダ名>]]
+```
+
+| 用途 | 記述（公式の例） |
+|------|---------------|
+| 選んだ規則だけ | `#[[file:docs/api-guidelines.md:12-28]]` |
+| 設定フォルダ | `#[[folder:config]]` |
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 相対パスの基準 | **ワークスペースのステアリング**はワークスペースのルート。**グローバルのステアリング**は `~/.kiro/steering/`。**`AGENTS.md`** はそのファイルがあるフォルダ |
+| 権限と無視ルール | 参照は**セッションのファイル読み取り権限と無視ルールに従う** |
+| 解決できない参照 | ステアリングの内容に**目に見える未解決の参照マーカー**を残す（文書を黙って落とさない） |
+
+> 1.2.56 では、ステアリング文書に `#[[file:...]]` の参照を追加した直後に行った編集が、次のスキャンまで反映されない問題が修正されました（[1.2.56](../02_update/01_changelog.md#v1-2-56)）。
 
 ---
 
@@ -233,12 +263,12 @@ Kiro は [AGENTS.md](https://agents.md/) 標準によるステアリング指示
 | 探索の除外 | **Git と Kiro の ignore ルールを尊重する**（`.gitignore`・`.kiroignore` に一致するディレクトリは探索されない） |
 | 読み込み方法 | 他のステアリングファイルと同様、コンテキストに追加される |
 
-> ⚠️ **公式ドキュメント間の食い違いに注意**（本サイトの調査結果）:
-> 公式 [Steering](https://kiro.dev/docs/steering/) ページの「Agents.md」節（更新日 2026-08-12）は、
-> サブディレクトリでの `AGENTS.md` 探索を **「On Kiro CLI」（Kiro CLI 限定）**と明記しています。
-> 一方、公式 changelog の **1.0.309（IDE・2026-08-13）**は「ネストした `AGENTS.md` support」を**IDE の Improvements**として記載しています。
-> **本ページは changelog の記述に従い、IDE でも利用できる機能として掲載しています**（changelog の方が新しく、IDE 版の変更履歴として明示的に記載されているため）。
-> Steering ページ側の記述が更新されていない可能性があります。
+> ⚠️ **公式ドキュメント間の記述の変化**（本サイトの再確認結果）:
+> 以前の公式 [Steering](https://kiro.dev/docs/steering/) ページ（更新日 2026-08-12）の「Agents.md」節は、
+> サブディレクトリでの `AGENTS.md` 探索を **「On Kiro CLI」（Kiro CLI 限定）**と明記しており、
+> 公式 changelog の **1.0.309（IDE・2026-08-13）**が「ネストした `AGENTS.md` support」を**IDE の Improvements**として記載していたことと食い違っていました。
+> **現行の Steering ページ（更新日 2026-10-06）の「Agents.md」節は、「On Kiro CLI」の限定を付けずに、`AGENTS.md` がワークスペース内のサブディレクトリでも見つかる（例: `services/api/` と `packages/ui/`）と記述しています。**
+> これは 1.0.309 の changelog と矛盾しません。本ページは changelog と現行の Steering ページの両方に従い、IDE でも利用できる機能として掲載しています。
 
 ---
 
@@ -273,7 +303,7 @@ Kiro は [AGENTS.md](https://agents.md/) 標準によるステアリング指示
 |------|------|
 | **サブエージェント** | **ステアリングはサブエージェント内でもメインエージェントと同じように動きます**（[02_chat.md](02_chat.md#subagent-capabilities)） |
 | **Agent Skills** | `auto` の inclusion は Skills と似た仕組み（`description` による照合） |
-| **Hooks** | manual トリガの後継がステアリングファイル（[05_hooks.md](05_hooks.md)） |
+| **Hooks** | manual トリガーのフックは新規作成できず、新しいオンデマンドの作業はステアリングファイルで行う（[05_hooks.md](05_hooks.md)） |
 | **コンテキストプロバイダ** | `#steering:ファイル名` で明示的に参照できる（[04_reference/04_context-providers.md](../04_reference/04_context-providers.md)） |
 | **Specs** | ステアリングは spec の生成にも効く（[01_specs.md](01_specs.md)） |
 
