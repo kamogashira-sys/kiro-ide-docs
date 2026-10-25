@@ -3,8 +3,8 @@
 **自然言語で Kiro に指示する、すべての入口になる機能です。**
 
 - **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-09-30）・[Setup & First Run（セッションの始め方。旧 Vibe vs Spec sessions ページはここに統合され、二択ピッカー自体も廃止）](https://kiro.dev/docs/ide/setup/)（更新日: 2026-09-30）・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)（公式ページ更新日: 2026-10-13）・[Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)（公式ページ更新日: 2026-10-13）
-- **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-20）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-10-20）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-10-20）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
-- **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-10-20）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-19）の該当節
+- **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-24）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-10-20）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-10-21）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
+- **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-10-24）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-24）の該当節
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
 > 繰り返し作業を自動化する — これらを**プロジェクトの文脈を保ったまま**自然言語で行えます。
@@ -151,6 +151,7 @@ Kiro は会話中の**過去のメッセージすべて**をコンテキスト�
 > 変更が1ターンだけか会話の残り全体かも示します（[1.3.0](../02_update/01_changelog.md#v1-3-0)）。
 > 公式 [Models](https://kiro.dev/docs/models/#model-fallback-notices) は、この動作を**ローカルの V3 セッション**の説明として書いています。
 > IDE ではサブエージェント内で起きたフォールバックがそのサブエージェントのアクティビティ内に表示され、同じモデルでの再試行は一時的な再試行通知として表示されます。
+> 1.4.26 では、Auto モデルが応答を再試行するときの通知が、モデル名ではなく「Couldn't complete this response. Retrying…」と表示されるようになりました（[1.4.26](../02_update/01_changelog.md#v1-4-26)）。
 > モデルの一覧は [04_reference/05_models.md](../04_reference/05_models.md) を参照してください。
 
 ---
@@ -161,11 +162,13 @@ Kiro は会話中の**過去のメッセージすべて**をコンテキスト�
 
 **サブエージェントは、複数のタスクを並列に実行したり、特定のタスクを専門のサブエージェントに委譲する仕組みです。** Kiro が適切に自動起動しますが、「Run subagents to...」のようなプロンプトで手動起動もできます。
 
-> ⚠️ **Workflows を有効にすると委譲の経路が変わります**（1.2.4 以降）。公式 [Workflows](https://kiro.dev/docs/workflows/) ページによると、
-> Workflows が無効なメインセッションでは、メインエージェントは `invoke_sub_agent` で委譲します。
-> **CLI V3 以外のクライアントで Workflows を有効にすると、メインセッションの委譲は Workflows（`run_workflow`）経由になり**、
-> 1つのカスタムエージェントをバックグラウンドで動かすときは `run_workflow(agent://<name>)` を使います。
+> ⚠ **Workflows を有効にすると、委譲の経路にワークフローが加わります**（1.2.4 以降）。公式 [Workflows](https://kiro.dev/docs/workflows/)（2026-10-24）によると、
+> Workflows は `run_workflow` を加え、1つのカスタムエージェントをバックグラウンドで動かすときは `run_workflow(agent://<name>)` を使います。
+> **Workflows が無効なメインセッションでは**、Kiro は現在のセッションで作業し、直接のサブエージェントを使えます。
+> Workflows を有効にしたときに、メインのチャットがどの程度ワークフローを始めるかは、**1.4.26 以降の IDE では Use workflows で選べます**（既定は **Only when asked**。[§13.8](#138-use-workflows1426-で追加)）。
 > Workflow の中で動くエージェントは、その設定が許す範囲で引き続きサブエージェントを使えます。詳細は [§13](#13-workflows124-で追加) を参照してください。
+>
+> **記述の変化**: 本サイトのこれまでの記述は、委譲の経路を「Workflows が無効なメインセッションでは `invoke_sub_agent` で委譲し、CLI V3 以外のクライアントで Workflows を有効にすると `run_workflow` 経由になる」と書いていました。現行の公式 Workflows ページ（2026-10-24）には、この記述がありません。
 
 ### 7.1 組み込みのサブエージェント（2種）
 
@@ -425,6 +428,8 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 
 背後の設定は **`kiroAgent.workflows.enabled`** です（Settings から設定しても同じ）。**Workflows が表示されない場合、そのアカウントではまだ利用できません**（公式）。
 
+この設定は、ワークフローを使えるかどうかを決める**全体のスイッチ**です。オフのとき、Kiro は新しいワークフローを始めませんが、既存の実行とレシピは使えます。変更は新しいセッションに適用されます。**1.4.26 以降**は、有効にしたうえで、チャットごとにワークフローを始める頻度を **Use workflows** で選べます（[§13.8](#138-use-workflows1426-で追加)）。
+
 ### 13.2 始め方
 
 **先にレシピを書く必要はありません。** 親チャットで目的と、どの程度の構造やレビューが欲しいかを伝えると、Kiro がその作業向けのワークフローを提案し、ステップと担当エージェントを決めて起動します。
@@ -474,8 +479,9 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 > ⚠️ **Stop はファイルの変更を元に戻しません**（公式）。中断した実行が残した編集は、自分で確認するか元に戻してください。
 > また、**Workflows は Git のブランチを分けたり worktree を作ったりしません**（公式の Operational limits）。
 >
-> ⚠️ **公式の記述に食い違いがあります。** [Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（2026-10-20）の Operational limits は、Workflows が Git のブランチを分けたり worktree を作ったりしないと書いています。一方、[Workflows](https://kiro.dev/docs/workflows/)（2026-10-20）は、IDE では Kiro がリポジトリのファイルを変更するワークフローに**実行開始時にチェックアウトされているブランチ**を使うよう指示し、ワークフローが worktree を使う場合はそのブランチから worktree を作り、最後に同じブランチへリベースするよう指示すると書いています（1.2.56 の修正に対応）。
-> 2 ページの更新日は同じで、優劣をつけられないため、両方の記述をそのまま残します。どのように両立するかは公式に記述がなく、未確認です。
+> ⚠ **公式の記述に食い違いがあります。** [Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（2026-10-20）の Operational limits は、Workflows が Git のブランチを分けたり worktree を作ったりしないと書いています。一方、[Workflows](https://kiro.dev/docs/workflows/)（2026-10-24）は、IDE では Kiro がリポジトリのファイルを変更するワークフローに**実行開始時にチェックアウトされているブランチ**を使うよう指示し、ワークフローが worktree を使う場合はそのブランチから worktree を作り、最後に同じブランチへリベースするよう指示すると書いています（1.2.56 の修正に対応）。
+>
+> 更新日は Workflows ページ（2026-10-24）のほうが新しいため、ブランチの扱いはこちらを正とします。ただし、Run and manage workflows ページ（2026-10-20）の記述も残っており、どのように両立するかは公式に記述がなく、未確認です。
 
 > **再試行と親チャットへの更新の説明**: 1.2.37 の changelog は、ステップが最大24時間再試行し、**5分後に親チャットへ更新を出す**と説明しています。公式の Run and manage workflows ページ（2026-10-20）は、最大24時間・最初の5分と以降の間隔・再試行期間の開始条件を説明していますが、親チャットへの更新については記述がありません。このため、親チャットへの更新の詳細（表示内容など）は未確認です（公式の記述に載っていません）。
 
@@ -530,6 +536,35 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 | 変更を依頼する | チャット入力欄にフィードバックを入力して **Enter** を押す。カードが開いている間、送信ボタンのツールチップは **Send feedback on the workflow plan (Enter)** になり、メッセージは新しいターンの開始ではなく**計画へのフィードバック**としてエージェントに渡る。エージェントはフィードバックから計画を修正し、承認後のステップは**元の依頼ではなく修正後の計画**に従う（1.4.10） |
 | 添付ファイル | 計画へのフィードバックでは**非対応**。メッセージを送るには添付を外す。下書きは保持される |
 
+### 13.8 Use workflows（1.4.26 で追加）
+
+**チャットで Kiro がどの程度ワークフローを始めるかを、チャットごとに選ぶコントロールです。**（公式 [Workflows](https://kiro.dev/docs/workflows/#turn-it-on)・[1.4.26](../02_update/01_changelog.md#v1-4-26)）
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 場所 | チャットの **Workflows**（親チャットの上）の下部。**Share feedback for workflows** の隣 |
+| 役割 | 全体の設定（`kiroAgent.workflows.enabled`。[§13.1](#131-有効にする既定で無効)）は、ワークフローを使えるかどうかを決める。**Use workflows** は、そのセッションで Kiro が自分からワークフローを始める頻度を決める |
+| 対象 | Workflows が有効な、対象のトップレベルのチャット |
+| 表示されない場面 | **Workflow step** タブ。このコントロールが追加される前に作られたセッション |
+| 起動の拒否 | どの選択肢でも、起動が拒否されることはない。実行中のワークフローの管理も従来どおりできる |
+| 計画とツールの操作 | 既存のレビューと権限の制御に従う（1.4.26 の changelog） |
+
+| 選択肢 | 内容（公式） |
+|-------|------------|
+| **Only when asked** | 現在のセッションでタスクを処理し、依頼されたときだけワークフローを始める。ローカルセッションで別の選択肢を選ぶまでの初期値 |
+| **Only for large tasks** | 複数ステップのタスクや、より多くのコンテキストが必要なタスクで、Kiro が自分からワークフローを使う |
+| **As much as possible** | コードの読み取り・実装・テスト・レビューなど、ほとんどのタスクをワークフローに回そうとする |
+
+**選び方**（公式）: 委譲を1件ずつ自分で決めたいときは **Only when asked**、複数ステップの作業をバックグラウンドに任せつつ小さなタスクはチャットに残したいときは **Only for large tasks**、セッションの作業のほとんどをワークフローで動かし、トークンの追加使用を受け入れるときは **As much as possible** を選びます。
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 選択の記憶 | **ローカルセッション**での直近の選択が、新しいチャットに引き継がれる |
+| クラウドセッション | クラウドセッションでの選択は、そのセッションだけに適用され、ローカルの既定は変わらない |
+| 確認方法 | 新しいチャットを開始し、上の **Workflows** を開く。別の選択肢を選んでいなければ **Only when asked**、選んでいれば最後にローカルセッションで選んだ内容が表示される |
+
+> 公式 Workflows ページ（2026-10-24）には、委譲の振る舞いを状況別にまとめた表もあります（**Only when asked** が既定。Workflows が無効なメインセッションでは現在のセッションで作業し、直接のサブエージェントを使える、など）。Kiro CLI 2.34 以降にも同様の設定（**Workflow use**）がありますが、本サイトは IDE を扱うため、CLI 側の記述は取り上げません。
+
 ---
 
 ## 14. ターミナルコマンドのタイムアウト（1.1.70 で追加）
@@ -566,7 +601,7 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 
 ### 16.1 設定と学習・参照のレベル
 
-IDE では**1つのユーザー設定**で Memory を制御します。**既定は Off** です（1.4.10 で既定が Off になりました。すでにレベルを選んでいる場合は、更新後もその選択が保たれます）。
+IDE では**1つのユーザー設定**で Memory を制御します。**既定は Off** です（1.4.10 で既定が Off になりました。すでにレベルを選んでいる場合は、更新後もその選択が保たれます。1.4.26 では、レベルを選んでいないときに既定の Off が適用される修正が入りました。[1.4.26](../02_update/01_changelog.md#v1-4-26)）。
 
 | 順 | 操作 |
 |----|------|

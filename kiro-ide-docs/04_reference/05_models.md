@@ -3,14 +3,15 @@
 **Kiro IDE で選べる AI モデルと、その選び方です。**
 
 - **一次情報**: [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-07-31。第1〜4節・第6節・第7節の一覧と表は、この更新日の時点の内容）
-- **追記分の一次情報**: [Reasoning effort](https://kiro.dev/docs/models/effort/)（公式ページ更新日: 2026-10-09。第5節）・[Models](https://kiro.dev/docs/models/)の「Model fallback notices」節（公式ページ更新日: 2026-10-19。第8節）・公式 changelog [1.2.37](https://kiro.dev/changelog/ide/1-2/)・[1.2.56](https://kiro.dev/changelog/ide/1-2-56/)・[1.3.0](https://kiro.dev/changelog/ide/1-3/)
+- **追記分の一次情報**: [Reasoning effort](https://kiro.dev/docs/models/effort/)（公式ページ更新日: 2026-10-09。第5節）・[Models](https://kiro.dev/docs/models/)の「Model fallback notices」節（公式ページ更新日: 2026-10-24。第8節）・公式 changelog [1.2.37](https://kiro.dev/changelog/ide/1-2/)・[1.2.56](https://kiro.dev/changelog/ide/1-2-56/)・[1.3.0](https://kiro.dev/changelog/ide/1-3/)
 - **選択可能なモデル**: **19種**（`Auto` を含む。第1節の表は 2026-07-31 時点の内容）
 
-> **第1節の一覧表（19種）・第3節・第6節・第7節は、Models ページ（公式ページ更新日: 2026-07-31）の時点の内容のままです。** 公式の現行の Models ページ（公式ページ更新日: 2026-10-19）の比較表は、この表と異なります。確認できた違いは次のとおりです。
+> **第1節の一覧表（19種）・第3節・第6節・第7節は、Models ページ（公式ページ更新日: 2026-07-31）の時点の内容のままです。** 公式の現行の Models ページ（公式ページ更新日: 2026-10-24）の比較表は、この表と異なります。確認できた違いは次のとおりです。
 >
-> - 現行の表には、本ページの表にない **Claude Opus 5.5**・**Claude Sonnet 5.5**・**Claude Fable 5.1**（Kiro Enterprise の限定 Preview）・**Kimi K3** が載っています
+> - 現行の表には、本ページの表にない **Claude Opus 5.5**・**Claude Sonnet 5.5**・**Claude Haiku 5.5**・**Claude Fable 5.1**・**Kimi K3** が載っています。Claude Fable 5.1 について公式は、モデルガバナンスを有効にした Kiro Enterprise の組織で一般提供（generally available）されており、管理者が有効にすると説明しています（推論は US East (N. Virginia) `us-east-1` のみ、コンテキスト 1M、Cost 6x）
 > - GPT-5.6 の 3 種は、現行の表で コンテキスト 1M、Cost が Sol 4.4x・Terra 2.2x・Luna 0.6x（272K トークンまでのリクエストに適用する料金で、それを超えると倍の料金）と書かれています。本ページの表は 272K・2.4x・1.2x・0.6x です
-> - 現行の表の「Regions」列は `US, EU` のような地域（geography）単位の表記で、リージョンの一覧ではありません
+> - Claude Haiku 5.5 の Cost は 0.06x で、100K トークンまでのリクエストに適用されます（100K を超えると 0.3x）
+- 現行の表の「Regions」列は `US, EU` のような地域（geography）単位の表記で、リージョンの一覧ではありません
 >
 > 表の全面的な更新は行っていません。現在のモデル・Cost・リージョンは、公式の Models ページと Kiro のモデルパネルで確認してください。
 
@@ -221,12 +222,13 @@ Kiro のモデルは2つの段階を経ます。
 
 ## 8. モデルのフォールバック通知（1.3.0 で追加）
 
-> 出典: [Models](https://kiro.dev/docs/models/#model-fallback-notices) の「Model fallback notices」節（公式ページ更新日: 2026-10-19）・[1.3.0](../02_update/01_changelog.md#v1-3-0)
+> 出典: [Models](https://kiro.dev/docs/models/#model-fallback-notices) の「Model fallback notices」節（公式ページ更新日: 2026-10-24）・[1.3.0](../02_update/01_changelog.md#v1-3-0)
 
 現行のモデルが依頼を断る、または利用できないとき、Kiro は 1 つのターンを別のモデルに移すことがあります。**トランスクリプトに、継続したモデルの名前と、その変更が 1 ターンだけか、会話の残り全体に適用されるかが表示されます。**
 
 - IDE では、**サブエージェント内で起きたフォールバックは、そのサブエージェントのアクティビティ内に表示**されます
 - 同じモデルのままで再試行したときは、**一時的な再試行の通知**として表示されます
+- **1.4.26 の修正**: Auto モデルが応答を再試行するとき、再試行の通知は、モデル名ではなく「Couldn't complete this response. Retrying…」と表示されます（[1.4.26](../02_update/01_changelog.md#v1-4-26)）
 
 公式はこの動作を「ローカルの V3 セッション」の説明として書いています。IDE のどの条件がこれに当たるかは、公式の記述を確認できていません（**未確認**）。Kiro CLI での表示（試したモデルと結果の一覧）は公式の別ページの説明で、本サイトでは扱いません。
 

@@ -2,9 +2,9 @@
 
 **ローカルマシンではなく管理されたクラウドサンドボックスでエージェントを実行し、IDE・CLI・Web・Mobile のどこからでも同じセッションを継続できる仕組みです。1.0.293 で導入されました。**
 
-- **一次情報**: [Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-10-20）・[Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/)（公式ページ更新日: 2026-09-30）
+- **一次情報**: [Cloud sessions](https://kiro.dev/docs/cloud-sessions/)（公式ページ更新日: 2026-10-23）・[Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/)（公式ページ更新日: 2026-10-21）
 - **導入バージョン**: **1.0.293**（2026-08-11）
-- **位置づけ**: 1.0.293 の changelog は**プレビュー**として導入したと説明しています。現行の公式 Cloud sessions ページ（2026-10-20）には、この機能を「プレビュー」と位置づける記述がありません。現在の位置づけは、公式の記述からは確認できません（未確認）
+- **位置づけ**: 1.0.293 の changelog は**プレビュー**として導入したと説明しています。現行の公式 Cloud sessions ページ（2026-10-23）には、この機能を「プレビュー」と位置づける記述がありません。現在の位置づけは、公式の記述からは確認できません（未確認）
 - **Kiro CLI 版の対応ページ**: 共通仕様。CLI からの作成・接続には **Kiro CLI 2.17 以降**が必要（[`docs/cloud-sessions/`](https://kiro.dev/docs/cloud-sessions/) が正。CLI 固有の個別ページはない）
 
 > IDE からの作成・接続には **Kiro IDE 1.0.293 以降**が必要です（公式 Cloud sessions ページ）。
@@ -97,7 +97,7 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 
 プロンプトへの添付（画像・文書）は使えます（内容はセッションに送信されます）。**Cloud Session のリネームと Supervised モードはまだ利用できません。**
 
-> **Effort（1.2.37）**: モデルパネルの Effort は、適用されない Agent Focus のドラフトとクラウドセッションでは**表示されません**（[1.2.37](../02_update/01_changelog.md#v1-2-37)・[04_reference/05_models.md](../04_reference/05_models.md)）。現行の公式 Cloud sessions ページ（2026-10-20）には、Effort についての記述がありません。
+> **Effort（1.2.37）**: モデルパネルの Effort は、適用されない Agent Focus のドラフトとクラウドセッションでは**表示されません**（[1.2.37](../02_update/01_changelog.md#v1-2-37)・[04_reference/05_models.md](../04_reference/05_models.md)）。現行の公式 Cloud sessions ページ（2026-10-23）には、Effort についての記述がありません。
 
 ---
 
@@ -123,7 +123,7 @@ Cloud Session を作成すると、Kiro は分離されたサンドボックス�
 | 種別 | 挙動 |
 |------|------|
 | **プロジェクト設定** | リポジトリ内の `.kiro/` にコミットされた steering・spec・カスタムエージェント・フック・MCP サーバは、サンドボックスがリポジトリをクローンするため**自動的に適用される** |
-| **個人設定** | `~/.kiro/` ディレクトリはローカルに留まり、Cloud Session には**自動適用されない**。個人の設定を持ち込むには、Kiro Web の **Settings > Sync** でアップロードする。クラウド側の写しは機能ごとの設定ページで管理し、アカウントに紐づく Powers は **Settings > Powers** で扱う（対応フォルダとアップロード手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照） |
+| **個人設定** | `~/.kiro/` ディレクトリはローカルに留まり、Cloud Session には**自動適用されない**。個人の設定を持ち込むには、Kiro Web の **Agent Config > Cloud Config** でアップロードする。クラウド側の写しは機能ごとの設定ページで管理し、アカウントに紐づく Powers は **Agent Config > Powers & MCP** で扱う（対応フォルダとアップロード手順は公式の [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/) を参照） |
 | **サンドボックス環境** | インターネットアクセス・環境変数・セットアップコマンドは Sandbox ドキュメントで扱う |
 
 ### 6.1 IDE の各面に現れるクラウドの個人設定（1.0.437）
@@ -152,6 +152,24 @@ MCP サーバーは他の設定と扱いが異なります。**「Cloud configur
 
 > 1.0.437 では、個人の Cloud configuration に MCP サーバーが含まれないにもかかわらず、Agent Focus が **MCP Servers** タブに Cloud configuration の通知を表示していた問題が修正されました。
 
+### 6.3 Configuration Sync でアップロードできるフォルダ
+
+公式 [Configuration Sync](https://kiro.dev/docs/web/cloud-configuration/)（2026-10-21）によると、Kiro Web の **Agent Config > Cloud Config** で、ローカルの `.kiro` ディレクトリの最上位のフォルダを**1回に1つ**アップロードできます。対応するフォルダは次の7つです。
+
+| フォルダ | アップロードされるもの | クラウド側の写しの管理先 |
+|---------|------------------|-------------------|
+| `steering/` | Markdown の Steering ファイル | **Agent Config > Steering** |
+| `agents/` | カスタムエージェントの定義と補助ファイル | **Agent Config > Agents** |
+| `hooks/` | フックの定義ファイル | **Agent Config > Hooks** |
+| `skills/` | `SKILL.md` と補助のテキストファイル | **Agent Config > Skills** |
+| `powers/` | インストール済みの Power | **Agent Config > Powers & MCP** |
+| `settings/` | `mcp.json` の MCP サーバー | **Agent Config > Powers & MCP**（MCP サーバー設定） |
+| `workflows/` | `.workflow.json`・`.workflow.yaml`・`.workflow.yml` のレシピ | **Agent Config > Workflows** |
+
+`.kiro` の最上位にあるそれ以外（セッション状態・キャッシュ・実行時のフォルダなど）は拒否されます。アップロードは**ローカルからクラウドへの一方向**で、Kiro Web の設定で行った変更はマシンに書き戻されません。
+
+> **画面名の変化**: 本サイトのこれまでの記述は、アップロードの画面を **Settings > Sync**、Powers の管理画面を **Settings > Powers** と書いていました。現行の公式 Cloud sessions ページ（2026-10-23）と Configuration Sync ページ（2026-10-21）は、**Agent Config > Cloud Config**・**Agent Config > Powers & MCP** と書いています。本サイトは現行の公式の表記に従います。
+
 ---
 
 ## 7. サーフェス間の移動
@@ -170,7 +188,7 @@ MCP サーバーは他の設定と扱いが異なります。**「Cloud configur
 
 ## 8. 現在の制限事項
 
-| # | 制限（公式 Cloud sessions ページ・2026-10-20） |
+| # | 制限（公式 Cloud sessions ページ・2026-10-23） |
 |---|------|
 | 1 | **同時実行数の上限**: 並列に実行できる Cloud Session は最大 10 個 |
 | 2 | **Supervised モード不可**: Cloud Session は Autopilot または Autonomous でのみ動作し、変更ごとの承認はできない |
@@ -178,7 +196,7 @@ MCP サーバーは他の設定と扱いが異なります。**「Cloud configur
 | 4 | **サーフェスごとの機能差**: 各サーフェスで使えないコマンド・機能があり、この差はサーフェスとリリースによって異なることがある |
 | 5 | **リポジトリの組み合わせは作成時に決まる**（IDE のタブの記述）: 別のリポジトリで作業するには新しい Cloud Session を開始する |
 
-> **サーフェスごとの記述の違い**（公式 Cloud sessions ページ・2026-10-20）: CLI タブには、起動後に `/repo` で複数選択のリポジトリピッカーを開く、または `/repo owner/repository` のようにリポジトリを名前で指定してリポジトリを追加できる記述があります（Attach repositories after startup）。IDE タブの記述は「リポジトリは作成時に選ぶ」で、起動後の追加手順は書かれていません。
+> **サーフェスごとの記述の違い**（公式 Cloud sessions ページ・2026-10-23）: CLI タブには、起動後に `/repo` で複数選択のリポジトリピッカーを開く、または `/repo owner/repository` のようにリポジトリを名前で指定してリポジトリを追加できる記述があります（Attach repositories after startup）。IDE タブの記述は「リポジトリは作成時に選ぶ」で、起動後の追加手順は書かれていません。
 >
 > ブランチについては、Web タブに GitHub／GitLab のリポジトリごとのブランチセレクタ（既定ブランチ以外を clone する）の記述があります。IDE タブにはリポジトリ紐づけ時にブランチを選ぶ操作の記述がなく、本サイトのこれまでの記述にあった「セッション開始後にエージェントへチェックアウト・作成を依頼する」も現行の公式ページに記述がありません。IDE でのブランチ選択が現在もそのとおりかは未確認です。
 
@@ -192,7 +210,7 @@ MCP サーバーは他の設定と扱いが異なります。**「Cloud configur
 | Resume and steer an existing cloud session | ✓ | ✓ | ✓ | ✓ |
 | Autonomous mode | ✓ | ✓ | ✓ | ✓ |
 | Declarative workflows | ✓ | ✓ | ✓ | Not documented |
-| Scheduled automations | — | — | ✓ | — |
+| Scheduled tasks | — | — | ✓ | — |
 
 ---
 

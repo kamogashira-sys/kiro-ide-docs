@@ -22,11 +22,11 @@
 |-----------|------|
 | [00_information](kiro-ide-docs/00_information/) | **基本情報・公式情報源**。公式サイトの構造マップ・`llms.txt` や changelog の性質と使い分け |
 | [01_features](kiro-ide-docs/01_features/) | **機能詳細ガイド（12機能）**: Specs / Chat / Permissions / Autopilot・Supervised / Hooks / Steering / Custom Agents / MCP / Agent Focus Mode / エディタ基盤 / Powers / Cloud Sessions |
-| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.x 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全78バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
+| [02_update](kiro-ide-docs/02_update/) | **アップデート情報**。[1.x 系](kiro-ide-docs/02_update/01_changelog.md)・[0.x 系](kiro-ide-docs/02_update/02_changelog-0x.md)の**全79バージョン**＋[1.0 移行ガイド](kiro-ide-docs/02_update/03_migration-to-1.0.md) |
 | [03_deployment](kiro-ide-docs/03_deployment/) | **インストール・認証・VS Code 移行・エンタープライズ配布・セキュリティ** |
 | [04_reference](kiro-ide-docs/04_reference/) | **リファレンス**: `.kiro/` ファイル仕様・キーボードショートカット（30件）・権限（capability 15種）・チャットの `#` コンテキストプロバイダ（14種）・モデル・起動オプション |
 
-**カバー範囲**: 0.1（2025-07-14）〜 **1.4.10**（2026-10-20）の**全78バージョン**。公式が説明を公開しているものは省略せず掲載しています。
+**カバー範囲**: 0.1（2025-07-14）〜 **1.4.26**（2026-10-22）の**全79バージョン**。公式が説明を公開しているものは省略せず掲載しています。
 
 ## 📢 Kiro IDE とは
 
@@ -46,7 +46,7 @@
 
 **1.1・1.2 で加わった主なもの**: [Agent Artifacts](kiro-ide-docs/01_features/02_chat.md#12-agent-artifacts11-で追加)・Windows / Linux の[ネイティブ ARM64 版](kiro-ide-docs/03_deployment/01_installation.md#2-配布形態)（1.1）、[Workflows](kiro-ide-docs/01_features/02_chat.md#13-workflows124-で追加)・[信頼していないワークスペースの保護強化](kiro-ide-docs/04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust)・[エンタープライズのサインイン制御](kiro-ide-docs/03_deployment/04_enterprise.md#7-サインイン制御12-以降)（1.2.4）。
 
-**1.3・1.4 で加わった主なもの**: [ローカルコマンドのサンドボックス](kiro-ide-docs/01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加)・[Markdown Review](kiro-ide-docs/01_features/10_editor.md#9-markdown-review1311-で追加)（1.3）、[Memory](kiro-ide-docs/01_features/02_chat.md#16-memory140-で追加)（1.4）。
+**1.3・1.4 で加わった主なもの**: [ローカルコマンドのサンドボックス](kiro-ide-docs/01_features/03_permissions.md#10-ローカルコマンドのサンドボックス13-で追加)・[Markdown Review](kiro-ide-docs/01_features/10_editor.md#9-markdown-review1311-で追加)（1.3）、[Memory](kiro-ide-docs/01_features/02_chat.md#16-memory140-で追加)（1.4）、チャットでワークフローを使う頻度を選ぶ [Use workflows](kiro-ide-docs/01_features/02_chat.md#138-use-workflows1426-で追加)（1.4.26）。
 
 **公式情報源**:
 
