@@ -48,6 +48,7 @@ jobs:
       # 対象リリースノートの列挙。1回の push で複数版が入る場合に備えて全件拾う。
       # before がゼロ SHA（初回 push・force push 後）のときは差分が取れないため全件対象にする。
       - name: 対象リリースノートの決定
+        id: targets
         run: |
           if [ -n "${{ github.event.inputs.version }}" ]; then
             printf '%s\n' ".github/release-notes/${{ github.event.inputs.version }}.md" > /tmp/targets.txt
@@ -60,11 +61,30 @@ jobs:
           if [ ! -s /tmp/targets.txt ]; then
             echo "::error::対象のリリースノートを特定できません"; exit 1
           fi
-          echo "対象:"; cat /tmp/targets.txt
+          # 既にタグがある版は対象から外す（過去版のリリースノートを修正しただけの push で
+          # 失敗させないため）。残りが0件ならリリース不要として以降の手順をスキップする。
+          : > /tmp/targets-new.txt
+          while read -r notes; do
+            v=$(basename "$notes" .md)
+            if git ls-remote --tags origin "refs/tags/$v" | grep -q .; then
+              echo "::notice::$v は既にタグがあるため対象から外します"
+            else
+              echo "$notes" >> /tmp/targets-new.txt
+            fi
+          done < /tmp/targets.txt
+          mv /tmp/targets-new.txt /tmp/targets.txt
+          if [ -s /tmp/targets.txt ]; then
+            echo "has_targets=true" >> "$GITHUB_OUTPUT"
+            echo "対象:"; cat /tmp/targets.txt
+          else
+            echo "has_targets=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::新規にリリースする版はありません"
+          fi
 
       # リリースノートの版と changelog の最新版が一致することを確認する。
       # 一致しないままタグを打つと blob/<tag>/ のリンクが未更新の文書を指してしまう。
       - name: バージョン整合の確認
+        if: steps.targets.outputs.has_targets == 'true'
         run: |
           # 🔷 は系列ランディング（1.1・1.2.4 など）。1.x 系では系列リリースが最新版になり得る
           latest=$(grep -oP '^## (?:🔷|🔹|▫️|🎉) \K[0-9]+\.[0-9]+(\.[0-9]+)?' \
@@ -77,6 +97,7 @@ jobs:
           fi
 
       - name: タグ作成とリリース公開
+        if: steps.targets.outputs.has_targets == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
