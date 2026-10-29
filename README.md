@@ -2,8 +2,6 @@
 
 **[Kiro IDE](https://kiro.dev/) のアップデート情報を、初心者にも分かりやすく解説するプロジェクトです。** より正確な情報発信を心がけて更新していきます。
 
-> **姉妹サイト**: Kiro CLI 版は **[猫でもわかるkiro-cli アップデート情報（q-cli-docs）](https://github.com/kamogashira-sys/q-cli-docs)**、Kiro Web 版は **[猫でもわかるKiro Web アップデート情報（kiro-web-docs）](https://github.com/kamogashira-sys/kiro-web-docs)** をご覧ください。Kiro IDE と Kiro CLI の比較は CLI 版サイトの [Kiro IDE 版との比較](https://github.com/kamogashira-sys/q-cli-docs/blob/main/kiro-docs/09_v3/02_kiro-ide-vs-cli.md) にまとめています。
-
 ## 🧭 目的別の入口
 
 | 状況 | 行き先 |
@@ -15,6 +13,19 @@
 | 🔍 **設定ファイルやショートカットを引きたい** | [リファレンス](kiro-ide-docs/04_reference/) |
 | 🖥️ **VS Code から乗り換えたい** | [VS Code からの移行](kiro-ide-docs/03_deployment/03_migrating-from-vscode.md) |
 | 🏢 **組織に導入したい** | [エンタープライズ配布](kiro-ide-docs/03_deployment/04_enterprise.md)・[セキュリティ](kiro-ide-docs/03_deployment/05_security.md) |
+
+## 🐾 姉妹サイト
+
+Kiro IDE・Kiro CLI・Kiro Web・Kiro Crew は別製品です。同名の機能でも仕様が異なることがあります。
+
+| 対象 | サイト |
+|------|-------|
+| **Kiro IDE** | **本サイト** |
+| Kiro CLI | [猫でもわかるKiro CLI アップデート情報](https://github.com/kamogashira-sys/q-cli-docs) |
+| Kiro Web | [猫でもわかるKiro Web アップデート情報](https://github.com/kamogashira-sys/kiro-web-docs) |
+| Kiro Crew | [猫でもわかるKiro Crewアップデート情報](https://github.com/kamogashira-sys/kiro-crew-docs) |
+
+Kiro IDE と Kiro CLI の比較は CLI 版サイトの [Kiro IDE 版との比較](https://github.com/kamogashira-sys/q-cli-docs/blob/main/kiro-docs/09_v3/02_kiro-ide-vs-cli.md) にまとめています。
 
 ## 📚 コンテンツ
 

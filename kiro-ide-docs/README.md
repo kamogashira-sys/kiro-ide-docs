@@ -2,7 +2,16 @@
 
 **[Kiro IDE](https://kiro.dev/) のアップデート情報・機能・リファレンスを、初心者にも分かりやすく解説する日本語ドキュメントです。**
 
-> **姉妹サイト**: Kiro CLI 版は **[猫でもわかるkiro-cli アップデート情報（q-cli-docs）](https://github.com/kamogashira-sys/q-cli-docs)** をご覧ください。
+## 🐾 姉妹サイト
+
+Kiro IDE・Kiro CLI・Kiro Web・Kiro Crew は別製品です。同名の機能でも仕様が異なることがあります。
+
+| 対象 | サイト |
+|------|-------|
+| **Kiro IDE** | **本サイト** |
+| Kiro CLI | [猫でもわかるKiro CLI アップデート情報](https://github.com/kamogashira-sys/q-cli-docs) |
+| Kiro Web | [猫でもわかるKiro Web アップデート情報](https://github.com/kamogashira-sys/kiro-web-docs) |
+| Kiro Crew | [猫でもわかるKiro Crewアップデート情報](https://github.com/kamogashira-sys/kiro-crew-docs) |
 
 ---
 
