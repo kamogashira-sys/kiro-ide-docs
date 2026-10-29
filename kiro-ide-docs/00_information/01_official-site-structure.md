@@ -35,7 +35,7 @@
 | <https://kiro.dev/cli/> | Kiro CLI 製品ページ | 姉妹サイトの対象 |
 | <https://kiro.dev/web/> | Kiro Web 製品ページ | 対象外 |
 | <https://kiro.dev/mobile/> | モバイル（Preview） | 専用ドキュメントは `/docs/mobile/` のみ |
-| <https://kiro.dev/crew/> | **Kiro Crew 製品ページ**（新設） | 対象外（Kiro Crew は本サイト・姉妹サイトいずれの対象でもない新製品） |
+| <https://kiro.dev/crew/> | **Kiro Crew 製品ページ**（新設） | 本サイトの対象外（姉妹サイト [kiro-crew-docs](https://github.com/kamogashira-sys/kiro-crew-docs) が扱う） |
 | <https://kiro.dev/downloads/> | **ダウンロード** | インストール手順・配布形態・旧版一覧の一次情報 |
 | <https://kiro.dev/pricing/> | 料金プラン | 課金の言及が必要な範囲のみ |
 | <https://kiro.dev/enterprise/> | エンタープライズ製品ページ | 組織導入の概要 |
