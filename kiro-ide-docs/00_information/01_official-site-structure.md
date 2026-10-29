@@ -33,7 +33,7 @@
 | <https://kiro.dev/> | サイトトップ | — |
 | <https://kiro.dev/ide/> | **Kiro IDE 製品ページ** | 製品概要 |
 | <https://kiro.dev/cli/> | Kiro CLI 製品ページ | 姉妹サイトの対象 |
-| <https://kiro.dev/web/> | Kiro Web 製品ページ | 対象外 |
+| <https://kiro.dev/web/> | Kiro Web 製品ページ | 本サイトの対象外（姉妹サイト [kiro-web-docs](https://github.com/kamogashira-sys/kiro-web-docs) が扱う） |
 | <https://kiro.dev/mobile/> | モバイル（Preview） | 専用ドキュメントは `/docs/mobile/` のみ |
 | <https://kiro.dev/crew/> | **Kiro Crew 製品ページ**（新設） | 本サイトの対象外（姉妹サイト [kiro-crew-docs](https://github.com/kamogashira-sys/kiro-crew-docs) が扱う） |
 | <https://kiro.dev/downloads/> | **ダウンロード** | インストール手順・配布形態・旧版一覧の一次情報 |
