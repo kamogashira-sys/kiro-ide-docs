@@ -15,3 +15,6 @@ contact_links:
   - name: 🐱 Kiro Web 版ドキュメント（姉妹サイト）
     url: https://github.com/kamogashira-sys/kiro-web-docs
     about: 猫でもわかるKiro Web アップデート情報
+  - name: 🐱 Kiro Crew 版ドキュメント（姉妹サイト）
+    url: https://github.com/kamogashira-sys/kiro-crew-docs
+    about: 猫でもわかるKiro Crewアップデート情報
