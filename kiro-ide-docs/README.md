@@ -11,7 +11,7 @@ Kiro IDE・Kiro CLI・Kiro Web・Kiro Crew は別製品です。同名の機能�
 | **Kiro IDE** | **本サイト** |
 | Kiro CLI | [猫でもわかるKiro CLI アップデート情報](https://github.com/kamogashira-sys/q-cli-docs) |
 | Kiro Web | [猫でもわかるKiro Web アップデート情報](https://github.com/kamogashira-sys/kiro-web-docs) |
-| Kiro Crew | [猫でもわかるKiro Crewアップデート情報](https://github.com/kamogashira-sys/kiro-crew-docs) |
+| Kiro Crew | [猫でもわかるKiro Crew アップデート情報](https://github.com/kamogashira-sys/kiro-crew-docs) |
 | Kiro 全体（まとめ） | [猫でもわかるKiro 入門 ― IDE・CLI・Web・Mobile・Crew まとめ](https://github.com/kamogashira-sys/kiro-all-docs) |
 
 ---
