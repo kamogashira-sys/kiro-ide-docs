@@ -10,7 +10,7 @@
 > 「`npm *` はすべてのセッションで許す」「`.env` の読み取りは拒否し、すべてのツールに同時に守らせる」といったルールを1つ書くだけで済みます。
 > 使い方の解説は [01_features/03_permissions.md](../01_features/03_permissions.md) を参照してください。
 >
-> **Kiro CLI 版の対応ページ**: [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions)（CLI 3.0 Early Access）。
+> **Kiro CLI 版の対応ページ**: [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions)（Kiro CLI V3・early release）。
 > **CLI 2.x は旧モデル**なので参照先を間違えないでください。
 
 ---

@@ -10,7 +10,7 @@
 > カテゴリを宣言し、MCP サーバと権限ルールをインラインに埋め込んで、**バージョン管理でチームに共有**します。
 > **保存した瞬間にエージェントセレクタに現れます。**
 >
-> **Kiro CLI 版の対応ページ**: [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config)（CLI 3.0 Early Access）。
+> **Kiro CLI 版の対応ページ**: [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config)（Kiro CLI V3・early release）。
 > **CLI 2.x は JSON 形式**の別仕様です。
 
 ---
