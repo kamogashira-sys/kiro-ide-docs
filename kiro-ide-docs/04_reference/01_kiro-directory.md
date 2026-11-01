@@ -66,7 +66,7 @@
 | **サンドボックス設定**（1.3 以降） | `.kiro/settings/sandbox.json`（`<workspace-root>/` 直下の `.kiro/`） | `~/.kiro/settings/sandbox.json` | JSON | — |
 | **無視ファイル** | `.kiroignore`（プロジェクトルート） | `~/.kiro/settings/kiroignore` | gitignore 構文 | — |
 
-> **CLI 版の対応ページは `docs/cli/v3/` を指しています。** IDE 1.0 の GA 機能に対応するのは CLI 3.0（Early Access）です。
+> **CLI 版の対応ページは `docs/cli/v3/` を指しています。** IDE 1.0 の GA 機能に対応するのは Kiro CLI V3（early release）です。
 > **CLI 2.x の非 v3 ページは別仕様**で、特に hooks はまったくの別物（stdin 経由 JSON のライフサイクルフック）です。
 
 ---

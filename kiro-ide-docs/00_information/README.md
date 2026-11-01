@@ -74,13 +74,15 @@ Kiro IDE と Kiro CLI は**同じ名前の機能でも仕様が異なる**こと
 
 | 機能 | Kiro IDE 1.0 | Kiro CLI での対応 |
 |------|-------------|-----------------|
-| **Permissions** | capability ベース（`fs_read`・`shell` など） | **CLI 3.0（Early Access）**の [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions) が対応。CLI 2.x は旧モデル |
+| **Permissions** | capability ベース（`fs_read`・`shell` など） | **Kiro CLI V3（early release）**の [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions) が対応。CLI 2.x は旧モデル |
 | **Custom agents** | Markdown 形式・タグベースのツール指定 | [`docs/cli/v3/agent-config`](https://kiro.dev/docs/cli/v3/agent-config)。CLI 2.x は JSON 形式 |
 | **Hooks** | `.kiro/hooks/*.json`（イベント駆動の自動化） | [`docs/hooks`](https://kiro.dev/docs/hooks/)。**CLI 2.x の hooks は完全な別物**（stdin 経由 JSON のライフサイクルフック） |
 
 **スラッシュコマンド**は、同名でも仕組み自体が違います。IDE のスラッシュコマンドの供給元は、**ステアリングファイル・エージェント・スキル**です（公式 [Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)）。Kiro が用意するステアリングコマンド（`/architecture-selection`・`/quick-spec`・`/bug-fix`）と組み込みサブエージェント（`/context-gatherer`・`/general-task-execution`）のほか、`inclusion: manual` または `inclusion: auto` のステアリングファイルやユーザーが作成したエージェント・スキルが `/` メニューに並びます。CLI 版の固定コマンド一覧を IDE に当てはめないでください。
 
 > 本サイトで Kiro CLI 版のページにリンクするときは、上記のとおり **`docs/cli/v3/` を指す**規約にしています。
+>
+> **V3 と 3.0 は別の言葉です。** V3 は Kiro IDE・Kiro Web と同じ統一ハーネスを端末で動かす **ハーネスの世代**で、公式ドキュメント [What's new in CLI V3](https://kiro.dev/docs/cli/v3/) は「An early release of Kiro CLI V3 is now available」と書き、`kiro-cli --v3` で opt-in します。3.0 は Kiro CLI の **版番号**で、公式ブログ [Kiro CLI V3 is rolling out as the default experience](https://kiro.dev/blog/cli-3/)（2026-10-09）が公開を予告したものです。本サイトは CLI 側の機能を V3 と呼び、3.0 とは書きません。
 
 ---
 

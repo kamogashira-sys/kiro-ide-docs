@@ -9,7 +9,7 @@
 > **本ページは使い方の解説です。** フィールドの一覧や capability の全種類は
 > [04_reference/03_permissions.md](../04_reference/03_permissions.md) を引いてください。
 >
-> **Kiro CLI 版の対応ページ**: [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions)（CLI 3.0 Early Access）。
+> **Kiro CLI 版の対応ページ**: [`docs/cli/v3/permissions`](https://kiro.dev/docs/cli/v3/permissions)（Kiro CLI V3・early release）。
 > **CLI 2.x は旧モデル**です。
 
 ---

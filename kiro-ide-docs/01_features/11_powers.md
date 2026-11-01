@@ -4,7 +4,7 @@
 
 - **一次情報**: [Powers](https://kiro.dev/docs/powers/)（公式ページ更新日: 2026-10-21）・[Install powers](https://kiro.dev/docs/powers/installation/)（公式ページ更新日: 2026-10-23）・[Create powers](https://kiro.dev/docs/powers/create/)（公式ページ更新日: 2026-10-08）
 - **導入バージョン**: **1.0.288**（2026-08-07 ※§4.1.1 参照）
-- **Kiro CLI 版の対応ページ**: CLI 3.0（Early Access）で対応（利用・作成とも `v3` 扱い）。[`docs/cli/v3/`](https://kiro.dev/docs/cli/v3/) 配下に個別の Powers ページはなく、共通ページ [`docs/powers/`](https://kiro.dev/docs/powers/) が正
+- **Kiro CLI 版の対応ページ**: Kiro CLI V3（early release）で対応（利用・作成とも `v3` 扱い）。[`docs/cli/v3/`](https://kiro.dev/docs/cli/v3/) 配下に個別の Powers ページはなく、共通ページ [`docs/powers/`](https://kiro.dev/docs/powers/) が正
 
 > **これは何か**: **エージェントに、その場で必要な専門知識を渡す仕組みです。** MCP サーバをすべて事前に読み込むのではなく、
 > 会話中のキーワードに応じて Power を動的に読み込みます。「payment」「checkout」と言えば Stripe の Power が起動し、

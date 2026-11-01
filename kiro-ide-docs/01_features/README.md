@@ -63,7 +63,7 @@
 | 方針 | 内容 |
 |------|------|
 | **IDE 版の仕様として書く** | 本サイトは **Kiro IDE 版**を扱います。Kiro CLI と仕様が異なる箇所は明示し、CLI 側の詳細は姉妹サイト [q-cli-docs](https://github.com/kamogashira-sys/q-cli-docs) に委ねます |
-| **CLI 版へのリンクは v3 を指す** | IDE 1.0 の GA 機能（Permissions・Custom Agents・Hooks）に対応するのは **CLI 3.0（Early Access）**です。CLI 2.x の非 v3 ページは別仕様で、**特に hooks は完全な別物**です |
+| **CLI 版へのリンクは v3 を指す** | IDE 1.0 の GA 機能（Permissions・Custom Agents・Hooks）に対応するのは **Kiro CLI V3（early release）**です。CLI 2.x の非 v3 ページは別仕様で、**特に hooks は完全な別物**です |
 | **公式に記述のない内容は書かない** | 確認できない事項は「**未確認**」と明示します |
 | **公式ドキュメント間の食い違いは明示する** | 更新日を比べて新しい方を正とし、食い違いの存在自体も記載します（例: [05_hooks.md](05_hooks.md) のトリガー名） |
 
