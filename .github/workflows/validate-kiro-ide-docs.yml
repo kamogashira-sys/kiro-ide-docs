@@ -9,7 +9,10 @@ on:
       - 'README.md'
       - 'scripts/kiro-ide-docs/**'
       - 'Makefile'
-      - '.github/workflows/validate-kiro-ide-docs.yml'
+      - '.github/**'
+      - 'AGENTS.md'
+      - '.gitignore'
+      - '.kiro/skills/**'
   pull_request:
     branches: [ main ]
     paths:
@@ -17,7 +20,10 @@ on:
       - 'README.md'
       - 'scripts/kiro-ide-docs/**'
       - 'Makefile'
-      - '.github/workflows/validate-kiro-ide-docs.yml'
+      - '.github/**'
+      - 'AGENTS.md'
+      - '.gitignore'
+      - '.kiro/skills/**'
   schedule:
     # nightly。公式サイトの改廃によるリンク切れと、新バージョンの掲載漏れを検知する。
     # Kiro IDE は週次リリースのため、CLI 版より検知頻度を高く保つ必要がある。
@@ -79,12 +85,34 @@ jobs:
         run: make check-kiro-ide-urls-important
 
       # 新バージョンの掲載漏れ検知。3情報源の和集合で判定する（M-F）。
-      # 公式に新版が出たのに文書が追随していない場合ここで落ちる。
-      # ⚠️ ここでの failure は「文書のバグ」ではなく「更新作業が必要」の合図。
+      # 3値（0=変化なし・1=更新あり・3=未検証）を freshness-result 行から読み、
+      # ステップ出力 rc に入れる。このステップ自体は失敗させない（判定は後続のステップで行う）。
+      # ⚠️ shell: bash を必ず書く。省略すると `bash -e {0}` になり pipefail が効かず、
+      #    `make … | tee` の失敗が握りつぶされる（2026-10-31 の run 41245477430 で、
+      #    未掲載版2件を検知したのに success になった）。
+      # ⚠️ !cancelled() にする。暗黙の success() だと、前のステップ（リンク切れなど）が
+      #    失敗した夜に新版の検知まで止まる。
       - name: 新バージョン検知（nightly と手動のみ）
         id: freshness
-        if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
-        run: make check-kiro-ide-freshness 2>&1 | tee /tmp/fresh.log
+        if: ${{ !cancelled() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+        shell: bash
+        run: |
+          make check-kiro-ide-cloud-freshness 2>&1 | tee "$RUNNER_TEMP/fresh.log" || true
+          # sed は一致がなくても exit 0 を返すので、rc 行が無い場合も次の行に進み rc=3（未検証）になる
+          rc=$(sed -n 's/^freshness-result: rc=\([0-9][0-9]*\)$/\1/p' "$RUNNER_TEMP/fresh.log" | tail -n 1)
+          echo "rc=${rc:-3}" >> "$GITHUB_OUTPUT"
+          echo "::notice title=freshness-result::rc=${rc:-3}"
+
+      # 未掲載の版がある夜は run を失敗させ、Actions の失敗通知で利用者に知らせる。
+      # ⚠️ ここでの failure は「文書のバグ」ではなく「更新作業が必要」の合図。
+      # rc=3（未検証）は失敗させない（ネットワーク障害で毎晩赤くしないため。監視で扱う）。
+      # 起票を有効にした後も残す（open の site-update Issue が残ると起票が止まるため。K-7 (a)）。
+      - name: 更新検知を run の失敗として通知
+        if: ${{ !cancelled() && steps.freshness.outputs.rc == '1' }}
+        shell: bash
+        run: |
+          echo "::error title=freshness::公式に未掲載の版があります（rc=1）。版更新が必要です"
+          exit 1
 
       # 掲載漏れを Issue にして `kiro` ラベルを付ける。ラベルが付くと
       # Kiro Web のクラウドセッションのタスクになり、更新 PR まで自動で流れる。
@@ -96,14 +124,14 @@ jobs:
       # ⚠️ if: false で無効化してある。作業計画書 Phase 4-1 のドライランが通るまで
       #    有効化しない（有効化は `false &&` を削るだけ）。
       - name: 新版検知の失敗を Issue として起票（ドライラン後に有効化する）
-        if: false && steps.freshness.outcome == 'failure'
+        if: ${{ false && !cancelled() && steps.freshness.outputs.rc == '1' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           title="新バージョンの掲載漏れを検知"
           body=$(printf '%s\n\n```\n%s\n```\n' \
             "nightly の check-kiro-ide-freshness が失敗しました。未掲載版を反映してください。" \
-            "$(tail -40 /tmp/fresh.log)")
+            "$(tail -40 "$RUNNER_TEMP/fresh.log")")
           # 既存の open issue があれば重複起票せずコメントを足す
           n=$(gh issue list --label kiro --search "$title in:title" --state open \
               --json number -q '.[0].number')
