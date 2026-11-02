@@ -136,7 +136,7 @@ IAM Identity Center または AWS Builder ID のセッションが期限切れ�
 - **What's New** を開いたとき、そのタイトルの周りにフォーカスの枠が表示される問題
 - **Kiro Agent: Model Selection** 設定の説明がモデルのフォールバックに言及していた問題。モデルを選んでいないときにピッカーが見せるモデルを選ぶ設定である、という説明に修正した
 
-> セッション期限切れ後の再接続は [認証](../03_deployment/02_authentication.md#5-うまくいかないとき) を、Markdown Review のコピーとキーボードコメントは [エディタ基盤の Markdown Review](../01_features/10_editor.md#92-コメントして送る) を、コミットメッセージの充実は [コミットメッセージの AI 生成](../01_features/10_editor.md#31-コミットメッセージの-ai-生成) を参照してください。
+> セッション期限切れ後の再接続は [認証](../03_deployment/02_authentication.md#5-うまくいかないとき) を、Markdown Review のコピーとキーボードコメントは [エディタ基盤の Markdown Review](../01_features/10_editor.md#92-コメントして送る) を、コミットメッセージの充実は [コミットメッセージ生成が読む変更](../01_features/10_editor.md#35-コミットメッセージ生成が読む変更公式) を参照してください。
 
 ---
 
