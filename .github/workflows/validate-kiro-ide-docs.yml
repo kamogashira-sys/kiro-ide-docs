@@ -114,29 +114,34 @@ jobs:
           echo "::error title=freshness::公式に未掲載の版があります（rc=1）。版更新が必要です"
           exit 1
 
-      # 掲載漏れを Issue にして `kiro` ラベルを付ける。ラベルが付くと
-      # Kiro Web のクラウドセッションのタスクになり、更新 PR まで自動で流れる。
+      # 未掲載の版を Issue として起票する（5サイト更新自動化計画 T2-3 の 3-5）。
+      # - ラベルは判定用の `site-update` だけを付ける。`kiro` は付けない（人がスマホで付けて
+      #   Kiro Web のタスクを起動する。bot が付けると人の判断を通らずに起動してしまう）
+      # - open の `site-update` Issue があれば何もしない（コメントもしない。Kiro は Issue の
+      #   コメントをフィードバックとして読み、タスクを再実行するため）
+      # - 本文は固定文・版番号・run の URL だけ。上流の文字列やログを貼らない（インジェクション対策）。
+      #   版番号は規則（RULE）に一致する要素だけを残す
+      # - 作成直後にロックする（書き込み権限を持つ人以外がコメントできないようにする）
+      # - Issue は PR のマージ（Closes）で閉じる。PR が作られなかった場合は人が閉じる
       #
-      # ⚠️ ジョブ全体の failure() で判定してはいけない。リンク切れや
-      #    urls-important の一時的失敗でも真になり、「掲載漏れ」Issue を誤起票して
-      #    エージェントを誤起動させてしまう。freshness ステップの結果だけを見る。
-      #
-      # ⚠️ if: false で無効化してある。作業計画書 Phase 4-1 のドライランが通るまで
-      #    有効化しない（有効化は `false &&` を削るだけ）。
-      - name: 新版検知の失敗を Issue として起票（ドライラン後に有効化する）
+      # ⚠️ ジョブ全体の failure() で判定してはいけない。freshness ステップの rc だけを見る。
+      # ⚠️ if: false で無効化してある（有効化は PR-I3 で `false &&` を削る）。
+      - name: 更新を Issue として起票（PR-I3 で false && を外す）
         if: ${{ false && !cancelled() && steps.freshness.outputs.rc == '1' }}
+        shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          title="新バージョンの掲載漏れを検知"
-          body=$(printf '%s\n\n```\n%s\n```\n' \
-            "nightly の check-kiro-ide-freshness が失敗しました。未掲載版を反映してください。" \
-            "$(tail -40 "$RUNNER_TEMP/fresh.log")")
-          # 既存の open issue があれば重複起票せずコメントを足す
-          n=$(gh issue list --label kiro --search "$title in:title" --state open \
-              --json number -q '.[0].number')
-          if [ -n "$n" ]; then
-            gh issue comment "$n" --body "$body"
-          else
-            gh issue create --title "$title" --label kiro --body "$body"
+          if [ -n "$(gh issue list --label site-update --state open --json number --jq '.[0].number')" ]; then
+            echo "open の site-update Issue があるため起票しない"; exit 0
           fi
+          RULE='^[0-9]+(\.[0-9]+)*$'
+          # grep は一致0件で exit 1 を返し、-eo pipefail で step が止まるため || true で吸収する
+          versions=$(sed -n 's/^freshness-missing: //p' "$RUNNER_TEMP/fresh.log" | tail -n 1 \
+            | tr -d ' \r' | tr ',' '\n' | { grep -E "$RULE" || true; } | paste -sd, -)
+          body=$(printf '%s\n\n検知: %s\nrun: %s\n' \
+            "site-update スキルに従ってこのリポジトリを更新し、最後に PR を作成すること。PR 本文にこの Issue を閉じる Closes 行を書くこと。PR を作れない場合は、理由をこの Issue にコメントして終了すること。" \
+            "${versions:-（版番号を抽出できませんでした）}" "$RUN_URL")
+          url=$(gh issue create --title "サイト更新: 公式に未掲載の版があります" --label site-update --body "$body")
+          gh issue lock "$url"

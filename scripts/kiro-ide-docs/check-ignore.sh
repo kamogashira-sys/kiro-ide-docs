@@ -21,6 +21,11 @@ LOCAL_ONLY=(
   "work_records/20260801/x_worklog.md"
   "x_update_plan.md"
   ".claude/settings.local.json"
+  ".kiro/settings/mcp.json"
+  ".kiro/steering/x.md"
+  ".kiro/hooks/x.json"
+  ".kiro/specs/x/requirements.md"
+  ".kiro/cloud-runs/x/y.html"
 )
 
 # 公開対象: ignore されていたら NG
@@ -40,6 +45,9 @@ PUBLIC=(
   "kiro-ide-docs/04_reference/README.md"
   "scripts/kiro-ide-docs/check-ignore.sh"
   "Makefile"
+  "AGENTS.md"
+  ".github/UPDATE_GUIDE.md"
+  ".kiro/skills/site-update/SKILL.md"
 )
 
 echo "=== ローカル管理対象が除外されていることを確認 ==="
@@ -70,6 +78,16 @@ if [ -n "$tracked" ]; then
   fail=1
 else
   echo "  OK   local-only files are not tracked"
+fi
+
+echo "=== .kiro/ 配下でコミットされているのが Skill だけであることを確認 ==="
+kiro_tracked=$(git ls-files -co --exclude-standard .kiro | grep -v '^\.kiro/skills/' || true)
+if [ -n "$kiro_tracked" ]; then
+  echo "  FAIL .kiro/skills/ 以外が公開されうる状態です:"
+  echo "$kiro_tracked" | sed 's/^/    /'
+  fail=1
+else
+  echo "  OK   .kiro/ 配下で公開されうるのは .kiro/skills/ だけ"
 fi
 
 if [ "$fail" -eq 0 ]; then
