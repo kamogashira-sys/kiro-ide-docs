@@ -121,6 +121,9 @@ jobs:
       #   コメントをフィードバックとして読み、タスクを再実行するため）
       # - 本文は固定文・版番号・run の URL だけ。上流の文字列やログを貼らない（インジェクション対策）。
       #   版番号は規則（RULE）に一致する要素だけを残す
+      # - 固定文では SKILL.md のパスを明示する。クラウドセッションではリポの .kiro/skills/ が
+      #   Skill として登録されないことを実測したため（P1 スモークテスト。作業ディレクトリは
+      #   clone 先の親で、使える Skill は0件だった）
       # - 作成直後にロックする（書き込み権限を持つ人以外がコメントできないようにする）
       # - Issue は PR のマージ（Closes）で閉じる。PR が作られなかった場合は人が閉じる
       #
@@ -141,7 +144,7 @@ jobs:
           versions=$(sed -n 's/^freshness-missing: //p' "$RUNNER_TEMP/fresh.log" | tail -n 1 \
             | tr -d ' \r' | tr ',' '\n' | { grep -E "$RULE" || true; } | paste -sd, -)
           body=$(printf '%s\n\n検知: %s\nrun: %s\n' \
-            "site-update スキルに従ってこのリポジトリを更新し、最後に PR を作成すること。PR 本文にこの Issue を閉じる Closes 行を書くこと。PR を作れない場合は、理由をこの Issue にコメントして終了すること。" \
+            "このリポジトリのルートにある .kiro/skills/site-update/SKILL.md を最初に読み、その手順に従ってこのリポジトリを更新し、最後に PR を作成すること。PR 本文にこの Issue を閉じる Closes 行を書くこと。PR を作れない場合は、理由をこの Issue にコメントして終了すること。" \
             "${versions:-（版番号を抽出できませんでした）}" "$RUN_URL")
           url=$(gh issue create --title "サイト更新: 公式に未掲載の版があります" --label site-update --body "$body")
           gh issue lock "$url"
