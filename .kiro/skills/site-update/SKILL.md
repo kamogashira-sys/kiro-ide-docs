@@ -41,7 +41,7 @@ description: このリポジトリ（猫でもわかる系の非公式解説サ�
 | 手順書 | `.github/UPDATE_GUIDE.md` |
 | 3値の freshness | `make check-kiro-ide-cloud-freshness` |
 | クラウド用の一括検証 | `make check-kiro-ide-cloud`（手順書 §14） |
-| changelog 以外のページへの反映 | 手順書 §6.6（対応表を PR 本文の「更新計画」に書く）と §6.4 の同期 |
+| changelog 以外のページへの反映 | 手順書 §6.6（項目ごとに1行の対応表。「該当箇所なし」には検索語と件数を書く。出典行の更新日を手順3b で一括実測する）と §6.4 の同期 |
 | PR 本文の節 | 手順書 §15.1 の4節（更新計画・実施内容・検証結果・未確認・据え置き） |
 | リリースノート | `.github/release-notes/v<版>.md`（手順書 §15.2） |
 
