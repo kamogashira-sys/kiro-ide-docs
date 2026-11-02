@@ -21,7 +21,7 @@
         check-kiro-ide-structure \
         check-kiro-ide-coverage check-kiro-ide-counts check-kiro-ide-notation \
         check-kiro-ide-consistency check-kiro-ide-urls check-kiro-ide-urls-important \
-        check-kiro-ide-freshness \
+        check-kiro-ide-freshness check-kiro-ide-cloud-freshness \
         check-kiro-ide-cloud fetch-kiro-ide-primary \
         extract-kiro-ide-changelog
 
@@ -66,6 +66,7 @@ help:
 	@echo "  make check-kiro-ide-urls           # 外部 URL の到達性（全件）"
 	@echo "  make check-kiro-ide-urls-important # 重要 URL のみ（切り分け用）"
 	@echo "  make check-kiro-ide-freshness      # 新バージョン検知（3情報源の和集合）"
+	@echo "  make check-kiro-ide-cloud-freshness # 同上の3値版（0=変化なし・1=更新あり・3=未検証）。末尾に freshness-result: rc=N"
 	@echo ""
 	@echo "クラウドセッション用（★外部サイトに依存。スナップショットが無い環境向け）:"
 	@echo "  make check-kiro-ide-cloud          # 公開範囲＋全チェック＋一次情報取得＋網羅性＋新版検知＋重要URL"
@@ -148,7 +149,7 @@ fetch-kiro-ide-primary:
 check-kiro-ide-cloud: check-kiro-ide-ignore check-kiro-ide-all fetch-kiro-ide-primary
 	@echo ""
 	@$(SCRIPTS)/check-coverage.py --html-dir "$(CLOUD_HTML_DIR)"
-	@$(MAKE) --no-print-directory check-kiro-ide-freshness
+	@$(MAKE) --no-print-directory check-kiro-ide-cloud-freshness
 	@$(MAKE) --no-print-directory check-kiro-ide-urls-important
 	@echo ""
 	@echo "✅ クラウドセッション用の全検証が完了しました"
@@ -218,6 +219,13 @@ check-kiro-ide-urls-important:
 # ⚠️ フィード単独では版を取り落とす（1.0.165 の実例）ため和集合が必須（M-F）。
 check-kiro-ide-freshness:
 	@$(SCRIPTS)/check-freshness.py
+
+# 3値の新バージョン検知（nightly とクラウド用）。make はレシピの非0をすべて exit 2 にするため、
+# スクリプトの終了コードを freshness-result 行で出す（0=変化なし・1=更新あり・3=未検証）。
+# --strict はスナップショットを読まず、1系統でも取得に失敗したら 3 を返す。
+check-kiro-ide-cloud-freshness:
+	@$(SCRIPTS)/check-freshness.py --strict; rc=$$?; \
+	echo "freshness-result: rc=$$rc"; exit $$rc
 
 # ------------------------------------------------------------
 # 保守用（取得済み HTML を対象にするため check-*-all には含めない）

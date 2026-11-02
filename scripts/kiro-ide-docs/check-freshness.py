@@ -4,7 +4,9 @@
 使用方法:
     ./scripts/kiro-ide-docs/check-freshness.py
     ./scripts/kiro-ide-docs/check-freshness.py --offline   # 手元スナップショットのみで検証
+    ./scripts/kiro-ide-docs/check-freshness.py --strict    # 3値（0/1/3）で判定する（nightly・クラウド用）
     make check-kiro-ide-freshness
+    make check-kiro-ide-cloud-freshness                     # --strict。末尾に freshness-result: rc=N
 
 目的:
     公式に新バージョンが出たのに文書が追随していない状態を検知する。
@@ -23,9 +25,24 @@
       ② 新系列が新設されるとその URL を知らないと取得できない → ③ で補う
       ③ 日付が取れない。パッチは系列ページ内なので URL に現れない
 
-exit コード:
+exit コード（オプション無し）:
     0 … 文書が追随している（または情報源を取得できず手動確認を促した）
     1 … 未掲載の版がある／情報源の構造が変わった疑いがある
+
+exit コード（--strict）。上から順に判定する:
+    3 … 未検証。文書ファイルが無い／情報源の構造変化の疑い／
+         3系統のどれか1つでも取得に失敗した（系列ページは1本でも失敗したら失敗）。
+         未掲載の版があっても 3 を優先する（取得できた範囲だけで「更新あり」と言わない）
+    1 … 未掲載の版がある。`freshness-missing: <版>,<版>` の1行を出す
+         （カンマ区切り・空白なし。起票ステップが版番号の抽出に使う）
+    0 … 文書が追随している
+    --strict では 06_embedded-docs のスナップショットを読まず、② も必ず取得する
+    （スナップショットはローカルにだけあり、CI・クラウドには無いため。結果を環境で変えない）。
+
+環境変数（未設定なら既定の URL を使う。試験で取得先を到達不能にするために使う）:
+    KIDE_FEED_URL    … ① フィード
+    KIDE_SERIES_URL  … ② 系列ページ（`{}` に系列のスラッグが入る。例 https://kiro.dev/changelog/ide/{}/）
+    KIDE_SITEMAP_URL … ③ sitemap
 
 設計メモ:
     - **外部依存のため `check-kiro-ide-all` と CI（PR）には含めない**手動ターゲット。
@@ -46,9 +63,9 @@ CHANGELOG = f"{DOC_ROOT}/02_update/01_changelog.md"
 CHANGELOG_0X = f"{DOC_ROOT}/02_update/02_changelog-0x.md"
 SNAPSHOT_DIR = f"{DOC_ROOT}/06_embedded-docs"
 
-FEED_URL = "https://kiro.dev/changelog/feed.atom"
-SITEMAP_URL = "https://kiro.dev/sitemap.xml"
-SERIES_URL = "https://kiro.dev/changelog/ide/{}/"
+FEED_URL = os.environ.get("KIDE_FEED_URL") or "https://kiro.dev/changelog/feed.atom"
+SITEMAP_URL = os.environ.get("KIDE_SITEMAP_URL") or "https://kiro.dev/sitemap.xml"
+SERIES_URL = os.environ.get("KIDE_SERIES_URL") or "https://kiro.dev/changelog/ide/{}/"
 
 UA = "Mozilla/5.0 (compatible; kiro-ide-docs-freshness-check)"
 
@@ -85,6 +102,16 @@ SERIES_RELEASE_LABEL = {
 
 warnings = []
 notes = []
+STRICT = False
+EXIT_UNVERIFIED = 3
+
+
+def exit_unverified(reason):
+    """--strict のとき、未検証（rc=3）として終える。"""
+    print("")
+    print(f"⚠️  未検証です（--strict）: {reason}")
+    print("   → 「更新なし」でも「更新あり」でもありません。rc=3 で終えます")
+    sys.exit(EXIT_UNVERIFIED)
 
 
 def repo_root():
@@ -141,6 +168,8 @@ def doc_versions():
     for path in (CHANGELOG, CHANGELOG_0X):
         if not os.path.isfile(path):
             print(f"❌ {path} がありません")
+            if STRICT:
+                exit_unverified(f"{path} がありません")
             sys.exit(1)
         with open(path, encoding="utf-8") as f:
             for ln in f:
@@ -230,8 +259,18 @@ def slug_to_version(slug):
 
 
 def main():
+    global STRICT
     os.chdir(repo_root())
-    offline = "--offline" in sys.argv[1:]
+    args = sys.argv[1:]
+    offline = "--offline" in args
+    STRICT = "--strict" in args
+    unknown_args = [a for a in args if a not in ("--offline", "--strict")]
+    if unknown_args:
+        print(f"❌ 不明な引数: {' '.join(unknown_args)}")
+        sys.exit(EXIT_UNVERIFIED if STRICT else 1)
+    if STRICT and offline:
+        print("❌ --strict と --offline は併用できません（--strict は必ず公式から取得します）")
+        sys.exit(EXIT_UNVERIFIED)
 
     print("=== Kiro IDE 新バージョン検知（3情報源の和集合 vs 文書） ===")
     print("")
@@ -243,6 +282,7 @@ def main():
 
     official = set()          # 公式で確認できた版の和集合
     sources_ok = []           # 実際に取得できた情報源
+    fetch_failed = []         # 取得に失敗した情報源（--strict の判定に使う）
     structure_error = []      # 取得できたのに抽出できなかった情報源
 
     # ---- ① フィード ----
@@ -252,6 +292,7 @@ def main():
         print(f"🔍 ① フィードを取得中... ({FEED_URL})")
         text = fetch(FEED_URL)
         if text is None:
+            fetch_failed.append("①フィード")
             warnings.append(
                 f"① フィードを取得できませんでした（ネットワークの問題）。手動確認: "
                 f"curl -sS {FEED_URL} | grep -c '<entry>'"
@@ -282,7 +323,7 @@ def main():
         local = os.path.join(SNAPSHOT_DIR, f"{slug}.html")
         html = None
         src = ""
-        if os.path.isfile(local):
+        if not STRICT and os.path.isfile(local):
             with open(local, encoding="utf-8", errors="replace") as f:
                 html = f.read()
             src = "スナップショット"
@@ -290,6 +331,8 @@ def main():
             html = fetch(SERIES_URL.format(slug))
             src = "取得"
         if html is None:
+            if src == "取得":
+                fetch_failed.append(f"②系列 {s}")
             warnings.append(f"② 系列 {s} のページを取得できませんでした（{slug}.html）")
             continue
         idx = patch_index(html)
@@ -321,6 +364,7 @@ def main():
         print(f"🔍 ③ sitemap を取得中... ({SITEMAP_URL})")
         text = fetch(SITEMAP_URL)
         if text is None:
+            fetch_failed.append("③sitemap")
             warnings.append("③ sitemap を取得できませんでした（ネットワークの問題）")
         else:
             slugs = sitemap_entries(text)
@@ -352,7 +396,15 @@ def main():
             print(f"   - {s}")
         print("")
         print("❌ 検知の前提が崩れています（サイト改修の可能性・R8）")
+        if STRICT:
+            exit_unverified("情報源の構造変化の疑い（スクリプトの修正が必要で、版更新では解決しない）")
         sys.exit(1)
+
+    if STRICT and fetch_failed:
+        print(f"⚠️  取得に失敗した情報源 {len(fetch_failed)} 件: {' / '.join(fetch_failed)}")
+        for w in warnings:
+            print(f"   - {w}")
+        exit_unverified("取得に失敗した情報源があります")
 
     if not sources_ok:
         print("⚠️  情報源を1つも取得できませんでした（未検証です）")
@@ -399,6 +451,8 @@ def main():
         print("")
         print("   → 手順書（05_meta/10_version-update-guide.md）の更新フローを開始してください")
         print("❌ 文書が公式に追随していません")
+        if STRICT:
+            print(f"freshness-missing: {','.join(missing)}")
         sys.exit(1)
 
     print("")
