@@ -11,7 +11,7 @@
 #     （クローン直後・CI では未検証。出力に警告を表示します）
 #   - 外部依存のターゲット（-urls / -freshness）は all に含まれません
 #   検証スクリプトを新規作成・改修したときは、意図的に文書を壊して検出されることを
-#   確認してください（ネガティブテスト）。手順は 05_meta/10_version-update-guide.md §11.4。
+#   確認してください（ネガティブテスト）。手順は .github/UPDATE_GUIDE.md §11.4。
 
 .DEFAULT_GOAL := help
 
@@ -185,7 +185,7 @@ check-kiro-ide-coverage:
 	else \
 	    echo "⚠️  網羅性チェックをスキップ: $(HTML_DIR) に一次情報 HTML がありません"; \
 	    echo "   → これは「検証して合格した」ではありません（未検証です）"; \
-	    echo "   取得手順は 05_meta/10_version-update-guide.md を参照"; \
+	    echo "   取得手順は .github/UPDATE_GUIDE.md §5.6 を参照"; \
 	fi
 
 # 正準値（D12 の2本柱: 機能数・ショートカット数）を表の実体から数え、
@@ -232,7 +232,7 @@ check-kiro-ide-cloud-freshness:
 # ------------------------------------------------------------
 # 公式 changelog ページの HTML から本文構造（版番号・日付・Improvements/Fixes）を抽出する。
 # 対象は FILES で渡す。例: make extract-kiro-ide-changelog FILES="/tmp/1-0.html" ARGS=--text
-# HTML の取得手順は 05_meta/10_version-update-guide.md を参照（末尾スラッシュと UA が必須）。
+# HTML の取得手順は .github/UPDATE_GUIDE.md §5.6 を参照（末尾スラッシュと UA が必須）。
 FILES ?=
 ARGS ?=
 extract-kiro-ide-changelog:

@@ -28,7 +28,7 @@
     - セクション配下の箇条書きは `groups`（`<p><strong>ラベル</strong></p>` で束ねられた組）に
       入ることがある。`items` だけを数えると 0.8.135 が「0項目」に見える（実際は33項目）。
 
-ネットワークは使わない。HTML の取得手順は `05_meta/10_version-update-guide.md` を参照。
+ネットワークは使わない。HTML の取得手順は `.github/UPDATE_GUIDE.md` §5.6 を参照。
 """
 import argparse
 import glob
@@ -167,7 +167,7 @@ def main():
         if not html_dir:
             print("⚠️  一次情報が指定されていないためスキップしました")
             print("   使い方: check-coverage.py --html-dir <dir> | --json <file>")
-            print("   （一次情報の取得手順は 05_meta/10_version-update-guide.md を参照）")
+            print("   （一次情報の取得手順は .github/UPDATE_GUIDE.md §5.6 を参照）")
             return 0
         files = sorted(glob.glob(os.path.join(html_dir, "*.html")))
         if not files:

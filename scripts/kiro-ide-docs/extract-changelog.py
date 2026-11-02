@@ -14,7 +14,7 @@ kiro.dev は Next.js（App Router）で構築されており、ページ本文�
     python3 extract-changelog.py 1-0.html            # JSON
     python3 extract-changelog.py --text 1-0.html     # 人が読む形
 
-重要な前提（`05_meta/10_version-update-guide.md` §3・§5 と対応）:
+重要な前提（`.github/UPDATE_GUIDE.md` §3・§5 と対応）:
 
 - ページ左の「Latest Patches」ブロックにある `"patches":[{id,version,date}]` は
   **ナビゲーションの索引**であり、version と date しか持たない。
