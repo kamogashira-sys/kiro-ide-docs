@@ -538,10 +538,12 @@ make fetch-kiro-ide-primary && make check-kiro-ide-cloud HTML_DIR=/tmp/kiro-ide-
   for v in re.findall(r'"version":"(1\.\d+\.\d+)"',s):
       if v not in seen: seen.append(v)
   print(len(seen), ', '.join(seen))
+  labels=sorted(set(re.findall(r'"((?:macOS|Windows|Linux)[^"()]{0,40}\([^"()]{2,60}\))"',s)))
+  print(len(labels), ' / '.join(labels))
   PY
   ```
 
-- 同期のあと、旧い最新版の文字列で取り残しを探す: `git grep -n -F '<旧最新版>' -- README.md kiro-ide-docs`。出た行を1件ずつ「最新版の主張（更新する）」か「履歴の参照（残す。§13 の6）」に分ける。更新する行は、版番号だけを差し替えない。**同じ文の中の件数・一覧・主張を数え直す**（例: `kiro-ide-docs/03_deployment/01_installation.md` の「1.x 系は 1.0.0 までの N 版」は、上のダウンロードページのコマンドが出す件数にする。配布ファイルの表記の種類も、そのページから数え直す）
+- 同期のあと、旧い最新版の文字列で取り残しを探す: `git grep -n -F '<旧最新版>' -- README.md kiro-ide-docs`。出た行を1件ずつ「最新版の主張（更新する）」か「履歴の参照（残す。§13 の6）」に分ける。更新する行は、版番号だけを差し替えない。**同じ文の中の件数・一覧・主張を数え直す**（例: `kiro-ide-docs/03_deployment/01_installation.md` の「1.x 系は 1.0.0 までの N 版」は、上のダウンロードページのコマンドが出す件数にする。配布ファイルの表記の種類は、上のコマンドの2行目（埋め込みデータ全体から取った表記）の件数にする。画面に見える部分の HTML だけで数えない）
 
 ### 6.5 0.x の扱い
 
@@ -573,13 +575,13 @@ changelog に版を加えただけでは更新は終わりません。新しい�
 
 ### 6.6.1 項目ごとの検索（手順2）
 
-リポジトリのルートで実行します。`for` の語を項目ごとに入れ替えます。見出しの検索は拡張正規表現なので、語に `+`・`.`・`(` などを含むときは `\` を付けます。
+リポジトリのルート（`Makefile` と `kiro-ide-docs/01_features/` がある所）で実行します。クラウドのセッションでは作業ディレクトリがリポジトリの親になるので、先に `cd` でリポジトリへ移ります。`for` の語を項目ごとに入れ替えます。語は固定文字列として探すので、`+`・`.`・`(` などに `\` を付けません。本文は件数と先頭30行を出します。件数が1件以上で「該当箇所なし」と書くときは、この行番号を使って手順5a の説明を書きます。
 
 ```bash
 P="kiro-ide-docs/00_information kiro-ide-docs/01_features kiro-ide-docs/02_update/03_migration-to-1.0.md kiro-ide-docs/03_deployment kiro-ide-docs/04_reference"
-for t in 'Memory' 'バッジ'; do   # 項目ごとに語を入れ替える
-  echo "[$t] 見出し:"; git grep -n -i -E "^#+ .*$t" -- $P
-  echo "[$t] 本文: $(git grep -n -i -F "$t" -- $P | wc -l) 件"
+git rev-parse --show-toplevel >/dev/null && for t in 'Memory' 'バッジ'; do   # 項目ごとに語を入れ替える
+  echo "[$t] 見出し:"; git grep -n -i -F "$t" -- $P | grep -E '^[^:]+:[0-9]+:#+ '
+  echo "[$t] 本文: $(git grep -n -i -F "$t" -- $P | wc -l) 件"; git grep -n -i -F "$t" -- $P | head -30
 done
 ```
 
@@ -587,18 +589,19 @@ done
 
 ### 6.6.2 記録した更新日の一括実測（手順3b）
 
-リポジトリのルートで実行します。`SINCE` には、今回加える版のうち最も古い版のリリース日を入れます。出典行（公式ページへのリンクの直後に `（更新日: YYYY-MM-DD` か `（公式ページ更新日: YYYY-MM-DD` が続く形）の公式ページを1件ずつ取得し、記録と比べます。
+リポジトリのルート（`Makefile` と `kiro-ide-docs/01_features/` がある所）で実行します。クラウドのセッションでは作業ディレクトリがリポジトリの親になるので、先に `cd` でリポジトリへ移ります。`SINCE` には、今回加える版のうち最も古い版のリリース日を入れます。公式ページへのリンクの閉じ括弧から40字以内にある最初の日付（`（更新日: YYYY-MM-DD`・`・公式ページ更新日: YYYY-MM-DD`・表の日付の列など）を記録とみなし、公式ページを1件ずつ取得して比べます。日付が出典の更新日でない行も拾うことがあるので、`NEWER` の行は出典の更新日かどうかを見て使います。最後の行の `records`（拾った記録の数）を、PR 本文の対応表の前に書きます。
 
 ```bash
 SINCE=2026-10-27   # 今回加える版のうち最も古い版のリリース日
 python3 - "$SINCE" <<'PY'
 import re,glob,subprocess,sys
 M={m:i for i,m in enumerate("January February March April May June July August September October November December".split(),1)}
-pat=re.compile(r'\]\((https://kiro\.dev/docs/[^)#\s]*)(?:#[^)]*)?\)（(?:公式ページ)?更新日: ?(\d{4}-\d{2}-\d{2})')
+pat=re.compile(r'\]\((https://kiro\.dev/docs/[^)#\s]*)(?:#[^)]*)?\)[^\[\n]{0,40}?(\d{4}-\d{2}-\d{2})')
 rec=[]
 for f in sorted(glob.glob('kiro-ide-docs/0[0-4]_*/**/*.md',recursive=True)):
     for n,l in enumerate(open(f,encoding='utf-8'),1):
         rec+=[(u,d,f"{f}:{n}") for u,d in pat.findall(l)]
+if not rec: sys.exit('出典行が0件です。リポジトリのルートで実行していません')
 meas={}
 for u in sorted({r[0] for r in rec}):
     h=subprocess.run(['curl','-sSL','-A','Mozilla/5.0','--max-time','30',u if u.endswith('/') else u+'/'],capture_output=True,text=True).stdout
@@ -608,6 +611,7 @@ for u,d,loc in rec:
     m=meas[u]
     if not m: print('EMPTY',u,loc)          # 空はパターンの陳腐化を疑う（§2.1）
     elif m>d and m>=sys.argv[1]: print('NEWER',d,'->',m,u,loc)
+print(f"records={len(rec)} urls={len(meas)} newer={sum(1 for u,d,_ in rec if meas[u] and meas[u]>d and meas[u]>=sys.argv[1])} empty={sum(1 for v in meas.values() if not v)}")
 PY
 ```
 
@@ -620,7 +624,7 @@ PY
 ```bash
 U=https://kiro.dev/docs/ide/editor/markdown-review/ SEC=comment-on-a-document   # URL は末尾スラッシュ必須
 curl -sSL -A "Mozilla/5.0" -o /tmp/p.html "$U" && SEC="$SEC" python3 - <<'PY'
-import re,html,os
+import re,html,os,sys
 t=open('/tmp/p.html',encoding='utf-8').read()
 v=t[:t.find('self.__next_f')] if 'self.__next_f' in t else t
 v=re.sub(r'<(script|style)[^>]*>.*?</\1>','',v,flags=re.S)
@@ -632,6 +636,7 @@ for k,(p,l,i) in enumerate(H):
         e=next((q for q,l2,_ in H[k+1:] if l2<=l),len(v))
         s=re.sub(r'<(br|/p|/li|/h\d|/tr|/td|/th)[^>]*>','\n',v[p:e])
         print(re.sub(r'\n\s*\n+','\n',html.unescape(re.sub(r'<[^>]+>','',s))).strip())
+if SEC and SEC not in [i for _,_,i in H]: sys.exit(f'id {SEC} がありません。SEC を空にして一覧を出してください')
 PY
 ```
 
