@@ -2,7 +2,7 @@
 
 **Kiro IDE にサインインする5つの方法と、その選び方を扱います。**
 
-- **一次情報**: [Authentication](https://kiro.dev/docs/getting-started/authentication/)（公式ページ更新日: 2026-10-17）・[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)（公式ページ更新日: 2026-10-20。第5節）・公式 changelog [1.3.11](https://kiro.dev/changelog/ide/1-3-11/)・[1.4.0](https://kiro.dev/changelog/ide/1-4/)（第2.6節）
+- **一次情報**: [Authentication](https://kiro.dev/docs/getting-started/authentication/)（公式ページ更新日: 2026-10-29。§2.9 のセッション失効後の Reconnect はこの更新版で確認）・[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)（公式ページ更新日: 2026-10-20。第5節）・公式 changelog [1.3.11](https://kiro.dev/changelog/ide/1-3-11/)・[1.4.0](https://kiro.dev/changelog/ide/1-4/)（第2.6節）・[1.4.51](https://kiro.dev/changelog/ide/1-4-51/)（第2.9節）
 
 > **前提**: Kiro は AWS のアプリケーションですが、**AWS アカウントを用意しなくても単体で使えます**。
 > ダウンロードして外部アカウントの設定なしにすぐ使い始められる、というのが公式の説明です。
@@ -80,6 +80,16 @@ IDE 1.3.11 で、次の2点が変わりました（[1.3.11](../02_update/01_chan
 ### 2.8 サインアウト
 
 IDE のコマンドパレットで **Kiro: Sign Out** を実行します（現行の Authentication ページの記述）。
+
+### 2.9 セッションが失効したときの Reconnect（1.4.51）
+
+IDE 1.4.51 で、サインイン済みのセッションが失効したときに、より早く再接続できるようになりました（[1.4.51](../02_update/01_changelog.md#v1-4-51)）。公式の Authentication ページの記述は次のとおりです。
+
+- **AWS IAM Identity Center** または **AWS Builder ID** でサインインしたセッションが失効すると、Kiro IDE は **Your Kiro session expired. Reconnect to** に続けて Start URL または AWS Builder ID を表示します。**Reconnect** を選ぶと、同じ接続でサインインし直せます。サインイン方法を選び直したり、Start URL と AWS リージョンを入れ直したりする必要はなく、ブラウザでの手順を完了するだけです。
+- 再接続に成功すると、IDE は **Reconnected to Kiro** を表示します。
+- 失敗すると、IDE は **We could not reconnect to Kiro. Please sign in again.** と、通常のサインインを始める **Sign in** ボタンを表示します。管理者がそのサインイン方法を許可していない場合は、一般的な文言の代わりに管理者のサインインポリシーのメッセージが表示されます。
+- プロンプトを閉じるか、ブラウザでキャンセルすると、もう一度サインインするまでサインアウトした状態のままになります。
+- Kiro が再接続を促すのは、**IAM Identity Center または AWS Builder ID** でサインインした後だけです。GitHub・Google・外部 ID プロバイダーのサインインではこのプロンプトは出ず、これらでサインインすると、記憶していた IAM Identity Center または AWS Builder ID の接続は消えます。**Kiro: Sign Out** を実行した場合も消えるため、自分でサインアウトした後に再接続のプロンプトは出ません。
 
 ---
 

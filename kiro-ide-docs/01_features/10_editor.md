@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-15）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-29。§9.2 のコメントとキーボード操作はこの更新版で確認）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は
@@ -463,16 +463,36 @@ requirements・design・bugfix の文書は Spec モードで、behavior の文�
 
 ### 9.2 コメントして送る
 
+> **1.4.51 でキーボード操作とコピーが加わりました。** 本サイトの 1.3.11 対応版までの本節は「選択の隣にコメント欄が開き、**Comment for Kiro…** に書いて **Comment** を選ぶ／**Send N to Kiro** で送る」と書いていましたが、1.4.51 で、文章を選ぶとまず **Comment prompt** が表示され、そこからコピーやキーボードでのコメント追加・送信ができる形に変わりました（[1.4.51](../02_update/01_changelog.md#v1-4-51)）。
+
 | 順 | 操作（公式） |
 |----|------------|
-| 1 | 描画された文書の文章を選ぶ。選択の隣にコメント欄が開き、選んだ文章が引用される |
-| 2 | **Comment for Kiro…** に直したい内容を書いて **Comment** を選ぶ。コメントは最も近い見出しの下の Comments パネルに現れる |
-| 3 | 直したい箇所ごとに繰り返す |
-| 4 | **Send N to Kiro**（N はコメント数）を選ぶ。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる |
+| 1 | 描画された文書の文章を選ぶ。選択の隣に小さな **Comment prompt** が表示される。選択は文書に残るので、コメントせずに **Cmd/Ctrl+C** で文章をコピーすることもできる。**Escape** を押すと prompt を閉じる |
+| 2 | コメントの作成欄（composer）を開く: prompt を選ぶ、prompt に表示されたショートカット（Mac は **Cmd+Option+M**、Windows・Linux は **Ctrl+Alt+M**）を押す、または入力を始める。composer は選んだ文章を引用し、最初に入力した文字を保持する。日本語・中国語・韓国語などで IME を使って入力するときは、先に composer を開いてから入力する |
+| 3 | **Comment for Kiro…** に直したい内容を書く。**Enter** を押すか **Comment** を選ぶとコメントが保存される。**Shift+Enter** で改行する。コメントは最も近い見出しの下の Comments パネルに現れる |
+| 4 | 直したい箇所ごとに繰り返す |
+| 5 | **Send N to Kiro**（N はコメント数）を選ぶか、**Cmd/Ctrl+Enter** を押す。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる |
 
-- コメントは送信するまで Comments パネルに残りますが、**メモリ上にだけ**保持されます。レビューのパネルやウィンドウを再読み込みすると、未送信のコメントは消えます。大事なコメントは再読み込みの前に送信またはコピーしてください。
-- Kiro が作業している間、ボタンは **Kiro is reviewing...** と表示され、再送信できません。進捗・必要な承認・最終の応答は、コメントを受け取ったチャットセッションに表示されます。ターンが成功するとパネルは送信したコメントを消し、作業中に編集したコメントは残します。失敗したときは、コメントがエラーとともに残るので、直して再送信できます。
+#### キーボードショートカット（公式）
+
+| 場所 | キー | 結果 |
+|------|------|------|
+| 文章の選択時 | **Cmd/Ctrl+C** | 選択範囲をコピーする |
+| 文章の選択時 | **Cmd+Option+M**（Mac）・**Ctrl+Alt+M**（Windows・Linux） | コメントの composer を開く |
+| 文章の選択時 | **Escape** | Comment prompt を閉じる |
+| composer 内 | **Enter** | コメントを保存する |
+| composer 内 | **Shift+Enter** | 改行する |
+| パネル内の composer の外 | **Cmd/Ctrl+Enter** | すべてのコメントを送る（コメントが無ければ空の Comments パネルを開く） |
+| テキスト入りの新規コメント | **Cmd/Ctrl+Enter** | コメントを保存してすべてのコメントを送る |
+| 空の新規コメント | **Cmd/Ctrl+Enter** | すでにあるコメントを送る（無ければ空の Comments パネルを開く） |
+| テキスト入りの編集中コメント | **Cmd/Ctrl+Enter** | 変更を保存してすべてのコメントを送る |
+| 内容を消した編集中コメント | **Cmd/Ctrl+Enter** | 何もしない（消した編集からは送らない） |
+
+- コメントは送信するまで Comments パネルに残りますが、**一時的なもの**です。レビューのパネルやウィンドウを再読み込みすると、未送信のコメントは消えます。大事なコメントは再読み込みの前に送信またはコピーしてください。
+- Kiro が作業している間、ボタンは **Kiro is reviewing...** と表示されます。進捗・必要な承認・最終の応答は、コメントを受け取ったチャットセッションに表示されます。ターンが成功するとパネルは送信したコメントを消し、作業中に編集したコメントは残します。失敗したときは、コメントがエラーとともに残るので、直して再送信できます。
+- Kiro がレビュー中に **Cmd/Ctrl+Enter** を押すと、そのリクエストは待機します。現在の送信が終わり、コメントの composer が開いていない状態になると送られ、パネルに残っているコメントの最新の内容を送ります。何も残っていないとき、または現在の送信が失敗したときは、待機中のリクエストは破棄されます。
 - 送信前にコメントを変えるには、Comments パネルで選んで編集または削除します。パネルのヘッダーのコメントアイコンで Comments パネルを隠せます（隠している間は件数をアイコンに表示）。
+- Comments パネルは、その回の最初のコメントを追加したときに開き、送信したときに閉じます。自分で隠す・表示するの操作をすると、Kiro はその選択を以後のレビューのパネルでも覚えます。開いたままにしていればパネルは送信をまたいで開いたままになり、閉じていればコメントを追加しても開きませんが、送信が失敗したときはエラーを見せるために開きます。
 
 **送信先**: コメントは、**最後にフォーカスしたチャットセッション**に届きます。Kiro のセッションが1つもなければ、新しく作ってフォーカスします。レビューのパネルはセッションを所有しないため、送信の間に別のチャットセッションへ切り替えると、次の送信はそのセッションに届きます。送りたいセッションにフォーカスしてから送信してください。
 

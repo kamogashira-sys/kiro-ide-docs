@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを、1つのルールで全ツールに効かせる仕組みです。1.0 の中核機能です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20。§6 の Kiro スコープと信頼していないワークスペースの記述は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。§10 の出典）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-31。§6 の Kiro スコープと信頼していないワークスペースの記述、および §3 の Apply to（This workspace folder の表示）は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-29。§10 の出典。§10.2 のステータスバー表記はこの更新版で確認）
 - **辞書的な一覧**: [04_reference/03_permissions.md](../04_reference/03_permissions.md)（capability 15種・書式・既定の挙動）
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -76,6 +76,8 @@ IDE が実際の操作から**一般化したパターンを自動提案**しま
 | **This session** | メモリ上 | **セッション終了まで** |
 
 確定するとルールは**即座に有効**になり、以後同じ操作では確認されません。
+
+> **保存先フォルダの表示（1.4.51）**: 複数のワークスペースフォルダを持つウィンドウでは、Always allow と Always deny の **Apply to** の **This workspace** が **This workspace folder (folder-name)** と表示され、ルールがどのフォルダに保存されるかが分かります。この表示はルールの効き方を変えるものではなく、シェルコマンドのルールは引き続きセッション全体に効きます。どのワークスペースフォルダにも入らないファイル・フォルダでは、この選択肢は表示されません（[1.4.51](../02_update/01_changelog.md#v1-4-51)）。
 
 > **迷ったら This session を選ぶ**のが安全です。作業が終われば消えるので、後で見直せます。
 > 定着したものだけを This workspace や All workspaces に昇格させる進め方ができます。
@@ -253,7 +255,7 @@ rules:
 
 ### 10.2 使い方
 
-1. ステータスバーの **Command sandbox** を選びます。Kiro が有効な設定ファイルを開きます（プロジェクトのファイルがあればそれ、なければグローバルのファイル）。どちらも存在しないときは、`{"enabled": false}` を含むグローバルのファイルを作成します。
+1. ステータスバーの **Sandbox** を選びます（**Kiro IDE 1.4.51 以前はこの項目は Command sandbox** と表示されます。1.4.62 で **Sandbox** に短縮され、**Sandbox: Active**・**Sandbox: Off** のように表示されます。[1.4.62](../02_update/01_changelog.md#v1-4-62)）。Kiro が有効な設定ファイルを開きます（プロジェクトのファイルがあればそれ、なければグローバルのファイル）。どちらも存在しないときは、`{"enabled": false}` を含むグローバルのファイルを作成します。
 2. グローバルのファイルを直接開くには、コマンドパレットから **Open User Sandbox Config (JSON)** を実行します。
 3. `enabled` を `true` にして、ネットワークのモードを選びます。
 
