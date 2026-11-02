@@ -130,6 +130,8 @@ IDE のコマンドパレットで **Kiro: Sign Out** を実行します（現�
 |------|------|
 | Identity Center で `There was an error signing you in` と表示される | サブスクリプションが有効であることを確認する。IAM Identity Center の認証には有効なサブスクリプションが必要。Kiro のプロファイルは、現在 US East (N. Virginia) と Europe (Frankfurt) のリージョンで対応している |
 | Identity Center のセッションが期限切れになる | 既定のタイムアウトは8時間で、定期的に再認証が必要。管理者はより長いセッション時間を設定できる |
+
+> **セッション期限切れ後の再接続（1.4.51）**: changelog [1.4.51](../02_update/01_changelog.md#v1-4-51) によると、IAM Identity Center または AWS Builder ID のセッションが期限切れになったとき、**Reconnect** を選ぶと、サインイン方法を選び直したり Start URL と AWS Region を再入力したりせずに再サインインできます（サインインの完了はこれまでどおりブラウザで行います）。この挙動は、現時点の公式トラブルシューティングページ（更新日 2026-10-20）には記述がないため、changelog を出典としており、公式ページ本文では**未確認**です。
 | 組織の一部の利用者だけが接続できない。サインイン後に「No profiles available」と表示される | TLS インスペクションを行う社内のファイアウォールが、Kiro のエンドポイントへの接続を妨げることが、よくある原因として挙げられている。影響を受ける利用者が `curl -v https://runtime.us-east-1.kiro.dev` と `curl -v https://management.us-east-1.kiro.dev` で接続を確認する |
 | Windows でブラウザにリダイレクトされない | 管理者として開いたコマンドプロンプトで `--enable-logging` を付けて起動し、ログを確認する |
 | macOS でブラウザにリダイレクトされない | **Help → Toggle Developer Tools** の Console タブでエラーを確認する。`ioreg` コマンドが PATH にないことが、よくある原因として挙げられている |

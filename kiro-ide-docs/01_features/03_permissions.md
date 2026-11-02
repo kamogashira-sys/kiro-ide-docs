@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを、1つのルールで全ツールに効かせる仕組みです。1.0 の中核機能です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20。§6 の Kiro スコープと信頼していないワークスペースの記述は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。§10 の出典）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20。§6 の Kiro スコープと信頼していないワークスペースの記述は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-29。§10 の出典。§10.2 のステータスバー表記の 1.4.62 での短縮は、この更新版で確認）
 - **辞書的な一覧**: [04_reference/03_permissions.md](../04_reference/03_permissions.md)（capability 15種・書式・既定の挙動）
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -253,7 +253,9 @@ rules:
 
 ### 10.2 使い方
 
-1. ステータスバーの **Command sandbox** を選びます。Kiro が有効な設定ファイルを開きます（プロジェクトのファイルがあればそれ、なければグローバルのファイル）。どちらも存在しないときは、`{"enabled": false}` を含むグローバルのファイルを作成します。
+1. ステータスバーの **Sandbox** を選びます（例: **Sandbox: Active**・**Sandbox: Off**）。Kiro が有効な設定ファイルを開きます（プロジェクトのファイルがあればそれ、なければグローバルのファイル）。どちらも存在しないときは、`{"enabled": false}` を含むグローバルのファイルを作成します。
+
+> **ステータスバーの表記（1.4.62 で短縮）**: ステータスバーのサンドボックス項目は、**1.4.62** から **Command sandbox** ではなく **Sandbox** で始まります（公式 [Local command sandbox](https://kiro.dev/docs/sandbox/) は「In Kiro IDE 1.4.51 and earlier, this item is labeled Command sandbox」と記載）。1.4.51 以前は **Command sandbox** と表示されます（[1.4.62](../02_update/01_changelog.md#v1-4-62)）。
 2. グローバルのファイルを直接開くには、コマンドパレットから **Open User Sandbox Config (JSON)** を実行します。
 3. `enabled` を `true` にして、ネットワークのモードを選びます。
 
