@@ -21,7 +21,7 @@ description: このリポジトリ（猫でもわかる系の非公式解説サ�
 
 ③ **検証**: クラウド用の一括検証ターゲットが exit 0 になるまで直す。ただし一括検証の中の `freshness-result: rc=3` は直さず、⑥の方法で「未検証」と報告して終了する。
 
-④ **PR**: feature branch から PR を作る。本文は手順書が定める節と、起動した Issue を閉じる `Closes #<Issue 番号>` を含める。
+④ **PR**: feature branch から PR を作る。本文は手順書が定める節（見出しの名前をそのまま使う）と、起動した Issue を閉じる `Closes #<Issue 番号>` を含める。
 
 ⑤ **禁止**:
 - main への push、タグの作成、Release の公開
@@ -41,6 +41,7 @@ description: このリポジトリ（猫でもわかる系の非公式解説サ�
 | 手順書 | `.github/UPDATE_GUIDE.md` |
 | 3値の freshness | `make check-kiro-ide-cloud-freshness` |
 | クラウド用の一括検証 | `make check-kiro-ide-cloud`（手順書 §14） |
+| changelog 以外のページへの反映 | 手順書 §6.6（対応表を PR 本文の「更新計画」に書く）と §6.4 の同期 |
 | PR 本文の節 | 手順書 §15.1 の4節（更新計画・実施内容・検証結果・未確認・据え置き） |
 | リリースノート | `.github/release-notes/v<版>.md`（手順書 §15.2） |
 

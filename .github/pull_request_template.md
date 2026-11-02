@@ -67,6 +67,7 @@ Which Kiro IDE version does this change concern? (e.g., 1.0.242 / N/A)
 - 対象版と記述粒度の判定（L2 / L3b と、根拠の HTTP ステータス）:
 - 出典 URL（changelog・公式機能ページは更新日も）:
 - 更新対象ファイル:
+- changelog の項目ごとの対応表（手順書 §6.6 の手順6）:
 
 ### 実施内容
 
