@@ -244,7 +244,7 @@ if [ "$errors" -gt 0 ]; then
     echo ""
     echo "❌ URL チェックに失敗しました"
     echo "   → 403 が出た場合は UA が空になっていないか、301 が追えていないかを確認してください"
-    echo "   → 公式サイトの改廃なら本文の修正が必要です（05_meta/10_version-update-guide.md §5.7）"
+    echo "   → 公式サイトの改廃なら本文の修正が必要です（.github/UPDATE_GUIDE.md §5.7）"
     exit 1
 fi
 

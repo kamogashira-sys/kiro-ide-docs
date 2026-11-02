@@ -449,7 +449,7 @@ def main():
         for v in missing:
             print(f"   - {v}")
         print("")
-        print("   → 手順書（05_meta/10_version-update-guide.md）の更新フローを開始してください")
+        print("   → 手順書（.github/UPDATE_GUIDE.md）の更新フローを開始してください")
         print("❌ 文書が公式に追随していません")
         if STRICT:
             print(f"freshness-missing: {','.join(missing)}")
