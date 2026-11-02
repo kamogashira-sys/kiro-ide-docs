@@ -615,17 +615,17 @@ PY
 
 ### 6.6.3 公式の節の抽出（手順4）
 
-`U` に公式機能ページの URL（末尾スラッシュ付き）、`SEC` に節の見出しの id を入れます。`SEC` を空にすると、そのページの `h2`/`h3` の id の一覧を出します。
+1行目の `U` に公式機能ページの URL（末尾スラッシュ付き）、`SEC` に節の見出しの id を入れます。`SEC` を空にすると、そのページの `h2`/`h3` の id の一覧を出します。
 
 ```bash
-U=https://kiro.dev/docs/ide/editor/markdown-review/   # 末尾スラッシュ必須
-curl -sSL -A "Mozilla/5.0" -o /tmp/p.html "$U" && python3 - "$@" <<'PY'
-import re,html
+U=https://kiro.dev/docs/ide/editor/markdown-review/ SEC=comment-on-a-document   # URL は末尾スラッシュ必須
+curl -sSL -A "Mozilla/5.0" -o /tmp/p.html "$U" && SEC="$SEC" python3 - <<'PY'
+import re,html,os
 t=open('/tmp/p.html',encoding='utf-8').read()
 v=t[:t.find('self.__next_f')] if 'self.__next_f' in t else t
 v=re.sub(r'<(script|style)[^>]*>.*?</\1>','',v,flags=re.S)
 H=[(m.start(),m.group(1),m.group(2)) for m in re.finditer(r'<h([23]) id="([^"]+)"',v)]
-SEC='comment-on-a-document'   # 見出しの id。空にすると id の一覧を出す
+SEC=os.environ.get('SEC','')   # 見出しの id。空なら id の一覧を出す
 if not SEC: print('\n'.join(f'h{l} {i}' for _,l,i in H))
 for k,(p,l,i) in enumerate(H):
     if i==SEC:
