@@ -39,6 +39,7 @@ description: このリポジトリ（猫でもわかる系の非公式解説サ�
 | 項目 | 値 |
 |---|---|
 | 手順書 | `.github/UPDATE_GUIDE.md` |
+| 作業ブランチ | ①で rc=1 のとき、文書を変える前に `git switch -c docs/kiro-ide-<最新版>` を実行する（手順書 §11.2 の手順1b）。起動したブランチ（`main`・ドライランの `dryrun/…`）にはコミットしない。手順書 §14.3 の手順 C〜E は、現在のブランチが `main` か `base-branch` の値と同じなら止まる |
 | 3値の freshness | `make check-kiro-ide-cloud-freshness` |
 | クラウド用の一括検証 | `make check-kiro-ide-cloud`（手順書 §14）。版更新のときは、PR 本文をファイル書き込みツールで `.kiro/cloud-runs/<run_id>/pr-body.md` に書き、手順書 §14.3 の手順 A〜E（一括検証に `PR_BODY=` と `BASE=` を渡す・判定・push・PR 作成）を別々の呼び出しで行う。`impact-check-result: rc=3`、または rc 行が無いときは `freshness-result: rc=3` と同じく直さず⑥で「未検証」と報告する。`impact-check-result: rc=2` も直さず⑥で「前提の崩れ」と報告する（手順書 §14.3）。**共通部③の「exit 0 になるまで直す」の上限として、この行を優先する**: `impact-check-result: rc=1` が3回続いたら、直すのをやめて⑥で報告する |
 | changelog 以外のページへの反映 | `make kiro-ide-impact VERSIONS=<版>` の雛形を PR 本文の「更新計画」に貼り、行ごとに対応を書く（手順書 §6.6）。`make kiro-ide-removed` の出力を「削除・書き換えた既存の記述」に貼り、判断を書く |
