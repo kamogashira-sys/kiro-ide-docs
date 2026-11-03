@@ -836,6 +836,7 @@ PY
 | 順 | 作業 | 参照 |
 |----|------|------|
 | 1 | **差分列挙**（`make check-kiro-ide-cloud-freshness` の rc） | §5 |
+| 1b | **作業ブランチを作る**（版更新のとき、文書を変える前に1回）: `git switch -c docs/kiro-ide-<最新版>`。`git ls-remote --heads origin docs/kiro-ide-<最新版>` が行を出したら（同名のブランチがリモートにある）、末尾に `-2` などを足した名前にする。起動したブランチ（`main`、ドライランでは `dryrun/ide-<版>-rN`）にはコミットしない。§14.3 の手順 C〜E は、現在のブランチが `main` か `base-branch` の値と同じなら止まる | §14.3・§15.1 |
 | 2 | **階層判定**（L1 / L2 / L3a / L3b。専用ページの HTTP ステータスで判定） | §5.7・§6 |
 | 3 | **対応タイミングの判断** | §7 |
 | 4 | （L1・L2 の場合）**計画を作成**する。§6.6 の手順1〜3b をここで行い、更新対象ファイルを決める。手順1の `make kiro-ide-impact VERSIONS=<版>` の雛形を PR 本文の「更新計画」に貼る | §11.1・§6.6 |
@@ -1015,6 +1016,7 @@ make check-kiro-ide-cloud
 - **呼び出しをまたいだことの確かめ**: 手順 C は検査した HEAD と本文の sha256 を記録し、手順 D はそれが変わっていないことを確かめてから push し、送る本文の sha256 を記録します。手順 E は送る本文が変わっていないことを確かめてから PR を作ります。どの手順もリポジトリのルートで実行します（`sha256sum -c` が相対パスを読むため）。
 - 合否は `check-kiro-ide-cloud` の最後の行（`✅ クラウドセッション用の全検証が完了しました`）と `impact-check-result: rc=0` の行で判定します。make の終了コードでは判定しません（`tee` を挟むため）。
 - 手順 C〜E は bash・`sha256sum`（`-c --status`）・`awk` の `getline` を使います。
+- **作業ブランチの確かめ**: 手順 C〜E は、現在のブランチ（`git branch --show-current`）が空（detached HEAD）・`main`・`base-branch` の値のどれかなら止まります。`git push -u origin HEAD` が起動したブランチ（本番では `main`）へ直接 push するのを防ぐためです。止まったら §11.2 の手順1b で作業ブランチを作り（コミットはそのまま新しいブランチに載る）、手順 C からやり直します。
 
 **手順 A（run_id と置き場。手順8の最初に1回）**
 
@@ -1057,8 +1059,11 @@ fi
 
 ```bash
 d=.kiro/cloud-runs/<run_id>
+br=$(git branch --show-current)
 if [ ! -f "$d/base-branch" ]; then
   echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+elif [ -z "$br" ] || [ "$br" = main ] || [ "$br" = "$(cat "$d/base-branch")" ]; then
+  echo "作業ブランチにいません（現在: ${br:-detached HEAD}）。§11.2 の手順1b で作業ブランチを作ってから手順 C をやり直す"
 elif [ -n "$(git status --porcelain)" ]; then
   git status --porcelain
   echo "未コミットの変更があります。コミットするか、作業ファイルを $d/ に移す（git add -A で含めない）"
@@ -1075,8 +1080,11 @@ fi
 
 ```bash
 d=.kiro/cloud-runs/<run_id>; ISSUE=<Issue 番号。無ければ空>
+br=$(git branch --show-current)
 if [ ! -f "$d/base-branch" ]; then
   echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+elif [ -z "$br" ] || [ "$br" = main ] || [ "$br" = "$(cat "$d/base-branch")" ]; then
+  echo "作業ブランチにいません（現在: ${br:-detached HEAD}）。push しません。§11.2 の手順1b で作業ブランチを作ってから手順 C をやり直す"
 elif ! grep -q '^✅ クラウドセッション用の全検証が完了しました' "$d/cloud.log" || ! grep -qx 'impact-check-result: rc=0' "$d/cloud.log"; then
   echo "一括検証が合格していないので push しません"; grep -E '^(impact-check-result|freshness-result): rc=' "$d/cloud.log" || echo "impact-check-result の行がありません（未検証）"
 elif [ "$(git rev-parse HEAD)" != "$(cat "$d/tested-head")" ] || [ -n "$(git status --porcelain)" ] || ! sha256sum -c --status "$d/tested-body"; then
@@ -1124,6 +1132,8 @@ br=$(git branch --show-current)
 find_pr() { gh api "$R/pulls?head=kamogashira-sys:$br&state=open" --jq '.[0].number // empty'; }
 if [ ! -f "$d/base-branch" ]; then
   echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+elif [ -z "$br" ] || [ "$br" = main ] || [ "$br" = "$(cat "$d/base-branch")" ]; then
+  echo "作業ブランチにいません（現在: ${br:-detached HEAD}）。PR を作りません"
 elif ! sha256sum -c --status "$d/pushed-body" 2> /dev/null; then
   echo "push した後に本文（pr-body2.md）が変わったか、手順 D が push していません。PR を作りません（手順 D からやり直す）"
 elif ! n=$(find_pr); then
@@ -1145,7 +1155,8 @@ GET が失敗したときは、PR が無いと決めつけて POST しません�
 
 | 状況 | 扱い |
 |------|------|
-| `impact-check-result: rc=3`、または rc 行が無い | 直さない。PR を作らずに「未検証」と報告する（SKILL.md ⑥。Issue にコメント）。報告には `⚠` の行（取得に失敗した URL、または BASE・shallow・共通の祖先の理由）と、作業を push したブランチ名を書く。このときだけ、手順 D を通さずに `git push -u origin HEAD` を単独で実行して作業を残す（feature branch への push） |
+| `impact-check-result: rc=3`、または rc 行が無い | 直さない。PR を作らずに「未検証」と報告する（SKILL.md ⑥。Issue にコメント）。報告には `⚠` の行（取得に失敗した URL、または BASE・shallow・共通の祖先の理由）と、作業を push したブランチ名を書く。このときだけ、手順 D を通さずに `git push -u origin HEAD` を単独で実行して作業を残す（feature branch への push。実行する前に `git branch --show-current` が `main`・`base-branch` の値・空のどれでもないことを確かめる。どれかに当たるときは、§11.2 の手順1b で作業ブランチを作ってから push する） |
+| 手順 C・D・E で「作業ブランチにいません」 | §11.2 の手順1b で作業ブランチを作り、手順 C からやり直す（rc=1 の回数には数えない）。手順 E で出たときは、手順 D の push 先を報告する |
 | `impact-check-result: rc=2` | 直さない（引数か BASE の取り違えで、文書を直しても通らない）。「前提の崩れ」として、`❌` の行と、`git rev-parse --abbrev-ref HEAD`・`git rev-parse --is-shallow-repository`・`cat .kiro/cloud-runs/<run_id>/base-branch` の出力を報告する |
 | `impact-check-result: rc=1` | エラーの一覧（1回の実行で全件を出す）に従って本文か文書を直し、コミットしてから手順 C をやり直す |
 | rc=1 が3回続いた | 直すのをやめ、rc=3 と同じ形で報告する。報告に最後のエラーの一覧を書く |
