@@ -338,7 +338,13 @@ def check_removed(body, B):
 # PR の取得（--pr）
 # ------------------------------------------------------------
 def fetch_pr(n):
-    r = subprocess.run(["gh", "api", f"repos/{GH_REPO_SLUG}/pulls/{n}"], capture_output=True, text=True)
+    try:
+        r = subprocess.run(["gh", "api", f"repos/{GH_REPO_SLUG}/pulls/{n}"],
+                           capture_output=True, text=True, timeout=60)
+    except FileNotFoundError:
+        raise Fail(3, "gh が見つかりません（PATH を確認）")
+    except subprocess.TimeoutExpired:
+        raise Fail(3, "gh api が 60 秒以内に終わりません")
     if r.returncode:
         lines = [l for l in r.stderr.strip().split("\n") if l.strip()]
         raise Fail(3, lines[-1] if lines else f"gh api が失敗しました（rc={r.returncode}）")
@@ -468,6 +474,9 @@ def main(argv=None):
         return run(a)
     except Fail as e:
         return ir.report(e)
+    except Exception as e:
+        print(f"⚠ 予期しない例外: {type(e).__name__}: {e}（未検証）")
+        return 3
 
 
 if __name__ == "__main__":

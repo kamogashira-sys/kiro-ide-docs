@@ -335,8 +335,11 @@ class OfficialPages:
             return self.cache[path]
         url = self.origin + path
         fn = os.path.join(self.tmp.name, f"{len(self.cache)}.html")
-        r = subprocess.run(["curl", "-sSL", "-A", UA, "--max-time", "30", "-o", fn,
-                            "-w", "%{http_code}", url], capture_output=True, text=True)
+        try:
+            r = subprocess.run(["curl", "-sSL", "-A", UA, "--max-time", "30", "-o", fn,
+                                "-w", "%{http_code}", url], capture_output=True, text=True)
+        except FileNotFoundError:
+            raise Fail(3, "curl が見つかりません（PATH を確認）")
         code = r.stdout.strip() or "000"   # curl は接続できないと 000 を出す
         page = {"url": url, "http": code, "html": None}
         if r.returncode == 0 and code == "200":
@@ -890,6 +893,9 @@ def main(argv=None):
         return {"table": cmd_table, "removed": cmd_removed, "section": cmd_section}[a.cmd](a)
     except Fail as e:
         return report(e)
+    except Exception as e:
+        print(f"⚠ 予期しない例外: {type(e).__name__}: {e}（未検証）")
+        return 3
 
 
 if __name__ == "__main__":
