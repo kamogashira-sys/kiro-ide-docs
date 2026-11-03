@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを、1つのルールで全ツールに効かせる仕組みです。1.0 の中核機能です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20。§6 の Kiro スコープと信頼していないワークスペースの記述は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-29。§10.2 のステータスバー表記は、この更新版で確認）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20。§6 の Kiro スコープと信頼していないワークスペースの記述は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。§10 の出典）
 - **辞書的な一覧**: [04_reference/03_permissions.md](../04_reference/03_permissions.md)（capability 15種・書式・既定の挙動）
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -253,7 +253,7 @@ rules:
 
 ### 10.2 使い方
 
-1. ステータスバーの **Sandbox** を選びます（1.4.51 以前は **Command sandbox** という表記です。公式 [Local command sandbox](https://kiro.dev/docs/sandbox/)・[1.4.62](../02_update/01_changelog.md#v1-4-62)）。Kiro が有効な設定ファイルを開きます（プロジェクトのファイルがあればそれ、なければグローバルのファイル）。どちらも存在しないときは、`{"enabled": false}` を含むグローバルのファイルを作成します。
+1. ステータスバーの **Command sandbox** を選びます。Kiro が有効な設定ファイルを開きます（プロジェクトのファイルがあればそれ、なければグローバルのファイル）。どちらも存在しないときは、`{"enabled": false}` を含むグローバルのファイルを作成します。
 2. グローバルのファイルを直接開くには、コマンドパレットから **Open User Sandbox Config (JSON)** を実行します。
 3. `enabled` を `true` にして、ネットワークのモードを選びます。
 
