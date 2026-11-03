@@ -67,7 +67,7 @@ Which Kiro IDE version does this change concern? (e.g., 1.0.242 / N/A)
 - 対象版と記述粒度の判定（L2 / L3b と、根拠の HTTP ステータス）:
 - 出典 URL（changelog・公式機能ページは更新日も）:
 - 更新対象ファイル:
-- changelog の項目ごとの対応表（手順書 §6.6 の手順6。列は 版 / changelog 項目 / 検索語と件数 / 本サイトのファイルと節 / 公式ページと更新日 / 対応）:
+- changelog の項目ごとの対応表（手順書 §6.6 の手順6。`make kiro-ide-impact` の雛形の列で、`ID`・`changelog 項目`・`対応` は必須）:
 
 ### 実施内容
 
@@ -79,6 +79,7 @@ Which Kiro IDE version does this change concern? (e.g., 1.0.242 / N/A)
 - `counts` の4値（機能 / ショートカット / capability / プロバイダ）:
 - `freshness` の未掲載版:
 - `urls-important` のエラー件数:
+- `check-kiro-ide-impact` の最後の行（`対応表: …`）と、`変更不要:`・`反映した（出典行だけ）:` の一覧（版更新のとき）:
 
 ### 未確認・据え置き
 

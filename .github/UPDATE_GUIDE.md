@@ -555,16 +555,16 @@ changelog に版を加えただけでは更新は終わりません。新しい�
 
 | 順 | 作業 |
 |----|------|
-| 1 | 新しい版の公式 changelog（本文・Improvements・Fixes）を項目ごとに並べる |
-| 2 | 項目ごとに、本サイトの該当箇所を `git grep` で探す。検索先は `kiro-ide-docs/00_information/`・`kiro-ide-docs/01_features/`・`kiro-ide-docs/02_update/03_migration-to-1.0.md`・`kiro-ide-docs/03_deployment/`・`kiro-ide-docs/04_reference/`。検索語は (a) 項目の題と本文に出る機能名・画面名・設定名・キーを**英語の原文のまま**（例: `Memory`・`Markdown Review`・`Apply to`・`Memory created`・`Command sandbox`・`Select model`）、(b) その本サイトでの訳語、(c) 項目が変える前の表記（例: `Command sandbox`）。検索は §6.6.1 のコマンドで、見出しと本文の2本を1回のシェル実行で行う。見出しに当たった節は必ず読む |
+| 1 | `make kiro-ide-impact VERSIONS=<版>`（版は `freshness-missing:` の行の版。カンマ区切り）を実行し、出力の対応表の雛形・§6.4 の同期対象・公式の節の抜粋を得る。雛形は新しい版の公式 changelog の項目1つにつき1行で、ID は `<版>-<連番>`（例 `1.4.51-07`）。項目の区切り（`li` 1つ、または段落を含む節1つ）と ID は `scripts/kiro-ide-docs/extract-changelog.py` の `items()`・`releases()` が決める（`--items` で一覧を出せる）。一次情報の取得と雛形の出力は1回の make で行う |
+| 2 | 雛形の「本サイトの候補（公式 URL を引用）」「本サイトの候補（見出し）」「検索語と件数（見出し/本文）」「本文の当たり（語ごとに先頭5件）」の列が、検索語 (a) の結果になる。(a) は項目の題と本文に出る機能名・画面名・設定名・キーを**英語の原文のまま**取ったもの（例: `Memory`・`Markdown Review`・`Apply to`・`Memory created`）で、検索先は `kiro-ide-docs/00_information/`・`kiro-ide-docs/01_features/`・`kiro-ide-docs/02_update/03_migration-to-1.0.md`・`kiro-ide-docs/03_deployment/`・`kiro-ide-docs/04_reference/`。(b) その本サイトでの訳語と (c) 項目が変える前の表記（例: `Command sandbox`）は雛形に出ないので、§6.6.1 のコマンドで足す。見出しに当たった節は必ず読む |
 | 3 | 項目に関係する公式機能ページ（順位2）を開き、更新日を HTML から実測する（取得方法は §2.1）。`03_deployment/01_installation.md` の配布形態は公式ダウンロードページ（順位2b・§6.4）で確かめる。changelog と公式ページが食い違えば §2.1 で扱う |
 | 3b | 本サイトの出典行に記録した公式ページの更新日を、§6.6.2 のコマンドで全件実測する。「記録より新しく、かつ今回加える版のうち最も古い版のリリース日以後」のページ（出力の `NEWER`）は、すべて対応表の「公式ページと更新日」列か、PR 本文の「未確認・据え置き」とリリースノートの「⏳ 据え置き」（§15.2）に載せる。changelog の項目に対応するページは手順4で節を突き合わせる。対応しないページは、その本文を今回の版の機能名・画面名・版番号で検索して件数を書く。0件なら今回の版の範囲外と確定する。対応しないページは本文を変えず、「更新日が新しいが、今回は照合していない」と書く。照合しないページの日付は進めない（手順4b） |
-| 4 | 該当箇所があり、項目がその記述を変える（表記の変更・手順や選択肢の追加・挙動の修正）場合は、その箇所を直し、版へのリンク（`../02_update/01_changelog.md#v<版のドットをハイフンにしたもの>`。例 `#v1-4-51`）を付ける。changelog だけを出典にしない。項目に関係する公式機能ページの**その節**（見出し `h2`/`h3` 1つ分）の本文を §6.6.3 のコマンドで出し、本サイトの対応する節と**文ごとに**突き合わせる。公式の節にあって本サイトに無い文（changelog に書かれていない操作も含む）を加え、公式と合わない本サイトの文を書き換える。**注記を足すだけで旧い手順・表の行を残さない**。変わる前の記述が履歴として必要なら「<版> より前は〜」の形で残す（§13 の6）。正準値の表（§8.3）を変える場合は §8・§13 の5に従う。あわせて、changelog のその版の節の末尾の案内行（`> …を参照してください。`）に、反映した節へのリンクを加える |
+| 4 | 該当箇所があり、項目がその記述を変える（表記の変更・手順や選択肢の追加・挙動の修正）場合は、その箇所を直し、版へのリンク（`../02_update/01_changelog.md#v<版のドットをハイフンにしたもの>`。例 `#v1-4-51`）を付ける。changelog だけを出典にしない。項目に関係する公式機能ページの**その節**（`scripts/kiro-ide-docs/impact-report.py section` が切り出す範囲。`h2`〜`h4` のアンカーの見出しから、同じか上の階層の次の見出しまで）の本文を §6.6.3 のコマンドで出し（手順1の抜粋も同じ範囲）、本サイトの対応する節と**文ごとに**突き合わせる。公式の節にあって本サイトに無い文（changelog に書かれていない操作も含む）を加え、公式と合わない本サイトの文を書き換える。**注記を足すだけで旧い手順・表の行を残さない**。変わる前の記述が履歴として必要なら「<版> より前は〜」の形で残す（§13 の6）。正準値の表（§8.3）を変える場合は §8・§13 の5に従う。あわせて、changelog のその版の節の末尾の案内行（`> …を参照してください。`）に、反映した節へのリンクを加える |
 | 4a | 手順4の書き方の規則: (1) 表現を直したら、同じ機能を書いた他のページ・他の行の同じ表現も揃える（直した所と直していない所の食い違いを残さない）。(2) 「以前の本ページは」「本サイトのこれまでの記述」のように時点を特定できない言い回しを使わず、基準の版で書く（例: 「本サイトの 1.2.4 対応版までの本ページは」）。(3) 新しい節は既存の節の後ろに足し、既存の節番号とアンカーを動かさない。(4) 破壊的変更がある版では、移行ガイド（`kiro-ide-docs/02_update/03_migration-to-1.0.md`）への導線を確かめる |
 | 4b | 反映した箇所の出典が、そのページ冒頭の「一次情報」行の公式ページなら、その行の更新日を手順3の実測値に改め、括弧内に確かめた範囲を書く（例: 「§10.2 のステータスバー表記は、この更新版で確認」）。本文を読んで確かめていない節のために日付を進めない（日付を進めることは、その版の内容を確かめたという主張になる） |
-| 5a | 該当箇所が無い項目は、手順6の対応表に「該当箇所なし」と書くだけにする（「未確認・据え置き」には書かない）。「該当箇所なし」と書けるのは、(a) の語の検索が見出し・本文とも 0 件のとき、または当たった行が項目の変える内容を説明していないと行番号で示せるときだけ。対応表の「検索語と件数」列に、語と件数（例: `Memory` 見出し2件・本文21件）を書く。対応表は changelog の**項目1つにつき1行**にする。Improvements は束ねない。Fixes は、(a) の語の検索がすべて 0 件の項目に限り1行に束ねてよい（その行に語と 0 件を並べる） |
-| 5b | 該当箇所はあるが、変わった内容を公式で確かめられない項目は、その箇所を推測で書き換えない。確かめられない点を本文で「未確認」と明示し（§2 原則2）、PR 本文の「未確認・据え置き」にも書く |
-| 6 | 1〜5 の対応表を PR 本文の「更新計画」節に書く（§15.1）。列は「版 / changelog 項目 / 検索語と件数 / 本サイトのファイルと節 / 公式ページと更新日 / 対応」で、対応は「反映した／該当箇所なし／未確認」のどれかを書く |
+| 5a | 該当箇所が無い項目は、手順6の対応表に「該当箇所なし」と書くだけにする（「未確認・据え置き」には書かない）。「該当箇所なし」と書けるのは、(a) の語の検索が見出し・本文とも 0 件のとき、または当たった行が項目の変える内容を説明していないと行番号で示せるときだけ。書き方と条件は §6.6.4 の表に従う。対応表は changelog の**項目1つにつき1行**にし、1行に ID を1つだけ書く（Improvements も Fixes も束ねない。`check-impact.py` は ID ごとに区分と条件を確かめる） |
+| 5b | 該当箇所はあるが、変わった内容を公式で確かめられない項目は、その箇所を推測で書き換えない。確かめられない点を本文で「未確認」と明示し（§2 原則2）、PR 本文の「未確認・据え置き」にも書く。区分「強・版以後」の行は、公式の節の抜粋が手元にある（手順1）ので「未確認」にしない。反映するか、変更不要の根拠を引用で示す（§6.6.4） |
+| 6 | 1〜5 の対応表を PR 本文の「更新計画」節に書く（§15.1）。列は手順1の雛形の列で、`ID`・`changelog 項目`（先頭20字でよい）・`対応` は削らない（本文が長くなったときは、ほかの列を削ってよい）。「対応」には §6.6.4 の値のどれかを書く。手順8（§11.2）で `make check-kiro-ide-impact` が `impact-check-result: rc=0` になるまで、本文と文書を直す |
 | 7 | 対応表で「反映した」行のページを、リリースノートの「📚 関連ガイドを更新」に1行ずつ書く（ページへのリンクと、直した節・内容）。手順3で §2.1 の食い違いや、本サイトの既存の記述が公式と合わなくなった箇所を書いた場合は「🔍 公式の食い違い・記述の変化を明記しました」に書く。手順3b で照合しなかったページと、公式で確かめられず本文を変えなかった事項は「⏳ 据え置き」に書く（§15.2）。どれも該当が無ければ節を置かない |
 
 > ⚠️ 「changelog とリリースノートだけを更新し、機能ページは未確認とする」扱いはしません。手順2〜3b を行い、全項目を対応表に載せます。
@@ -575,7 +575,7 @@ changelog に版を加えただけでは更新は終わりません。新しい�
 
 ### 6.6.1 項目ごとの検索（手順2）
 
-リポジトリのルート（`Makefile` と `kiro-ide-docs/01_features/` がある所）で実行します。クラウドのセッションでは作業ディレクトリがリポジトリの親になるので、先に `cd` でリポジトリへ移ります。`for` の語を項目ごとに入れ替えます。語は固定文字列として探すので、`+`・`.`・`(` などに `\` を付けません。本文は件数と先頭30行を出します。件数が1件以上で「該当箇所なし」と書くときは、この行番号を使って手順5a の説明を書きます。
+手順1の雛形は (a) の語を数えます。このコマンドは、雛形に出ない (b) 訳語と (c) 変更前の表記を探すときと、(a) の当たりを先頭5件より多く見るときに使います。リポジトリのルート（`Makefile` と `kiro-ide-docs/01_features/` がある所）で実行します。クラウドのセッションでは作業ディレクトリがリポジトリの親になるので、先に `cd` でリポジトリへ移ります。`for` の語を項目ごとに入れ替えます。語は固定文字列として探すので、`+`・`.`・`(` などに `\` を付けません。本文は件数と先頭30行を出します。件数が1件以上で「該当箇所なし」と書くときは、この行番号を使って手順5a の説明を書きます。
 
 ```bash
 P="kiro-ide-docs/00_information kiro-ide-docs/01_features kiro-ide-docs/02_update/03_migration-to-1.0.md kiro-ide-docs/03_deployment kiro-ide-docs/04_reference"
@@ -619,28 +619,43 @@ PY
 
 ### 6.6.3 公式の節の抽出（手順4）
 
-1行目の `U` に公式機能ページの URL（末尾スラッシュ付き）、`SEC` に節の見出しの id を入れます。`SEC` を空にすると、そのページの `h2`/`h3` の id の一覧を出します。
+リポジトリのルートで実行します。`--url` に公式機能ページの URL（`https://kiro.dev/` で始まる）、`--id` に節の見出しの id を入れます。`--id ''` にすると、そのページの `h2`〜`h4` の id の一覧と更新日（`Page updated`）を出します。節の範囲（`h2`〜`h4` のアンカーの見出しから、同じか上の階層の次の見出しまで）と `Page updated` の読み取りは、このスクリプトの1か所だけが持ちます（手順1の抜粋と `check-impact.py` も同じ関数を使います。§11.4 の教訓4）。
 
 ```bash
-U=https://kiro.dev/docs/ide/editor/markdown-review/ SEC=comment-on-a-document   # URL は末尾スラッシュ必須
-curl -sSL -A "Mozilla/5.0" -o /tmp/p.html "$U" && SEC="$SEC" python3 - <<'PY'
-import re,html,os,sys
-t=open('/tmp/p.html',encoding='utf-8').read()
-v=t[:t.find('self.__next_f')] if 'self.__next_f' in t else t
-v=re.sub(r'<(script|style)[^>]*>.*?</\1>','',v,flags=re.S)
-H=[(m.start(),m.group(1),m.group(2)) for m in re.finditer(r'<h([23]) id="([^"]+)"',v)]
-SEC=os.environ.get('SEC','')   # 見出しの id。空なら id の一覧を出す
-if not SEC: print('\n'.join(f'h{l} {i}' for _,l,i in H))
-for k,(p,l,i) in enumerate(H):
-    if i==SEC:
-        e=next((q for q,l2,_ in H[k+1:] if l2<=l),len(v))
-        s=re.sub(r'<(br|/p|/li|/h\d|/tr|/td|/th)[^>]*>','\n',v[p:e])
-        print(re.sub(r'\n\s*\n+','\n',html.unescape(re.sub(r'<[^>]+>','',s))).strip())
-if SEC and SEC not in [i for _,_,i in H]: sys.exit(f'id {SEC} がありません。SEC を空にして一覧を出してください')
-PY
+scripts/kiro-ide-docs/impact-report.py section --url https://kiro.dev/docs/ide/editor/markdown-review/ --id comment-on-a-document
 ```
 
-**実例**: 1.4.51 の「Copy from Markdown Review」「Faster commenting in Markdown Review」の本文に `Escape` はありません。上のコマンドが出す「Comment on a document」節の1つ目の手順には `Press Escape to dismiss the prompt.` があります。changelog の文だけを見て注記を足すと、この操作と旧い手順の行が残ります。Memory ページ（`https://kiro.dev/docs/memory/`）で `SEC='review-what-kiro-remembers'` にすると、type badge と location badge の説明の2文が出ます。
+1行目に `h<階層> <id>（Page updated: <日付>）`、2行目から節の本文を出します。id が無ければ exit 1（「id … がありません」）、取得に失敗したら exit 3 です。
+
+**実例**: 1.4.51 の「Copy from Markdown Review」「Faster commenting in Markdown Review」の本文に `Escape` はありません。上のコマンドが出す「Comment on a document」節の1つ目の手順には `Press Escape to dismiss the prompt.` があります。changelog の文だけを見て注記を足すと、この操作と旧い手順の行が残ります。Memory ページ（`https://kiro.dev/docs/memory/`）で `--id review-what-kiro-remembers` にすると、type badge と location badge の説明の2文が出ます。
+
+### 6.6.4 対応表の「対応」に書く値（手順5a・5b・6）
+
+区分は手順1の雛形の「区分」列で、`check-impact.py` も同じ関数で決めます。引用は、起点（`merge-base`）の木と作業ツリーの両方で数えます。
+
+| 区分 | 条件 |
+|------|------|
+| 強・版以後 | 項目のリンク先の公式ページを本サイトが引用していて、そのページの `Page updated` が版のリリース日以後で、アンカーの節を切り出せた |
+| 強（節なし） | 引用があり、リンクにアンカーがあるが、公式ページにその id の見出しが無い（雛形に「⚠ 節が見つからない」と出る） |
+| 強 | 引用はあるが、更新日が取れない（`/downloads/` は `Page updated` が無い）か、版より前 |
+| 見出しのみ | 引用は無く、検索語が見出しに当たった |
+| なし | どちらも無い |
+
+「対応」の値は次の表のどれかです。**正は `scripts/kiro-ide-docs/check-impact.py`** で、この表はその写しです（食い違ったらスクリプトに従い、この表を直します）。「無い語」は、公式の節の `<strong>`・`<code>`・`<kbd>` の文字列（3字以上。`<pre>` の中を除く）のうち、そのページを引用している本サイトのファイルの作業ツリーの本文に無いもの（雛形の「公式の節にあって引用ページに無い語」列）です。区分「強（節なし）」では計算しません。
+
+| 値 | 書式 | 書ける区分 | 条件 |
+|----|------|-----------|------|
+| 反映した | `反映した: <ファイル> §<節>[、<ファイル> §<節>…]` | すべて | (1) ファイルが起点から変わっている。(2) `§<節>` の下に、`#v<版のドットをハイフンにしたもの>` を含む追加行がある。(3) 区分が「強」系なら、ファイルがその公式ページを引用していて、`§<節>` の最上位の番号が引用のある節の最上位の番号のどれかと同じ。ファイル冒頭の出典行だけで引用しているファイルでは、`§<節>` の下の追加行（追加・変更した見出しを含む）のどれかが、その項目の検索語か公式ページの URL を含む。(4) 無い語が0個 |
+| 変更不要 | `変更不要: <ファイル>:<行> 「<本サイトの文>」＝公式「<公式の節の文>」` | 公式の節を切り出せた行（強・版以後、強） | ファイルがその公式ページを引用している。2つの文（10字以上）が、作業ツリーのその行と公式の節に実在する。行が引用のある節の中にある（出典行だけのファイルでは、行が検索語か URL を含む）。無い語が0個 |
+| 該当箇所なし | `該当箇所なし` | なし（本文の件数が0） | — |
+| 該当箇所なし | `該当箇所なし: <理由>` | なし（本文の件数が1以上）・見出しのみ・強 | 「なし」は、理由に検索語を含む `ファイル:行` を1つ以上。「見出しのみ」「強」は、理由に候補の `ファイル:行` を1つ以上 |
+| 未確認 | `未確認: <理由>` | 強・版以後を除くすべて | 候補がある行は、理由に候補の `ファイル:行` を1つ以上。PR 本文の「未確認・据え置き」節に、その ID で始まる箇条（`- <ID>: …`、複数は `- <ID>・<ID>: …`）がある |
+
+- 区分「強・版以後」の行は「反映した」か「変更不要」だけです。区分「強（節なし）」の行は「反映した」か「未確認」です。
+- 「未確認」「該当箇所なし」で、区分「強」の行に無い語があるときは、その語をすべて「対応」の欄に書きます。
+- `check-impact.py` は、合格した「変更不要」の行を `変更不要: …`、出典行だけのファイルで合格した「反映した」の行を `反映した（出典行だけ）: …` の一覧で出します。どちらも文の意味までは確かめていないので、PR 本文の「検証結果」に入れ、レビューで引用を読み比べます（§15.1）。
+- 理由に書く行番号は、文書を直すとずれます。`check-impact.py` は行の中身まで見るので、ずれたまま合格にはなりません。
+- 削除の判断: `make kiro-ide-removed` が出す「表ごと消えた」「列が消えた」「消えた行」は、PR 本文の `削除・書き換えた既存の記述` 節に、`- <ファイル> L<起点の行> <種類>: … 判断: 消す: <公式 URL>` か `判断: 要判断: <理由>` の箇条を書きます（`<公式 URL>` は `https://kiro.dev/` で始まる URL。例 `判断: 消す: https://kiro.dev/docs/ide/editor/markdown-review/`）。「書き換えた行」「消えた文」は判断を書かなくてよいです。記述を戻した項目は一覧から消えるので、行は要りません。
 
 ---
 
@@ -823,13 +838,14 @@ PY
 | 1 | **差分列挙**（`make check-kiro-ide-cloud-freshness` の rc） | §5 |
 | 2 | **階層判定**（L1 / L2 / L3a / L3b。専用ページの HTTP ステータスで判定） | §5.7・§6 |
 | 3 | **対応タイミングの判断** | §7 |
-| 4 | （L1・L2 の場合）**計画を作成**する。§6.6 の手順1〜3b をここで行い、更新対象ファイルを決める | §11.1・§6.6 |
+| 4 | （L1・L2 の場合）**計画を作成**する。§6.6 の手順1〜3b をここで行い、更新対象ファイルを決める。手順1の `make kiro-ide-impact VERSIONS=<版>` の雛形を PR 本文の「更新計画」に貼る | §11.1・§6.6 |
 | 5 | 一次情報 HTML を取得して本文を抽出する（人のローカル作業はスナップショット、エージェントとクラウドは §5.6 のコードブロックで取得と抽出を1回のシェル実行で行う。`make check-kiro-ide-cloud` は手順8の検証で取り直すので、ここでは使わない） | §5.6 |
 | 6 | **執筆**（日付は ISO・降順を維持） | §4・§6 |
 | 6b | **changelog 以外のページへの反映**（§6.6 の手順4〜7。手順4の公式の節の抽出は §6.6.3） | §6.6 |
 | 7 | **正準値の更新**（変動があり、根拠がある場合だけ） | §8.3・§13 |
-| 8 | **検証**: `make check-kiro-ide-ignore` → `make check-kiro-ide-all`（**ともに exit 0 必須**）。完了条件は `make check-kiro-ide-cloud` の exit 0 | §11.3・§14 |
-| 9 | **コミット**（セクション単位）。フィーチャーブランチで行い PR を作る | §13・§15 |
+| 8 | **検証**: `make check-kiro-ide-ignore` → `make check-kiro-ide-all`（**ともに exit 0 必須**）。版更新では、§14.3 の手順 A で置き場を作って本文の下書きを `.kiro/cloud-runs/<run_id>/pr-body.md` に書き、§14.3 の「手順8のコマンド」で `make check-kiro-ide-impact` が `impact-check-result: rc=0` になるまで本文と文書を直す（コミット前に繰り返してよい）。`make kiro-ide-removed` の出力を本文の「削除・書き換えた既存の記述」に貼り、判断を書く（§6.6.4）。完了条件は `make check-kiro-ide-cloud` の合格（§14） | §11.3・§14 |
+| 9 | **コミット**（セクション単位）。フィーチャーブランチで行う | §13 |
+| 9b | **検証と PR 作成**: §14.3 の手順 C（一括検証）・D（判定・本文の仕上げ・push）・E（PR 作成）を、この順に別々の呼び出しで実行する。**手順 C の後に本文を書き換えない**（書き換えたら手順 C からやり直す） | §14.3・§15 |
 | 10 | **記録**（ローカルは作業記録、クラウドは PR 本文） | §11.1 |
 
 ### 11.3 検証（コミット前に必須）
@@ -899,6 +915,17 @@ make check-kiro-ide-cloud-freshness  # 新バージョン検知（3値）
 > **共通する教訓**: 検出結果を見る前に「**壊れているのは文書か、スクリプトの前提か**」を確かめる。
 > 一次情報で確認できる記述をスクリプトが否定した場合、**直すのはスクリプト**です。ただし版更新 PR では判定ロジックを変えません（§16）。
 
+**影響範囲のスクリプト（`impact-report.py`・`check-impact.py`）を改修したとき**は、次をそれぞれ1種類ずつ壊して確かめます。PR 本文と一次情報の題材は `/tmp` に作ります（一次情報をリポジトリに入れない。§13 の10）。文書を壊すテストは、リポジトリを `/tmp` に `git clone` した写しのコミットで行います。
+
+| 壊すもの | 例 | 期待 |
+|---------|----|------|
+| PR 本文の対応表 | 行を消す・同じ ID を2行・架空の ID・`changelog 項目` の題を入れ替える・「対応」を規定外の値に・区分「強・版以後」を「未確認」に・「反映した」の `§<節>` を外す／別の節にする・「該当箇所なし」の理由を消す・据え置きの箇条から ID を消す・`changelog 項目` 列を消す・削除の判断を空にする | exit 1 |
+| 文書 | 「反映した」と書いた節の版リンク（`#v<版>`）の行を消す | exit 1 |
+| 一次情報の写し | changelog ページの `li` を1つ足す（ID のずれ）・公式機能ページの節の id を変える（区分「強（節なし）」になり exit 3 にならない） | exit 1 |
+| 引数・前提 | `--versions` にスラッグや一次情報に無い版・`--pr` と `--pr-body` の両方・目次の差が無いのに changelog が変わっている BASE | exit 2 |
+| clone と取得 | 無い BASE・shallow clone（`git clone --depth 5`）・共通の祖先が無い HEAD・`KIDE_DOCS_ORIGIN` を到達できない値に | exit 3 |
+| 正の対照 | 正しい本文・版更新ではない（BASE=HEAD） | exit 0 |
+
 ---
 
 ## 12. 監視項目（運用開始後）
@@ -957,6 +984,7 @@ make check-kiro-ide-cloud
 | 4 | `check-coverage.py --html-dir /tmp/kiro-ide-primary`（網羅性の実測） |
 | 5 | `check-kiro-ide-cloud-freshness`（3値の新版検知。rc=3 でも失敗する） |
 | 6 | `check-kiro-ide-urls-important`（重要 URL） |
+| 7 | `check-kiro-ide-impact`（PR 本文の対応表の検査。版更新のときは `PR_BODY=<本文のファイル>` と `BASE=origin/<base>` を渡す。版更新でなければ「版更新ではありません」で rc=0。末尾に `impact-check-result: rc=N`） |
 
 > **ローカルで実行するとき**: スナップショット（`06_embedded-docs/`）が古いと、2 の coverage がスナップショットと比べて失敗します。先に取得してから、2 にも同じディレクトリを渡します（ローカルでは `/tmp` がコマンドをまたいで残ります）。
 >
@@ -972,6 +1000,169 @@ make check-kiro-ide-cloud
 - **coverage が実数値（「一次情報の版数: N」「文書の版数: N」）を出していること。** スキップのままにしない
 - **coverage の実数値を PR 本文に転記する**（人が「本当に網羅性を検証したか」を判断できるようにする）
 - 5 の freshness が rc=3（未検証）で失敗した場合は、直そうとせず「未検証」として報告する（取得失敗はネットワークの問題、構造変化はスクリプトの修正が必要）
+- **7 が `impact-check-result: rc=0` を出していること**（版更新でない日も含む）。rc=3 は直さず「未検証」と報告する。**rc 行が出ていないとき**（一次情報の取得で止まったなど）**も未検証として扱う**。rc=1・rc=2 の扱いは §14.3 の「失敗のときの扱い」に従う
+- 7 は、版更新かどうかを判定する前に BASE を解決し、shallow clone でないことと、BASE と HEAD の共通の祖先があることを確かめます。clone に `origin/<base>` が無い・shallow・共通の祖先が無いときは、版更新でない日も rc=3 になります。shallow なら `git fetch --unshallow origin`、参照が無ければ `git fetch origin <base>` の後にやり直します
+
+### 14.3 版更新の検証と PR 作成のコマンド（手順 A〜E）
+
+版更新では、PR 本文を検査してから PR を作ります（§11.2 の8・9b）。考え方は次のとおりです。
+
+- **本文はファイル書き込みツールで書く。** シェルの heredoc に本文を入れない（本文に区切りと同じ字句の行が現れると、残りの行がコマンドとして実行される）。
+- **置き場は `.kiro/cloud-runs/<run_id>/`。** クラウドでは `/tmp` が呼び出しをまたいで残らず、ワークスペースのファイルは残ります。`.gitignore` の `.kiro/*` で無視され、公開されず、`git status --porcelain` にも出ません。本文・一括検証のログ・置き換え後の本文（`pr-body2.md`）・push の標準エラー・検査した HEAD と本文の sha256（`tested-head`・`tested-body`・`pushed-body`）・手順 D が入れる行（`ins-*`）・base のブランチ名（`base-branch`）を、すべてここに置きます。
+- **run_id** は `ide-<UTC の YYYYMMDDTHHMMSSZ>` です。手順 A の出力の `run_id=…` を、以後のコマンドの `<run_id>` にそのまま書きます（シェルの変数は呼び出しをまたいで残らない）。
+- **手順 C の後に本文を書き足さない。** T2 の最後の行・「変更不要:」と「反映した（出典行だけ）:」の一覧・coverage の実数値・counts の4値は、本文の4つのコメントの行（手順 B）を手順 D が `cloud.log` の行で置き換えます。本文を直す必要が出たら、`pr-body.md` を直して手順 C からやり直します。
+- **呼び出しをまたいだことの確かめ**: 手順 C は検査した HEAD と本文の sha256 を記録し、手順 D はそれが変わっていないことを確かめてから push し、送る本文の sha256 を記録します。手順 E は送る本文が変わっていないことを確かめてから PR を作ります。どの手順もリポジトリのルートで実行します（`sha256sum -c` が相対パスを読むため）。
+- 合否は `check-kiro-ide-cloud` の最後の行（`✅ クラウドセッション用の全検証が完了しました`）と `impact-check-result: rc=0` の行で判定します。make の終了コードでは判定しません（`tee` を挟むため）。
+- 手順 C〜E は bash・`sha256sum`（`-c --status`）・`awk` の `getline` を使います。
+
+**手順 A（run_id と置き場。手順8の最初に1回）**
+
+```bash
+run_id="ide-$(date -u +%Y%m%dT%H%M%SZ)"
+d=".kiro/cloud-runs/$run_id"
+if [ -e "$d" ]; then
+  echo "置き場がすでにあります: $d（run_id を変えてやり直す）"
+elif ! git check-ignore -q "$d/pr-body.md"; then
+  echo "置き場が ignore の対象ではありません: $d（PR を作らずに⑥で報告する）"
+else
+  mkdir -p "$d" && echo main > "$d/base-branch" && echo "run_id=$run_id"
+fi
+```
+
+PR の base は `base-branch` の値です（既定 `main`）。ドライランでは、手順 A の後に `base-branch` の中身だけを `dryrun/ide-<版>-rN` に変えます。`make` の `BASE=` と PR 作成の `base=` は、どちらもこのファイルを読みます。
+
+**手順 B（本文）**: ファイル書き込みツールで `.kiro/cloud-runs/<run_id>/pr-body.md` に書きます。形は §15.1 です。「検証結果」には次の4つのコメントの行だけを書きます（値は書かない。手順 D が置き換える）。`Closes #<Issue 番号>` は、起動した Issue があるときだけ最後の行に書きます（定期タスクは、この行で作業中の PR があるかを判定する）。
+
+```markdown
+## 検証結果
+<!-- impact-summary -->
+<!-- impact-unchanged -->
+<!-- impact-sourceonly -->
+<!-- cloud-coverage -->
+```
+
+**手順8のコマンド（コミット前に繰り返す。`git status` は検査しない）**
+
+```bash
+d=.kiro/cloud-runs/<run_id>
+if [ ! -f "$d/base-branch" ]; then
+  echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+else
+  make check-kiro-ide-impact PR_BODY="$d/pr-body.md" BASE="origin/$(cat "$d/base-branch")" 2>&1 | tee "$d/impact.log" | grep -E '^(❌|⚠|対応表:|変更不要:|反映した（出典行だけ）:|impact-check-result:)'
+fi
+```
+
+**手順 C（一括検証）**
+
+```bash
+d=.kiro/cloud-runs/<run_id>
+if [ ! -f "$d/base-branch" ]; then
+  echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+elif [ -n "$(git status --porcelain)" ]; then
+  git status --porcelain
+  echo "未コミットの変更があります。コミットするか、作業ファイルを $d/ に移す（git add -A で含めない）"
+else
+  BASE_BRANCH=$(cat "$d/base-branch")
+  git rev-parse HEAD > "$d/tested-head"
+  sha256sum "$d/pr-body.md" > "$d/tested-body"
+  make check-kiro-ide-cloud PR_BODY="$d/pr-body.md" BASE="origin/$BASE_BRANCH" 2>&1 | tee "$d/cloud.log" > /dev/null
+  grep -E '^(❌|⚠|対応表:|変更不要:|反映した（出典行だけ）:|impact-check-result: rc=|freshness-result: rc=|✅ クラウドセッション用の全検証が完了しました)|一次情報の版数|文書の版数' "$d/cloud.log"
+fi
+```
+
+**手順 D（判定・本文の仕上げ・push）**
+
+```bash
+d=.kiro/cloud-runs/<run_id>; ISSUE=<Issue 番号。無ければ空>
+if [ ! -f "$d/base-branch" ]; then
+  echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+elif ! grep -q '^✅ クラウドセッション用の全検証が完了しました' "$d/cloud.log" || ! grep -qx 'impact-check-result: rc=0' "$d/cloud.log"; then
+  echo "一括検証が合格していないので push しません"; grep -E '^(impact-check-result|freshness-result): rc=' "$d/cloud.log" || echo "impact-check-result の行がありません（未検証）"
+elif [ "$(git rev-parse HEAD)" != "$(cat "$d/tested-head")" ] || [ -n "$(git status --porcelain)" ] || ! sha256sum -c --status "$d/tested-body"; then
+  echo "検査した後に HEAD・作業ツリー・本文のどれかが変わりました。検査（C）からやり直す"
+else
+  rm -f "$d/pushed-body"
+  grep '^対応表:' "$d/cloud.log" | tail -1 > "$d/ins-summary"
+  grep '^変更不要:' "$d/cloud.log" > "$d/ins-unchanged"
+  grep '^反映した（出典行だけ）:' "$d/cloud.log" > "$d/ins-sourceonly"
+  v() { sed -n "s/^ *$1 *[:=] *\([0-9][0-9]*\).*/\1/p" "$d/cloud.log" | tail -1; }
+  t=$(v '一次情報の版数'); u=$(v '文書の版数'); c1=$(v '第1: 機能数'); c2=$(v '第2: ショートカット数'); c3=$(v '予備: capability 数'); c4=$(v '予備: プロバイダ数')
+  : > "$d/ins-coverage"
+  if [ -n "$t" ] && [ -n "$u" ] && [ -n "$c1" ] && [ -n "$c2" ] && [ -n "$c3" ] && [ -n "$c4" ]; then
+    printf '%s\n' "- coverage: 一次情報の版数 $t / 文書の版数 $u" "- counts: 機能 $c1 / ショートカット $c2 / capability $c3 / プロバイダ $c4" > "$d/ins-coverage"
+  fi
+  awk -v d="$d" 'function put(f,  l, n) { n = 0; while ((getline l < f) > 0) { print l; n++ } close(f); if (!n) print $0 }
+    $0 == "<!-- impact-summary -->"    { put(d "/ins-summary"); next }
+    $0 == "<!-- impact-unchanged -->"  { put(d "/ins-unchanged"); next }
+    $0 == "<!-- impact-sourceonly -->" { put(d "/ins-sourceonly"); next }
+    $0 == "<!-- cloud-coverage -->"    { put(d "/ins-coverage"); next }
+    { print }' "$d/pr-body.md" > "$d/pr-body2.md"
+  miss=$(cat "$d/ins-summary" "$d/ins-unchanged" "$d/ins-sourceonly" "$d/ins-coverage" | while IFS= read -r l; do grep -qxF -- "$l" "$d/pr-body2.md" || printf '%s\n' "$l"; done)
+  if [ ! -s "$d/ins-coverage" ]; then
+    echo "cloud.log に coverage の実数値か counts の4値がありません（未検証）"
+  elif [ -n "$miss" ]; then
+    echo "検証結果に手順 D が入れる行が入っていません（本文の <!-- impact-summary --> などの行を確認）"; printf '%s\n' "$miss"
+  elif [ -n "$ISSUE" ] && ! grep -qx "Closes #$ISSUE" "$d/pr-body2.md"; then
+    echo "本文に Closes #$ISSUE の行がありません"
+  elif ! git push -u origin HEAD 2> "$d/push.err"; then
+    echo "push に失敗しました。PR を作りません"; tail -n 5 "$d/push.err"
+  else
+    sha256sum "$d/pr-body2.md" > "$d/pushed-body"
+    echo "push-result: ok"
+  fi
+fi
+```
+
+置き換える行が0行の一覧は、コメントの行をそのまま残します（GitHub の表示では見えない）。版更新でない日は T2 が `対応表:` の行と一覧を出さないので、上の3つはコメントのまま残り、coverage と counts だけが入ります。coverage と counts の6つの値のどれかが `cloud.log` から取れなければ push しません（§14.2 が coverage の実数値の転記を完了条件にしているため）。
+
+**手順 E（PR 作成。手順 D が `push-result: ok` を出したときだけ）**
+
+```bash
+d=.kiro/cloud-runs/<run_id>; R=repos/kamogashira-sys/kiro-ide-docs
+br=$(git branch --show-current)
+find_pr() { gh api "$R/pulls?head=kamogashira-sys:$br&state=open" --jq '.[0].number // empty'; }
+if [ ! -f "$d/base-branch" ]; then
+  echo "置き場がありません: $d（手順 A の run_id を確かめる）"
+elif ! sha256sum -c --status "$d/pushed-body" 2> /dev/null; then
+  echo "push した後に本文（pr-body2.md）が変わったか、手順 D が push していません。PR を作りません（手順 D からやり直す）"
+elif ! n=$(find_pr); then
+  echo "既存の PR を確かめられません（GET の失敗）。PR を作りません"
+elif [ -n "$n" ]; then
+  echo "既存の PR #$n の本文を直します"; gh api -X PATCH "$R/pulls/$n" -F body=@"$d/pr-body2.md" --jq .html_url
+elif gh api -X POST "$R/pulls" -f title="docs: Kiro IDE <版> 対応（全N バージョン）" -f head="$br" -f base="$(cat "$d/base-branch")" -F body=@"$d/pr-body2.md" --jq '.number, .html_url'; then
+  echo "pr-result: created"
+elif n=$(find_pr) && [ -n "$n" ]; then
+  echo "POST は失敗したが PR #$n があるので本文を直します"; gh api -X PATCH "$R/pulls/$n" -F body=@"$d/pr-body2.md" --jq .html_url
+else
+  echo "PR を作れませんでした"
+fi
+```
+
+GET が失敗したときは、PR が無いと決めつけて POST しません（重複の PR を作らないため）。`-F body=@<file>` はファイルの中身を文字列のまま送ります。
+
+**失敗のときの扱い**
+
+| 状況 | 扱い |
+|------|------|
+| `impact-check-result: rc=3`、または rc 行が無い | 直さない。PR を作らずに「未検証」と報告する（SKILL.md ⑥。Issue にコメント）。報告には `⚠` の行（取得に失敗した URL、または BASE・shallow・共通の祖先の理由）と、作業を push したブランチ名を書く。このときだけ、手順 D を通さずに `git push -u origin HEAD` を単独で実行して作業を残す（feature branch への push） |
+| `impact-check-result: rc=2` | 直さない（引数か BASE の取り違えで、文書を直しても通らない）。「前提の崩れ」として、`❌` の行と、`git rev-parse --abbrev-ref HEAD`・`git rev-parse --is-shallow-repository`・`cat .kiro/cloud-runs/<run_id>/base-branch` の出力を報告する |
+| `impact-check-result: rc=1` | エラーの一覧（1回の実行で全件を出す）に従って本文か文書を直し、コミットしてから手順 C をやり直す |
+| rc=1 が3回続いた | 直すのをやめ、rc=3 と同じ形で報告する。報告に最後のエラーの一覧を書く |
+| 手順 D で push が非0 | PR を作らない。`push.err` の最後の5行（手順 D が表示する）を報告する |
+| 手順8・C・D・E で「置き場がありません」 | `<run_id>` の書き写しの誤り。手順 A の出力の `run_id=…` を確かめて同じ手順をやり直す。手順 A を実行していなければ手順 A から。報告は要らない |
+| 手順 D で「検査した後に HEAD・作業ツリー・本文のどれかが変わりました」 | 手順 C からやり直す。rc=1 の回数には数えない |
+| 手順 D で「検証結果に手順 D が入れる行が入っていません」 | 本文の4つのコメントの行（手順 B）を `pr-body.md` に戻し、手順 C からやり直す |
+| 手順 D で「cloud.log に coverage の実数値か counts の4値がありません」 | 直さない。rc=3 と同じく「未検証」と報告する（`check-coverage.py`・`check-counts.py` の出力の形が変わった疑い） |
+| 手順 E で「push した後に本文（pr-body2.md）が変わったか、手順 D が push していません」 | PR を作らない。手順 D からやり直す |
+| 手順 E で GET が非0 | PR を作らない。gh の標準エラーと、push 済みのブランチ名を報告する |
+| 手順 E で POST が非0 | 手順 E がもう一度 GET し、PR があれば PATCH で本文を直す。無ければ「PR を作れませんでした」で、gh の標準エラーを報告する |
+| 手順 E で PATCH が非0 | PR 番号と gh の標準エラーを報告する（PR はあるが本文が古い） |
+
+PR を作った後に人が本文を直すとき（PC）は、本文をファイルに書いて次の PATCH を使い、`make check-kiro-ide-impact PR=<番号>` で確かめます（`--pr` は HEAD が PR の head と同じで、作業ツリーに変更が無いときだけ検査する）。
+
+```bash
+gh api -X PATCH repos/kamogashira-sys/kiro-ide-docs/pulls/<N> -F body=@<本文のファイル> --jq .html_url
+```
 
 ---
 
@@ -989,7 +1180,7 @@ make check-kiro-ide-cloud
 - 対象版と粒度判定（L2 / L3b と、その根拠の HTTP ステータス）
 - 出典 URL（changelog・公式機能ページ。機能ページは更新日も）
 - 更新対象ファイル
-- changelog の項目ごとの対応表（§6.6 の手順6。列は 版 / changelog 項目 / 検索語と件数 / 本サイトのファイルと節 / 公式ページと更新日 / 対応）
+- changelog の項目ごとの対応表（§6.6 の手順6。`make kiro-ide-impact` の雛形の列で、`ID`・`changelog 項目`・`対応` は必須）と §6.4 の同期対象
 
 ## 実施内容
 - ファイル別の変更点
@@ -997,11 +1188,21 @@ make check-kiro-ide-cloud
 ## 検証結果
 - check-kiro-ide-cloud の結果（coverage の「一次情報 N / 文書 N」を必ず数値で）
 - counts の4値（機能 / ショートカット / capability / プロバイダ）
+- check-kiro-ide-impact の最後の行（`対応表: 項目 N / …`）と、`変更不要:`・`反映した（出典行だけ）:` の一覧
 
 ## 未確認・据え置き
-- 公式に確認できず「未確認」と書いた事項とその理由
+- 公式に確認できず「未確認」と書いた事項とその理由（対応表で「未確認」にした行は `- <ID>: <理由>` の形で ID から書く）
 - 人の判断が必要な事項（正準値の変更・公式間の食い違いの扱い・公開方針）
+- 削除の判断を「要判断」にした項目（下の節と同じ内容）
+
+### 削除・書き換えた既存の記述
+- `make kiro-ide-removed` の出力と判断（§6.6.4）
 ```
+
+- 版更新でないとき（インフラの PR など）は、対応表・`check-kiro-ide-impact` の一覧・「削除・書き換えた既存の記述」は書かなくてよい（`check-kiro-ide-impact` は「版更新ではありません」で rc=0 になる）
+- **クラウドの版更新**では、本文を §14.3 の手順 B のとおり書き、「検証結果」には4つのコメントの行（`<!-- impact-summary -->`・`<!-- impact-unchanged -->`・`<!-- impact-sourceonly -->`・`<!-- cloud-coverage -->`）だけを置く。手順 D が、T2 の最後の行・2つの一覧・coverage の実数値・counts の4値に置き換える（上の「検証結果」の4項目は、この置き換えで満たす）
+- `変更不要:` と `反映した（出典行だけ）:` の一覧は、`check-impact.py` が文の意味までは確かめていない行です。レビューでは、一覧の引用を読み比べて、項目の反映になっているかを確かめる
+- 起動した Issue があるときだけ、最後の行に `Closes #<Issue 番号>` を書く。手動の依頼で Issue が無いときは書かない
 
 ### 15.2 リリースノート
 
@@ -1021,7 +1222,7 @@ make check-kiro-ide-cloud
 ```
 
 - 「🔍」「⏳」は該当が無ければ節を置かない（§6.6 の手順7）
-- 「⏳ 据え置き」には、§6.6 の手順3b の `NEWER` のうち照合していないページと、公式で確かめられず本文を変えなかった事項を書く
+- 「⏳ 据え置き」には、§6.6 の手順3b の `NEWER` のうち照合していないページと、公式で確かめられず本文を変えなかった事項を書く。対応表で「未確認」とした行は、ID と題（changelog の項目）を書く。「変更不要」とした行は書かない（本文が公式と合っていることを確かめた行で、据え置きではない）
 - 検証表には**実測値のみ**を書く（coverage の N/N・リンク件数・URL 件数など）
 - 検証表には、PR 本文の「検証結果」に書いた行を全部載せる（`check-kiro-ide-urls-important` の「重要URL」の件数とエラー件数を含む）
 - 検証表のコマンド名は、実際に実行したコマンドの名前で書く（構成するコマンドを個別に実行したのに `check-kiro-ide-cloud` と書かない）
