@@ -40,8 +40,8 @@ description: このリポジトリ（猫でもわかる系の非公式解説サ�
 |---|---|
 | 手順書 | `.github/UPDATE_GUIDE.md` |
 | 3値の freshness | `make check-kiro-ide-cloud-freshness` |
-| クラウド用の一括検証 | `make check-kiro-ide-cloud`（手順書 §14） |
-| changelog 以外のページへの反映 | 手順書 §6.6（項目ごとに1行の対応表。「該当箇所なし」には検索語と件数を書く。出典行の更新日を手順3b で一括実測する）と §6.4 の同期 |
+| クラウド用の一括検証 | `make check-kiro-ide-cloud`（手順書 §14）。版更新のときは、PR 本文をファイル書き込みツールで `.kiro/cloud-runs/<run_id>/pr-body.md` に書き、手順書 §14.3 の手順 A〜E（一括検証に `PR_BODY=` と `BASE=` を渡す・判定・push・PR 作成）を別々の呼び出しで行う。`impact-check-result: rc=3`、または rc 行が無いときは `freshness-result: rc=3` と同じく直さず⑥で「未検証」と報告する。`impact-check-result: rc=2` も直さず⑥で「前提の崩れ」と報告する（手順書 §14.3）。**共通部③の「exit 0 になるまで直す」の上限として、この行を優先する**: `impact-check-result: rc=1` が3回続いたら、直すのをやめて⑥で報告する |
+| changelog 以外のページへの反映 | `make kiro-ide-impact VERSIONS=<版>` の雛形を PR 本文の「更新計画」に貼り、行ごとに対応を書く（手順書 §6.6）。`make kiro-ide-removed` の出力を「削除・書き換えた既存の記述」に貼り、判断を書く |
 | PR 本文の節 | 手順書 §15.1 の4節（更新計画・実施内容・検証結果・未確認・据え置き） |
 | リリースノート | `.github/release-notes/v<版>.md`（手順書 §15.2） |
 
