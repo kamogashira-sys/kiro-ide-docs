@@ -81,6 +81,17 @@ IDE 1.3.11 で、次の2点が変わりました（[1.3.11](../02_update/01_chan
 
 IDE のコマンドパレットで **Kiro: Sign Out** を実行します（現行の Authentication ページの記述）。
 
+### 2.9 セッション期限切れ後の再接続（1.4.51）
+
+IDE 1.4.51 で、**IAM Identity Center または AWS Builder ID** でサインインしたセッションが期限切れになったとき、素早く再接続できるようになりました（[1.4.51](../02_update/01_changelog.md#v1-4-51)。公式 [Authentication](https://kiro.dev/docs/getting-started/authentication/) の該当節）。
+
+- セッションが切れると、IDE は **Your Kiro session expired. Reconnect to** に続けて、Start URL または AWS Builder ID を表示します
+- **Reconnect** を選ぶと、同じ接続でもう一度サインインします。サインイン方法を選び直したり、Start URL や AWS リージョンを入れ直したりする必要はなく、ブラウザでの手順だけを完了します
+- 再接続に成功すると、IDE は **Reconnected to Kiro.** を表示します
+- 失敗すると、IDE は **We could not reconnect to Kiro. Please sign in again.** と **Sign in** ボタンを表示し、通常のサインインを始めます。管理者がそのサインイン方法を許可していないときは、管理者のサインインポリシーのメッセージが代わりに表示されます
+- プロンプトを閉じるかブラウザで取り消すと、もう一度サインインするまでサインアウトのままになります
+- 再接続のプロンプトが出るのは IAM Identity Center または AWS Builder ID でサインインしたあとだけです。GitHub・Google・外部 ID プロバイダでのサインインにはこのプロンプトは出ず、それらでサインインすると、記憶していた IAM Identity Center または AWS Builder ID の接続は消えます。**Kiro: Sign Out** を実行したときも消えるため、意図してサインアウトしたあとに再接続のプロンプトは出ません
+
 ---
 
 ## 3. 選び方

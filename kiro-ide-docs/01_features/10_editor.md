@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-15）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-29。コミットメッセージ生成の読む変更の節は 1.4.51 に関わる箇所のみ再照合）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-29。§9.2 のコメントの流れとキーボード操作は、この更新版で確認）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は
@@ -209,7 +209,8 @@ Hey Kiro, can you fix the merge conflicts? #Git Diff
 | 項目 | 内容 |
 |------|------|
 | 無視ルールで除外されたファイル | 名前も内容も対象外。Kiro は除外した変更ファイルの数を報告する。変更ファイルがすべて除外されたときは、メッセージを生成しなかったと伝える |
-| 除外されたファイルが追跡ファイルのとき | Kiro は**追跡ファイルの変更すべて**について diff を出さず、残りの追跡ファイルは名前と状態だけで説明する。未追跡ファイルは引き続き内容つきで説明する |
+| 除外されたファイルが追跡ファイルのとき | 1.4.51 より前は、Kiro は**追跡ファイルの変更すべて**について diff を出さず、残りの追跡ファイルを名前と状態だけで説明していた。**1.4.51 で修正され**、除外された 1 ファイルのせいで残りの追跡中の変更がファイル名だけに縮められることはなく、メッセージが変更内容を説明できる（[1.4.51](../02_update/01_changelog.md#v1-4-51)）。現行の公式ページには、この挙動の記述は残っていない |
+| ターミナルでステージした変更 | Kiro は先にリポジトリの状態を更新するため、ターミナルでステージしたばかりの変更も含まれる（1.4.51 以降） |
 | 未追跡ファイル | 内容つきの新しいファイルとして説明する。**バイナリファイルと 1 MB を超えるファイル**は、内容なしで名前だけを挙げる |
 | 読む量 | 変更は**最大 8,000 文字**。それを超えると diff は途中で切られて切り詰めと表示され、後ろの変更は説明されないことがある |
 | 変更を読めないとき | 「変更がない」とは言わず、理由を報告する |
@@ -465,10 +466,13 @@ requirements・design・bugfix の文書は Spec モードで、behavior の文�
 
 | 順 | 操作（公式） |
 |----|------------|
-| 1 | 描画された文書の文章を選ぶ。選択の隣にコメント欄が開き、選んだ文章が引用される |
-| 2 | **Comment for Kiro…** に直したい内容を書いて **Comment** を選ぶ。コメントは最も近い見出しの下の Comments パネルに現れる |
-| 3 | 直したい箇所ごとに繰り返す |
-| 4 | **Send N to Kiro**（N はコメント数）を選ぶ。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる |
+| 1 | 描画された文書の文章を選ぶ。選択の隣に小さな **Comment** のプロンプトが表示される。選択は文書に残るので、`Cmd/Ctrl+C` でコピーもできる。プロンプトは `Escape` で閉じる（1.4.51 以降） |
+| 2 | コメント欄を開く。プロンプトを選ぶか、プロンプトに表示されたショートカット（Mac は `Cmd+Option+M`、Windows と Linux は `Ctrl+Alt+M`）を押すか、入力を始める。欄には選んだ文章が引用され、入力した最初の文字が残る。中国語・日本語・韓国語などの入力メソッドで入力するときは、先に欄を開いてから入力する |
+| 3 | **Comment for Kiro…** に直したい内容を書き、`Enter` または **Comment** でコメントを保存する（`Shift+Enter` は改行）。コメントは最も近い見出しの下の Comments パネルに現れる |
+| 4 | 直したい箇所ごとに繰り返す |
+| 5 | **Send N to Kiro**（N はコメント数）を選ぶか、`Cmd/Ctrl+Enter` を押す。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる |
+
+**キーボード操作（1.4.51 で加わった内容）**: コメント欄の中で `Cmd/Ctrl+Enter` を押すと、入力中のコメントを保存してから、すべてのコメントを送ります。Comments パネルを開いたままにしたか閉じたかは記憶され、以降のレビューのパネルに引き継がれます（公式 [Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)・[1.4.51](../02_update/01_changelog.md#v1-4-51)）。キーの一覧は公式の Keyboard shortcuts の節にあります。
 
 - コメントは送信するまで Comments パネルに残りますが、**メモリ上にだけ**保持されます。レビューのパネルやウィンドウを再読み込みすると、未送信のコメントは消えます。大事なコメントは再読み込みの前に送信またはコピーしてください。
 - Kiro が作業している間、ボタンは **Kiro is reviewing...** と表示され、再送信できません。進捗・必要な承認・最終の応答は、コメントを受け取ったチャットセッションに表示されます。ターンが成功するとパネルは送信したコメントを消し、作業中に編集したコメントは残します。失敗したときは、コメントがエラーとともに残るので、直して再送信できます。
