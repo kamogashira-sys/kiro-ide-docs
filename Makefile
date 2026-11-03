@@ -23,6 +23,7 @@
         check-kiro-ide-consistency check-kiro-ide-urls check-kiro-ide-urls-important \
         check-kiro-ide-freshness check-kiro-ide-cloud-freshness \
         check-kiro-ide-cloud fetch-kiro-ide-primary \
+        kiro-ide-impact check-kiro-ide-impact kiro-ide-removed \
         extract-kiro-ide-changelog
 
 SCRIPTS := ./scripts/kiro-ide-docs
@@ -39,6 +40,18 @@ HTML_DIR ?= kiro-ide-docs/06_embedded-docs
 CLOUD_HTML_DIR ?= /tmp/kiro-ide-primary
 SITEMAP_URL := https://kiro.dev/sitemap.xml
 UA := Mozilla/5.0
+
+# 版更新の影響範囲（kiro-ide-impact・check-kiro-ide-impact・kiro-ide-removed）に渡す値。
+# VERSIONS: 版（カンマ区切り）。空なら起点と作業ツリーの changelog の目次の差
+# BASE: 起点（merge-base）を決める参照。空ならスクリプトの既定（origin/main。--pr では PR の base）
+# PR / PR_BODY: 検査する PR 本文（番号かファイル）。IMPACT_ARGS: スクリプトに足す引数
+# IMPACT_FETCH: 1 なら一次情報をレシピの中で取得する（check-kiro-ide-cloud の中では 0）
+VERSIONS ?=
+BASE ?=
+PR ?=
+PR_BODY ?=
+IMPACT_ARGS ?=
+IMPACT_FETCH ?= 1
 
 # ------------------------------------------------------------
 # ヘルプ
@@ -69,8 +82,15 @@ help:
 	@echo "  make check-kiro-ide-cloud-freshness # 同上の3値版（0=変化なし・1=更新あり・3=未検証）。末尾に freshness-result: rc=N"
 	@echo ""
 	@echo "クラウドセッション用（★外部サイトに依存。スナップショットが無い環境向け）:"
-	@echo "  make check-kiro-ide-cloud          # 公開範囲＋全チェック＋一次情報取得＋網羅性＋新版検知＋重要URL"
+	@echo "  make check-kiro-ide-cloud          # 公開範囲＋全チェック＋一次情報取得＋網羅性＋新版検知＋重要URL＋影響範囲の検査"
+	@echo "                                     #   版更新では PR_BODY=<本文のファイル> BASE=origin/<base> を渡す（手順書 §14.3）"
 	@echo "  make fetch-kiro-ide-primary        # 一次情報 HTML を sitemap から導出して取得（既定 $(CLOUD_HTML_DIR)）"
+	@echo ""
+	@echo "版更新の影響範囲（★外部サイトに依存。手順書 §6.6・§14.3）:"
+	@echo "  make kiro-ide-impact [VERSIONS=<版>]      # T1: 項目ごとの対応表の雛形（PR 本文の更新計画に貼る）。末尾に impact-result: rc=N"
+	@echo "  make check-kiro-ide-impact PR_BODY=<file> # T2: PR 本文の対応表の検査（PR=<番号> も可）。末尾に impact-check-result: rc=N"
+	@echo "  make kiro-ide-removed [BASE=<REV>]        # T3: 起点から消えた表の列・行・文（ネットワーク不要）"
+	@echo "                                            #   共通: BASE=<REV>（既定 origin/main）・IMPACT_ARGS=<追加の引数>"
 	@echo ""
 	@echo "保守用:"
 	@echo "  make extract-kiro-ide-changelog FILES=\"<html...>\"  # 公式 changelog HTML から一次情報を抽出"
@@ -146,11 +166,15 @@ fetch-kiro-ide-primary:
 # クラウドセッションの「テスト」段で実行する唯一のターゲット。
 # check-kiro-ide-all だけでは網羅性が未検証（coverage がスキップ）になるため、
 # こちらを完了条件にする。coverage の実数値（一次情報 N / 文書 N）を PR 本文へ転記する。
+# 版更新では PR_BODY=<本文のファイル> と BASE=origin/<base> を渡す（下位の make に引き継がれる）。
+# 影響範囲の検査は一次情報を前提ターゲットで取得済みなので IMPACT_FETCH=0 で呼ぶ。
+# 版更新でない日は「版更新ではありません」で impact-check-result: rc=0 になる。
 check-kiro-ide-cloud: check-kiro-ide-ignore check-kiro-ide-all fetch-kiro-ide-primary
 	@echo ""
 	@$(SCRIPTS)/check-coverage.py --html-dir "$(CLOUD_HTML_DIR)"
 	@$(MAKE) --no-print-directory check-kiro-ide-cloud-freshness
 	@$(MAKE) --no-print-directory check-kiro-ide-urls-important
+	@$(MAKE) --no-print-directory check-kiro-ide-impact IMPACT_FETCH=0
 	@echo ""
 	@echo "✅ クラウドセッション用の全検証が完了しました"
 	@echo "   （coverage はスキップしていません。上の「一次情報 N / 文書 N」を PR 本文に転記してください）"
@@ -226,6 +250,38 @@ check-kiro-ide-freshness:
 check-kiro-ide-cloud-freshness:
 	@$(SCRIPTS)/check-freshness.py --strict; rc=$$?; \
 	echo "freshness-result: rc=$$rc"; exit $$rc
+
+# ------------------------------------------------------------
+# 版更新の影響範囲（★T1・T2 は外部サイトに依存。all / CI には含めない）
+# ------------------------------------------------------------
+# T1。changelog の項目ごとの対応表の雛形と公式の節の抜粋を出す（手順書 §6.6）。
+# クラウドでは /tmp が呼び出しをまたいで残らないため、一次情報の取得と出力を1回の make で行う。
+# 取得に失敗しても rc 行を出すため、前提ターゲットにせずレシピの中で取得する。
+kiro-ide-impact:
+	@if [ "$(IMPACT_FETCH)" = 1 ]; then \
+	   $(MAKE) --no-print-directory fetch-kiro-ide-primary || { echo "impact-result: rc=3"; exit 3; }; \
+	 fi; \
+	$(SCRIPTS)/impact-report.py table --html-dir "$(CLOUD_HTML_DIR)" \
+	  $(if $(VERSIONS),--versions "$(VERSIONS)") $(if $(BASE),--base "$(BASE)") $(IMPACT_ARGS); \
+	rc=$$?; echo "impact-result: rc=$$rc"; exit $$rc
+
+# T2。PR 本文の対応表を検査する（0=合格・1=対応表の不備・2=前提の崩れ・3=未検証）。
+# make はレシピの非0をすべて exit 2 にするので、impact-check-result 行で判定する。
+# rc 行が出ていないときは未検証として扱う（手順書 §14.3）。
+check-kiro-ide-impact:
+	@if [ "$(IMPACT_FETCH)" = 1 ]; then \
+	   $(MAKE) --no-print-directory fetch-kiro-ide-primary || { echo "impact-check-result: rc=3"; exit 3; }; \
+	 fi; \
+	$(SCRIPTS)/check-impact.py --html-dir "$(CLOUD_HTML_DIR)" \
+	  $(if $(VERSIONS),--versions "$(VERSIONS)") $(if $(BASE),--base "$(BASE)") \
+	  $(if $(PR),--pr "$(PR)") $(if $(PR_BODY),--pr-body "$(PR_BODY)") $(IMPACT_ARGS); \
+	rc=$$?; echo "impact-check-result: rc=$$rc"; exit $$rc
+
+# T3。起点（merge-base）から消えた表の列・表の行・文を出す。ネットワーク不要。
+# 合否は返さない（exit 0）。引数の誤りは exit 2、clone の状態（参照が無い・shallow・
+# 共通の祖先が無い）は exit 3。判断を書いたかは check-kiro-ide-impact が検査する。
+kiro-ide-removed:
+	@$(SCRIPTS)/impact-report.py removed $(if $(BASE),--base "$(BASE)")
 
 # ------------------------------------------------------------
 # 保守用（取得済み HTML を対象にするため check-*-all には含めない）
