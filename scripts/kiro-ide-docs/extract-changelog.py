@@ -13,6 +13,7 @@ kiro.dev は Next.js（App Router）で構築されており、ページ本文�
     # 抽出
     python3 extract-changelog.py 1-0.html            # JSON
     python3 extract-changelog.py --text 1-0.html     # 人が読む形
+    python3 extract-changelog.py --items 1-4-51.html # 項目（ID・題・リンク）を1行ずつ
 
 重要な前提（`.github/UPDATE_GUIDE.md` §3・§5 と対応）:
 
@@ -21,9 +22,21 @@ kiro.dev は Next.js（App Router）で構築されており、ページ本文�
   **パッチの説明文は本文側の別ノード `<div id="patch-X-Y-Z">` に存在する。**
   索引に説明が無いことを「説明が存在しない」と読み替えてはならない。
 - 網羅性（全パッチの列挙）は索引で担保し、記述内容は本文ノードで判断する。
+
+項目（`entries`・`items()`・`releases()`）:
+
+- `extract()` の `entries` は、`li` と `p`（`<p><strong>ラベル</strong></p>` だけの段落を除く）を
+  出現順に持つ。各要素は `kind`・`patch`・`section`・`title`・`text`・`links`・`terms`・`in_details`。
+  既存のキー（`sections`・`patches` など）の作り方は変えていない。
+- 項目の区切りは `items()` が決める。`<strong>` を区切りとみなさない（1.4.51 では `<strong>` が
+  29 個あり、項目は 14）。題は「最初の子が `<strong>` で、末尾が `:`」のときだけ取る。
+- 1つの版の項目は `releases()` が専用ページ → 系列ランディング本文 → 系列ページ内パッチの順に選ぶ
+  （`pick_release()`）。専用ページを持つ版は、系列ページ側のパッチが1行の案内しか持たないため。
 """
 import argparse
+import collections
 import json
+import os
 import re
 import sys
 
@@ -108,6 +121,98 @@ def text_of(node, table):
     return "".join(text_of(x, table) for x in node)
 
 
+def links_of(node, table, out=None):
+    """ノード配下の要素の `href` プロップを出現順に集める。
+
+    リンクは `a` 要素ではなく、クライアント部品（Next.js の Link。タグが `$L<id>`）の
+    `href` に入る。`$` で始まる値（`$undefined`）は捨てる。
+    """
+    if out is None:
+        out = []
+    if isinstance(node, str):
+        if node.startswith("$L"):
+            links_of(table.get(node[2:]), table, out)
+        return out
+    if isinstance(node, dict):
+        links_of(node.get("children"), table, out)
+        return out
+    if isinstance(node, list):
+        if len(node) == 4 and node[0] == "$" and isinstance(node[1], str):
+            props = node[3] if isinstance(node[3], dict) else {}
+            h = props.get("href")
+            if isinstance(h, str) and not h.startswith("$"):
+                out.append({"href": h, "text": clean(text_of(props.get("children"), table))})
+            links_of(props.get("children"), table, out)
+            return out
+        for x in node:
+            links_of(x, table, out)
+    return out
+
+
+def lead_title(node, table):
+    """`li`/`p` の最初の子が `<strong>…:</strong>` なら、その文字列（末尾のコロンを除く）。"""
+    kids = node
+    if isinstance(kids, str) and kids.startswith("$L"):
+        kids = table.get(kids[2:])
+    if isinstance(kids, list) and len(kids) == 4 and kids[0] == "$":
+        kids = [kids]
+    if not isinstance(kids, list) or not kids:
+        return None
+    first = kids[0]
+    if isinstance(first, str) and first.startswith("$L"):
+        first = table.get(first[2:])
+    if isinstance(first, list) and len(first) == 4 and first[0] == "$" and first[1] == "strong":
+        props = first[3] if isinstance(first[3], dict) else {}
+        t = clean(text_of(props.get("children"), table))
+        if t.endswith(":"):
+            return t[:-1].strip()
+    return None
+
+
+def terms_of(node, table, out=None, inlink=False):
+    """項目内の `<strong>`・`<code>` の文字列を出現順・重複なしで集める。
+
+    先頭の題（末尾が `:`）とリンクの中（「Learn more ->」）は除く。
+    """
+    if out is None:
+        out = []
+    if isinstance(node, str):
+        if node.startswith("$L"):
+            terms_of(table.get(node[2:]), table, out, inlink)
+        return out
+    if isinstance(node, dict):
+        terms_of(node.get("children"), table, out, inlink)
+        return out
+    if isinstance(node, list):
+        if len(node) == 4 and node[0] == "$" and isinstance(node[1], str):
+            props = node[3] if isinstance(node[3], dict) else {}
+            if node[1] in ("strong", "code") and not inlink:
+                t = clean(text_of(props.get("children"), table))
+                if t and not t.endswith(":") and t not in out:
+                    out.append(t)
+                return out
+            terms_of(props.get("children"), table, out, inlink or "href" in props)
+            return out
+        for x in node:
+            terms_of(x, table, out, inlink)
+    return out
+
+
+def entry(kind, kids, text, acc, table):
+    """`entries` の1要素。`section` は、その時点のコンテナ（ページ本文か1パッチ）の最後の節の題。"""
+    target = acc["cur_patch"] or acc
+    return {
+        "kind": kind,
+        "patch": acc["cur_patch"]["version"] if acc["cur_patch"] else None,
+        "section": target["sections"][-1]["title"] if target["sections"] else None,
+        "title": lead_title(kids, table),
+        "text": text,
+        "links": links_of(kids, table),
+        "terms": terms_of(kids, table),
+        "in_details": bool(acc["in_details"]),
+    }
+
+
 def clean(s):
     return re.sub(r'\s+', ' ', s).replace(" Learn more ->", "").strip()
 
@@ -170,9 +275,17 @@ def walk(node, table, acc):
                 target["sections"].append(new_section(t))
             return
 
+        # <details> の中は動画のトランスクリプト。entries に印を付ける（R0。items() が捨てる）
+        if tag == "details":
+            acc["in_details"] += 1
+            walk(props.get("children"), table, acc)
+            acc["in_details"] -= 1
+            return
+
         if tag == "li":
             t = clean(text_of(props.get("children"), table))
             if t:
+                acc["entries"].append(entry("li", props.get("children"), t, acc, table))
                 if not target["sections"]:
                     target["sections"].append(new_section(None))
                 sec = target["sections"][-1]
@@ -189,6 +302,8 @@ def walk(node, table, acc):
                 isinstance(kids, list) and len(kids) == 4
                 and kids[0] == "$" and kids[1] == "strong"
             )
+            if not only_strong:
+                acc["entries"].append(entry("p", kids, t, acc, table))
             cur = acc["cur_patch"]
             if cur is not None:
                 # パッチ見出し: <p><strong>0.8.206</strong><span> | Jan 28, 2026</span></p>
@@ -232,7 +347,8 @@ def patch_index(html):
 def extract(path):
     html = open(path, encoding="utf-8").read()
     table = rowtable(flight(html))
-    acc = {"intro": [], "sections": [], "patches": [], "cur_patch": None}
+    acc = {"intro": [], "sections": [], "patches": [], "cur_patch": None,
+           "entries": [], "in_details": 0}
     for rid in roots(table):
         walk(table[rid], table, acc)
 
@@ -268,6 +384,7 @@ def extract(path):
         "sections": [s for s in secs if s["items"] or s["groups"]],
         "patches": acc["patches"],
         "patch_index_count": len(index) if index is not None else None,
+        "entries": acc["entries"],
     }
     # 索引と本文のパッチ数が食い違ったら構造変化の可能性がある
     if index is not None and len(index) != len(acc["patches"]):
@@ -276,6 +393,117 @@ def extract(path):
             "（ページ構造が変わった可能性あり）"
         )
     return result
+
+
+PATCH_HEADING_RE = re.compile(r'^\d+\.\d+\.\d+\s*\|')
+SERIES_SLUG_RE = re.compile(r'^\d+-\d+$')
+
+
+def items(entries):
+    """1コンテナ（ページ本文か1パッチ）の entries から項目の配列を作る（設計の規則 R0〜R7）。
+
+    - R0 `<details>` の中は捨てる。R1 パッチの見出し段落（`X.Y.Z | 日付`）は捨てる
+    - R2 見出しの無い段落は概要。ほかに項目が無いときだけ概要を1項目にする
+    - R3 段落を1つ以上含む節は、節全体を1項目にする（題＝節の見出し）
+    - R4・R5 `li` だけの節と節に属さない `li` は、`li` 1つを1項目にする
+    - R7 題は `lead_title()`（最初の子の `<strong>` の末尾が `:` のときだけ）
+    """
+    es = [e for e in entries
+          if not e["in_details"] and not (e["kind"] == "p" and PATCH_HEADING_RE.match(e["text"]))]
+    intro = [e for e in es if e["section"] is None and e["kind"] == "p"]
+    rest = [e for e in es if not (e["section"] is None and e["kind"] == "p")]
+    by_section = collections.OrderedDict()
+    for e in rest:
+        by_section.setdefault(e["section"], []).append(e)
+    out = []
+    for sec, group in by_section.items():
+        if sec is not None and any(e["kind"] == "p" for e in group):
+            out.append({
+                "section": sec, "title": sec, "unit": "section",
+                "body": " ".join(e["text"] for e in group),
+                "links": [l for e in group for l in e["links"]],
+                "terms": [t for e in group for t in e["terms"]],
+            })
+            continue
+        for e in group:
+            body = e["text"]
+            if e["title"] and body.startswith(e["title"] + ":"):
+                body = body[len(e["title"]) + 1:].strip()
+            out.append({
+                "section": sec, "title": e["title"], "unit": "li",
+                "body": body, "links": e["links"], "terms": e["terms"],
+            })
+    if not out and intro:
+        out.append({
+            "section": None, "title": None, "unit": "intro",
+            "body": " ".join(e["text"] for e in intro),
+            "links": [l for e in intro for l in e["links"]],
+            "terms": [t for e in intro for t in e["terms"]],
+        })
+    return out
+
+
+def releases(paths, pages=None):
+    """全ページから {版: [候補コンテナ]} を作る。
+
+    候補は {"kind": dedicated|series|patch, "slug", "version", "date_iso", "items"}。
+    kind は、専用ページの本文（dedicated）、系列ランディングの本文（series）、
+    系列ページ内の1パッチ（patch）。`pages` に extract() の結果（paths と同じ順）を渡すと再抽出しない。
+    """
+    out = {}
+    for n, path in enumerate(paths):
+        d = pages[n] if pages is not None else extract(path)
+        slug = os.path.basename(path)[:-len(".html")] if path.endswith(".html") else os.path.basename(path)
+        series = bool(SERIES_SLUG_RE.match(slug))
+        body = [e for e in d["entries"] if e["patch"] is None]
+        if d["version"]:
+            out.setdefault(d["version"], []).append({
+                "kind": "series" if series else "dedicated", "slug": slug,
+                "version": d["version"], "date_iso": d["date_iso"], "items": items(body),
+            })
+        if series:
+            by_patch = collections.OrderedDict()
+            for e in d["entries"]:
+                if e["patch"]:
+                    by_patch.setdefault(e["patch"], []).append(e)
+            dates = {p["version"]: p["date_iso"] for p in d["patches"]}
+            for v, es in by_patch.items():
+                out.setdefault(v, []).append({
+                    "kind": "patch", "slug": slug, "version": v,
+                    "date_iso": dates.get(v), "items": items(es),
+                })
+    return out
+
+
+def pick_release(cands):
+    """R8: 専用ページ → 系列ランディング本文 → 系列ページ内パッチの順に1つ選ぶ。"""
+    for kind in ("dedicated", "series", "patch"):
+        for c in cands:
+            if c["kind"] == kind:
+                return c
+    return None
+
+
+def version_key(v):
+    return [int(x) for x in v.split(".")]
+
+
+def render_items(rel):
+    """--items の出力。版の降順に `ID<TAB>題（無ければ本文の先頭60字）<TAB>リンク` を1行ずつ。"""
+    out = []
+    for v in sorted(rel, key=version_key, reverse=True):
+        c = pick_release(rel[v])
+        out.append(f"[{v}] {c['date_iso']} | {c['kind']}:{c['slug']}")
+        for n, it in enumerate(c["items"], 1):
+            title = it["title"] or (it["body"][:60] + ("…" if len(it["body"]) > 60 else ""))
+            links = " ".join(l["href"] for l in it["links"]) or "-"
+            out.append(f"{item_id(v, n, len(c['items']))}\t{title}\t{links}")
+    return "\n".join(out)
+
+
+def item_id(version, n, total):
+    """項目の ID `<版>-<連番>`。連番は2桁ゼロ詰めで、100項目以上の版は3桁にする。"""
+    return f"{version}-{n:0{3 if total >= 100 else 2}d}"
 
 
 def render_text(d):
@@ -308,10 +536,13 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("files", nargs="+", help="取得済みの changelog HTML")
     ap.add_argument("--text", action="store_true", help="JSON ではなく可読形式で出力")
+    ap.add_argument("--items", action="store_true",
+                    help="項目（ID・題・リンク）を版ごとに1行ずつ出力（渡したページだけで版の取り出し元を選ぶ）")
     args = ap.parse_args()
 
     failed = 0
     results = []
+    ok_paths = []
     for path in args.files:
         d = extract(path)
         if not d["title"]:
@@ -321,10 +552,16 @@ def main():
             continue
         if d.get("warning"):
             print(f"WARNING: {path}: {d['warning']}", file=sys.stderr)
-        if args.text:
+        if args.items:
+            ok_paths.append(path)
+            results.append(d)
+        elif args.text:
             print(render_text(d))
         else:
             results.append(d)
+    if args.items:
+        print(render_items(releases(ok_paths, results)))
+        return 1 if failed else 0
     # JSON は配列で一括出力する。ページごとにオブジェクトを並べると
     # 複数ファイルを渡したときに JSON として読めなくなる（オブジェクトの連結になる）。
     if not args.text:
