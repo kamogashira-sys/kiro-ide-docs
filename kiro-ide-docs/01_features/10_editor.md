@@ -2,7 +2,7 @@
 
 **Code OSS 由来の画面と、Kiro が加えたエディタ側の機能をまとめます。**
 
-- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-15）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-15）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
+- **一次情報**: [Kiro Interface](https://kiro.dev/docs/ide/editor/interface/)（公式ページ更新日: 2026-09-30）・[Codebase indexing（単独ページは廃止。IDE概要ページの Editor 項目内で言及）](https://kiro.dev/docs/ide/)・[Source Control](https://kiro.dev/docs/ide/editor/source-control/)（公式ページ更新日: 2026-10-29。§3.1 の What Kiro reads は、この更新版で確認）・[Markdown Review](https://kiro.dev/docs/ide/editor/markdown-review/)（公式ページ更新日: 2026-10-29。§9.2 のキーボード操作は、この更新版で確認）・[Kiroignore](https://kiro.dev/docs/kiroignore/)・[Multi-root Workspaces](https://kiro.dev/docs/ide/editor/multi-root-workspaces/)
 
 > **前提**: Kiro IDE は **VS Code の基盤（Code OSS）のフォーク**です。エディタの基本操作は VS Code と同じで、
 > **AI 機能が全体に統合されている**点が違います。VS Code からの移行は
@@ -152,6 +152,17 @@
 ### 3.1 コミットメッセージの AI 生成
 
 **変更を AI が分析して、意味のあるコミットメッセージを自動生成します。** ステージした変更があれば、メッセージは**ステージした変更だけ**を説明します。**何もステージしていないとき**は、新しい未追跡ファイルの内容を含む**作業ツリーの変更**を説明し、Kiro は「Nothing is staged, so the commit message describes all changes」と表示してそのことを伝えます（公式 [Source Control](https://kiro.dev/docs/ide/editor/source-control/#commit-message-generation)・[1.3.11](../02_update/01_changelog.md#v1-3-11)）。大きな変更は Kiro が読む前に切り詰められるため、網羅性が重要なときは絞った変更をステージするよう公式は案内しています。
+
+**Kiro が読み取る範囲（What Kiro reads）**: Kiro は、公式 [Source Control](https://kiro.dev/docs/ide/editor/source-control/#what-kiro-reads) の記述に沿って、次のように変更を読み取ります（[1.4.51](../02_update/01_changelog.md#v1-4-51) でこの挙動が改善されました）。
+
+| 項目 | 内容（公式） |
+|------|------------|
+| ignore ルールで除外されたファイル | 名前も内容も除外される。Kiro は除外した変更ファイルの件数を報告する。変更ファイルがすべて除外された場合は、メッセージを生成しなかったことを伝える |
+| ターミナルでステージした変更 | Kiro は先にリポジトリの状態を更新するため、直前にステージした変更も含まれる |
+| 個別のファイル | 除外された変更ファイルがあっても、含まれる各ファイルの差分は読み取る |
+| 未追跡ファイル | 内容付きの新規ファイルとして説明される。バイナリと 1 MB を超えるファイルは、内容なしで名前だけ列挙される |
+| 読み取り量の上限 | 変更は最大 8,000 文字まで読む。それを超えると差分は切り詰められ truncated と記され、以降の変更は説明されないことがある |
+| 読み取れないとき | リポジトリの変更を読めない場合は、変更がないと言う代わりに理由を報告する。変更がまったくない場合は「There are no changes to generate a commit message from.」と表示する |
 
 | 順 | 操作 |
 |----|------|
@@ -465,11 +476,24 @@ requirements・design・bugfix の文書は Spec モードで、behavior の文�
 
 | 順 | 操作（公式） |
 |----|------------|
-| 1 | 描画された文書の文章を選ぶ。選択の隣にコメント欄が開き、選んだ文章が引用される |
-| 2 | **Comment for Kiro…** に直したい内容を書いて **Comment** を選ぶ。コメントは最も近い見出しの下の Comments パネルに現れる |
-| 3 | 直したい箇所ごとに繰り返す |
-| 4 | **Send N to Kiro**（N はコメント数）を選ぶ。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる |
+| 1 | 描画された文書の文章を選ぶ。選択の隣に小さな **Comment** プロンプトが表示される。選択は文書に残るので、コメントせずに **Cmd/Ctrl+C** でテキストをコピーすることもできる。プロンプトを閉じるには **Escape** を押す（[1.4.51](../02_update/01_changelog.md#v1-4-51)） |
+| 2 | コメント欄を開く。プロンプトを選ぶか、プロンプトに表示されたショートカット（Mac は **Cmd+Option+M**、Windows・Linux は **Ctrl+Alt+M**）を押すか、そのまま入力を始める。入力方式エディタ（中国語・日本語・韓国語など）で入力するときは、先にコメント欄を開いてから入力する（[1.4.51](../02_update/01_changelog.md#v1-4-51)） |
+| 3 | **Comment for Kiro…** に直したい内容を書く。**Enter** を押すか **Comment** を選ぶとコメントを保存し、**Shift+Enter** で改行する。コメントは最も近い見出しの下の Comments パネルに現れる（[1.4.51](../02_update/01_changelog.md#v1-4-51)） |
+| 4 | 直したい箇所ごとに繰り返す |
+| 5 | **Send N to Kiro**（N はコメント数）を選ぶか、**Cmd/Ctrl+Enter** を押す。Kiro は、引用した文章とその位置つきで、すべてのコメントを1つのプロンプトで受け取る。同じ語句が複数あっても該当の箇所を見つけられる（[1.4.51](../02_update/01_changelog.md#v1-4-51)） |
 
+**キーボードショートカット**（公式）:
+
+| 場所 | キー | 結果 |
+|------|------|------|
+| テキスト選択 | **Cmd/Ctrl+C** | 選択をコピーする |
+| テキスト選択 | **Cmd+Option+M**（Mac）・**Ctrl+Alt+M**（Windows・Linux） | コメント欄を開く |
+| テキスト選択 | **Escape** | **Comment** プロンプトを閉じる |
+| コメント欄 | **Enter** | コメントを保存する |
+| コメント欄 | **Shift+Enter** | 改行する |
+| パネル内（コメント欄の外） | **Cmd/Ctrl+Enter** | すべてのコメントを送る（コメントがなければ空の Comments パネルを開く） |
+
+- Kiro がレビュー中に **Cmd/Ctrl+Enter** を押すと、要求は待機します。現在の送信が終わり、どのコメント欄も開いていないときに送られ、そのときパネルに残っているコメントの最新のテキストが送られます。残っているコメントがない場合、または現在の送信が失敗した場合、待機している要求は破棄されます。
 - コメントは送信するまで Comments パネルに残りますが、**メモリ上にだけ**保持されます。レビューのパネルやウィンドウを再読み込みすると、未送信のコメントは消えます。大事なコメントは再読み込みの前に送信またはコピーしてください。
 - Kiro が作業している間、ボタンは **Kiro is reviewing...** と表示され、再送信できません。進捗・必要な承認・最終の応答は、コメントを受け取ったチャットセッションに表示されます。ターンが成功するとパネルは送信したコメントを消し、作業中に編集したコメントは残します。失敗したときは、コメントがエラーとともに残るので、直して再送信できます。
 - 送信前にコメントを変えるには、Comments パネルで選んで編集または削除します。パネルのヘッダーのコメントアイコンで Comments パネルを隠せます（隠している間は件数をアイコンに表示）。

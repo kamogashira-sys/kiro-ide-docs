@@ -4,7 +4,7 @@
 
 - **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-09-30）・[Setup & First Run（セッションの始め方。旧 Vibe vs Spec sessions ページはここに統合され、二択ピッカー自体も廃止）](https://kiro.dev/docs/ide/setup/)（更新日: 2026-09-30）・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)（公式ページ更新日: 2026-10-13）・[Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)（公式ページ更新日: 2026-10-13）
 - **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-24）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-10-20）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-10-21）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
-- **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-10-24）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-24）の該当節
+- **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-10-29。§16.2 の type・location バッジの説明は、この更新版で確認）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-24）の該当節
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
 > 繰り返し作業を自動化する — これらを**プロジェクトの文脈を保ったまま**自然言語で行えます。
@@ -634,6 +634,16 @@ IDE では**1つのユーザー設定**で Memory を制御します。**既定�
 | 開く | 行を選ぶと、メモリがエディタタブで開く。type・location・作成時刻・**Summary**・**Content** と、**Refresh**・**Delete** のボタンが表示される |
 | 削除 | 行を右クリックして **Delete** を選ぶか、タブの **Delete** を選ぶ。削除の前に確認が表示される |
 | 再読み込み | ビューのタイトルバーの **Refresh Memories** |
+
+**バッジの意味を読む（1.4.51）**: メモリのタブで type または location のバッジにカーソルを合わせる（またはフォーカスする）と、その意味が表示されます（[1.4.51](../02_update/01_changelog.md#v1-4-51)）。Memory は、アクティビティバー・Memory のタブ・チャットで1つの脳のアイコンに統一されました。
+
+| バッジ | 値 | ホバー／フォーカス時の説明（公式） |
+|--------|-----|--------------------------------|
+| type | Preference | **How you like Kiro to work.** |
+| type | Fact | **Something true about this repository.** |
+| type | Other | **Not a preference or a fact.** |
+| location | Global | **Used in every workspace.** |
+| location | リポジトリ | **Used only in** に続けてリポジトリ名 |
 
 **Use only** のときでも、Memory ビューからメモリを削除できます。メモリの内容を直したいときはチャットで Kiro に頼みます。Kiro が変更できるのは、**Use and learn** または **Use but don't learn** で、信頼したワークスペースの場合だけです。
 

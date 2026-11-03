@@ -3,7 +3,7 @@
 **対応環境の確認からインストール・初回起動・旧版へのダウングレードまでを扱います。**
 
 - **一次情報**: [Installation](https://kiro.dev/docs/getting-started/installation/)（公式ページ更新日: 2026-10-05。第1・5・6節）・[ダウンロードページ](https://kiro.dev/downloads/)（第2・6節）・[Setup & First Run](https://kiro.dev/docs/ide/setup/)（公式ページ更新日: 2026-09-30。第4節の初回起動とプロジェクトの開き方）・[IDE Troubleshooting](https://kiro.dev/docs/ide/troubleshooting/)（公式ページ更新日: 2026-10-20。第8節）・公式 changelog（第5・8節）
-- **本ページの基準バージョン**: 第1節の対応環境は Installation ページ（公式ページ更新日: 2026-10-05）で再確認し、表の内容に変更はありません。第2節の配布形態（10種類）は **1.2.4**（2026-09-30）時点の記載のままで、最新版（1.4.26）の時点では確認できていません（第2節）
+- **本ページの基準バージョン**: 第1節の対応環境は Installation ページ（公式ページ更新日: 2026-10-05）で再確認し、表の内容に変更はありません。第2節の配布形態（10種類）は、最新版 **1.4.62**（2026-10-28）時点のダウンロードページの埋め込みデータで確認しました。1.4.62 で Windows のシステム全体向けインストーラーが加わっています（第2節）
 
 ---
 
@@ -26,28 +26,30 @@
 
 ## 2. 配布形態
 
-[ダウンロードページ](https://kiro.dev/downloads/)から入手します。1.2.4 で提供されているのは次の**10種類**です（1.0.242 の時点では7種類。1.1 で Windows と Linux の ARM64 版が加わりました）。
+[ダウンロードページ](https://kiro.dev/downloads/)から入手します。ダウンロードページの埋め込みデータから取得できる配布ファイルの表記は、次の**10種類**です（[1.4.62](../02_update/01_changelog.md#v1-4-62) で Windows のシステム全体向けインストーラーが加わりました）。
 
-| プラットフォーム | 形式 | ダウンロードページの表記 |
-|---------------|------|--------------------|
-| macOS（Apple Silicon） | `.dmg` | macOS (Apple Silicon) |
-| macOS（Intel） | `.dmg` | macOS (Intel) |
-| macOS（Apple Silicon） | `.pkg` | macOS (Apple Silicon, pkg) |
-| macOS（Intel） | `.pkg` | macOS (Intel, pkg) |
-| Windows（x64） | `.exe` | Windows (x64) |
-| **Windows（ARM64）** | `.exe` | Windows (ARM64) |
-| Linux（x64） | `.deb` | Linux (x64, Debian/Ubuntu 24+) |
-| Linux（x64） | `.tar.gz` | Linux (x64, Universal) |
-| **Linux（ARM64）** | `.deb` | Linux (ARM64, Debian/Ubuntu 24+) |
-| **Linux（ARM64）** | `.tar.gz` | Linux (ARM64, Universal) |
+| プラットフォーム | ダウンロードページの表記 |
+|---------------|--------------------|
+| macOS（Apple Silicon・`.dmg`） | macOS (Apple Silicon) |
+| macOS（Intel・`.dmg`） | macOS (Intel) |
+| macOS（Apple Silicon・`.pkg`） | macOS (Apple Silicon, pkg) |
+| macOS（Intel・`.pkg`） | macOS (Intel, pkg) |
+| **Windows（システム全体・x64）** | Windows System Installer (x64) |
+| **Windows（システム全体・ARM64）** | Windows System Installer (ARM64) |
+| Windows（ユーザー単位・x64） | Windows User Installer (x64) |
+| Windows（ユーザー単位・ARM64） | Windows User Installer (ARM64) |
+| Linux（x64・`.deb`） | Linux (x64, Debian/Ubuntu 24+) |
+| Linux（x64・`.tar.gz`） | Linux (x64, Universal) |
 
-> **配布形態の再確認について**: ダウンロードページの HTML から取得できる配布ファイルの表記は、macOS 4種・Windows（x64）・Linux（x64）2種の計7種だけで、Windows（ARM64）と Linux（ARM64）の表記を含みません。上の10種類が最新版（1.4.26）でも提供されているかは、公式の記述を確認できていないため**未確認**です。
+> **Windows のシステム全体向けインストーラー（1.4.62）**: 1.4.62 で、コンピューターの全ユーザーが Kiro を使えるようにする **Windows System Installer**（x64・ARM64）が加わりました。インストールには管理者権限が必要です。従来のユーザー単位のインストーラーは **Windows User Installer**（x64・ARM64）として提供が続きます（[1.4.62](../02_update/01_changelog.md#v1-4-62)・[ダウンロードページ](https://kiro.dev/downloads/)）。
+
+> **配布形態の表記について**: 上の10種類は、ダウンロードページの埋め込みデータ全体から取得した表記です。画面に見える部分の表記や並び順は、公式の記述を確認できていないため**未確認**です。
 
 **`.dmg` と `.pkg` の使い分け**: `.pkg` はコマンドラインや MDM から無人インストールできる形式です。個人利用なら `.dmg`、組織配布なら `.pkg` が扱いやすくなります（配布については [04_enterprise.md](04_enterprise.md) を参照）。
 
 **配信チャネル**: ダウンロード URL は `releases/**stable**/...` の形をしており、**stable チャネルのみ**が公開されています。beta や insiders 相当のチャネルについて公式の記述はありません（未確認）。
 
-**旧版**: ダウンロードページの埋め込みデータ（`releases`）には、最新版の IDE 1.4.26 のほかに、**1.4.10・1.4.5・1.4.0・1.3.11・1.3.0・1.2.56・1.2.37・1.2.4・1.1.70・1.1.14・1.0.437・1.0.411・1.0.395 …** が載っています。1.x 系は 1.0.0 までの 30 版で、公式 changelog の 1.x 系の版（[アップデート情報](../02_update/01_changelog.md)）と一致します。画面上の並びは、公式の記述を確認できていないため未確認です。
+**旧版**: ダウンロードページの埋め込みデータ（`releases`）には、最新版の IDE 1.4.62 のほかに、**1.4.51・1.4.26・1.4.10・1.4.5・1.4.0・1.3.11・1.3.0・1.2.56・1.2.37・1.2.4・1.1.70・1.1.14・1.0.437・1.0.411・1.0.395 …** が載っています。1.x 系は 1.0.0 までの 32 版で、公式 changelog の 1.x 系の版（[アップデート情報](../02_update/01_changelog.md)）と一致します。画面上の並びは、公式の記述を確認できていないため未確認です。
 
 > **1.1.14 について**: 公式 changelog の系列ページ `/changelog/ide/1-1/` のページに表示される版表記は **1.1.14** です。ダウンロードページの「IDE 1.1.14」は、この系列ページのリリースにあたります（[1.1.14](../02_update/01_changelog.md#v1-1-14)）。
 
