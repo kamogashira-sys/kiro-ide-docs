@@ -786,10 +786,12 @@ PY
 | 機能 | IDE 1.0 | 正しいリンク先 | 誤ったリンク先 |
 |------|--------|--------------|--------------|
 | Permissions | capability ベース | `docs/cli/v3/permissions` | ~~`docs/cli/chat/permissions`~~（旧モデル）・~~`docs/cli/permissions`~~（v3なし） |
-| Custom agents（agent-config） | Markdown＋タグ | `docs/cli/v3/agent-config` | ~~`docs/cli/agent-config`~~（2.x は JSON 形式） |
+| Custom agents（agent-config） | Markdown＋タグ | **共通ページ**: `docs/custom-agents/configuration-reference`（IDE 1.0 と CLI V3 の両方を扱う） | ~~`docs/cli/v3/agent-config`~~（**2026-11 に移転スタブ化**。上のページへ移転）・~~`docs/cli/agent-config`~~（**404**） |
 | **Hooks** | `.kiro/hooks/*.json` | **機能説明**: `docs/hooks`（IDE/CLI/Web 共通の実体）／**v3移行手順**: `docs/cli/v3/hooks-migration` | ~~`docs/cli/hooks`~~（**まったくの別物**: stdin JSON のライフサイクルフック）・~~`docs/cli/v3/hooks`~~（**2026-08 に移転スタブ化**。実体は `hooks-migration`） |
 | **Custom agents（一般）** | — | **共通ページ**: `docs/custom-agents`（CLI 固有ページは存在しない） | ~~`docs/cli/custom-agents`~~（**2026-08 に移転スタブ化**。`docs/custom-agents` へ移転）・~~`docs/cli/v3/custom-agents`~~（**404**） |
 
+> ⚠️ **2026-11 に `docs/cli/v3/agent-config` が `docs/custom-agents/configuration-reference` への移転スタブになった。** `agent-config` は `custom-agents` と同じく、CLI 配下の形（v3 の有無を問わず）を使わず共通ページを指す。`check-links.py` が専用ルール（`CLI_AGENT_CONFIG_FORBIDDEN`）で検出する。
+>
 > ⚠️ **2026-08 の公式再構成で `docs/cli/v3/hooks` と `docs/cli/v3/custom-agents` の実体が変化した。**
 > `hooks` は v3 配下でも「移転スタブか実体か」を個別に判定する必要があり、`custom-agents` は v3 の有無に関わらず CLI 配下を使わない（共通ページのみが正）。
 > **`check-links.py` はこの2件を専用ルールで検出する**（`CLI_V3_REQUIRED` の汎用ルールでは対応できないため）。
