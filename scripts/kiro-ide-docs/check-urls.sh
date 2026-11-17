@@ -119,7 +119,7 @@ if [ "$MODE" = "important" ]; then
         "https://kiro.dev/docs/privacy-and-security/data-protection/"
         # CLI 版へのリンクは v3 を指す規約（F-7）。リンク先の実在を確認する
         "https://kiro.dev/docs/cli/v3/permissions/"
-        "https://kiro.dev/docs/cli/v3/agent-config/"
+        "https://kiro.dev/docs/custom-agents/configuration-reference/"   # 旧 docs/cli/v3/agent-config の移転先（共通ページ）
         "https://kiro.dev/docs/cli/v3/hooks-migration/"
     )
     errors=0
