@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを、1つのルールで全ツールに効かせる仕組みです。1.0 の中核機能です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20。§6 の Kiro スコープと信頼していないワークスペースの記述は、この更新版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-29。§10.2 のステータスバー表記は、この更新版で確認）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-11-13。§11 の Approve for me は、この更新版で確認。§6 の Kiro スコープと信頼していないワークスペースの記述は、2026-10-20 の版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-29。§10.2 のステータスバー表記は、この更新版で確認）
 - **辞書的な一覧**: [04_reference/03_permissions.md](../04_reference/03_permissions.md)（capability 15種・書式・既定の挙動）
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -360,6 +360,61 @@ rules:
 | ステータスバーが **Error** を表示する | ファイルが不正または読めない、あるいは Kiro が変更を適用できなかった。以前の設定は有効なまま。JSON を直して保存し直す。Kiro が **Reload Window** を提示したら使う |
 
 > 公式は Windows の管理者セットアップの画面の詳細までは記述していません。本サイトでは画面の見え方を扱いません。
+
+---
+
+## 11. Approve for me（1.4.154 で追加）
+
+**ルールで決まらない操作を、Kiro が代わりに承認するモードです。** Kiro は安全と判断した操作を承認し、安全でないと判断した操作をブロックし、判断に迷うときはあなたに確認します。承認した操作には、ツールカードに **Approved for you** と表示されます（公式 [Approve for me](https://kiro.dev/docs/permissions/#approve-for-me)・[1.4.154](../02_update/01_changelog.md#v1-4-154)・[1.4.178](../02_update/01_changelog.md#v1-4-178)）。
+
+公式は、Kiro IDE のチャット・Kiro CLI 2.36 以降の対話型ローカル V3 セッション・Kiro Web で使えると書いています。ただし、Kiro が Approve for me を提供するセッションに限られます。提供されないセッションでは、Kiro はこれまでどおり確認を求めます。本サイトは IDE を扱うため、以降は IDE の操作を書きます。
+
+### 11.1 権限モードのメニュー
+
+Approve for me を使えるチャットでは、チャット入力欄の Autopilot のスイッチが**権限モードのメニュー**に替わります。使えないチャットには、これまでどおり Autopilot のスイッチが表示されます。
+
+| モード | 内容（公式） |
+|-------|------------|
+| **Supervised:** | ファイルを編集したターンの後で一時停止し、変更ごとに承認または却下できる（[04_autopilot-supervised.md](04_autopilot-supervised.md)） |
+| **Accept file changes:** | ファイルの作成・編集・削除を確認なしで行う。コマンドを実行する前には確認する。以前の名前は **Autopilot** で、動作は同じ |
+| **Approve for me:** | ルールで決まらない操作を、モデルが判断する。安全と判断した操作は承認し、安全でないと判断した操作はブロックし、迷うときはあなたに確認する |
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 現在のチャットでオンにする | チャット入力欄の権限モードのメニューで **Approve for me** を選ぶ。次の操作から適用され、そのチャットに残る |
+| 現在のチャットでオフにする | **Supervised** または **Accept file changes** を選ぶ |
+| 新しいチャットの開始時のモード | **Settings → Agent → Agent Autonomy**（設定キー `kiroAgent.agentAutonomy`）で決める。値の名前は、これまでどおり Autopilot と Supervised |
+
+### 11.2 新しいチャットで既定にする
+
+| 方法 | 内容（公式） |
+|------|------------|
+| **What's new** | **Use Approve for me by default** をオンにする。すべてのワークスペースの新しいチャットに適用される |
+| コマンドパレット（1.4.178 以降） | すべてのワークスペースには **Kiro: Approve For Me (User)...**、現在のウィンドウで開いているフォルダーには **Kiro: Approve For Me (Workspace)...** を実行する。オンにするには **Turn on (currently off)** を選ぶ。開いているフォルダーの設定が異なるときは **Turn on for all folders (currently mixed)** を選ぶ |
+| コマンドパレット（1.4.154） | **Kiro: Enable Approve For Me (User)** または **Kiro: Enable Approve For Me (Workspace)** を実行する |
+
+- 設定を確認するには、同じコマンドをもう一度実行します。新しいチャットで Approve for me がオンのときは **Turn off (currently on)** が表示されます。
+- オフにするには、1.4.178 以降は **Kiro: Approve For Me (User)...** または **Kiro: Approve For Me (Workspace)...** を実行し、**Turn off (currently on)**（開いているフォルダーの設定が異なるときは **Turn off for all folders (currently mixed)**）を選びます。**What's new** のスイッチをオフにしてもかまいません。1.4.154 では **Kiro: Disable Approve For Me (User)** または **Kiro: Disable Approve For Me (Workspace)** を実行します。クラウドセッションに接続したウィンドウには、これらのコマンドは表示されません。
+- この選択が及ぶ新しいチャットは、Approve for me で始まります。すでにモードを選んだチャットは、その選択のままです。
+- **信頼していないワークスペース**は、Approve for me がオフの Supervised で始まります。
+- 組織が Approve for me を管理しているときは、**What's new** のスイッチにその旨が表示され、変更できません。組織が Approve for me を必須にしているときは、コマンドが「常にオン」と表示し、変更を提供しません。
+
+### 11.3 ルールとの関係と注意点
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 仕組み | `evaluate` という効果で動く。`evaluate` はルールの連鎖の中で最も弱い効果で、あなたの `deny`・`ask`・`allow` のルールが先に判断する。Approve for me が扱うのは、どのルールでも決まらない操作だけ |
+| 同時に許可されるもの | プリセットは、ワークスペースの読み取りと書き込み、および読み取り専用のシェルコマンドも無条件に許可する。これらは判断を待たない |
+| 判断の方法 | Kiro は、決まらない操作を信頼の分類器で判断する。CLI の `--trust-all-tools` や `/tools trust-all` は、ルールが `deny` していないツール操作をすべて信頼するが、Approve for me は操作をブロックしたり、確認したりすることもある |
+| ワークスペースの外 | ワークスペースの外のファイル操作は、Approve for me の判断の対象にならず、通常の確認が残る |
+| 選択の範囲 | ワークスペースに対する選択は、そのワークスペースだけに効く |
+| 必ず止まるもの | あらゆるスコープの `deny` のルール、Kiro 組み込みのファイル書き込みの確認ルール（公式の Trust invariants。[04_reference/03_permissions.md の §7.1](../04_reference/03_permissions.md#71-kiro-スコープの不変条件上書き不可)）、安全でないと判断された操作。判断に迷うとき、信頼の分類器が使えないときは、Kiro が確認する |
+
+> **Kiro CLI での切り替え**（参考。公式）: CLI では `/permissions` の **Policies** で **ask for approval** を選ぶか、permissions ファイルの `policies:` から `approve-for-me` を削除すると、Approve for me がオフになります。本サイトは IDE を扱うため、CLI の手順は扱いません。
+
+> ⚠ **Approve for me はセキュリティ制御の代わりではありません**（公式）。実行したくない操作には `deny` のルールを置き、承認されたコマンドの到達範囲も絞れるよう [ローカルコマンドのサンドボックス（§10）](#10-ローカルコマンドのサンドボックス13-で追加) をオンにしてください。
+>
+> Approve for me がオンのときは、どのルールでも決まらないワークスペース内のシェルコマンドなどの操作を、Kiro が確認なしに実行できます。
 
 ---
 

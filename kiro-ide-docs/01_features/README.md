@@ -12,7 +12,7 @@
 | 2 | [Chat](02_chat.md) | **エージェントとの対話**。セッションの始め方（Free-flow chat・ワークフロー）・サブエージェント・チェックポイント・会話の書き出し・Workflows・**Memory**（1.4.0） | 0.1 |
 | 3 | [Permissions](03_permissions.md) | **capability ベースの権限**。1つのルールを全ツールに効かせる。**ローカルコマンドのサンドボックス**（1.3.0） | **1.0** |
 | 4 | [Autopilot・Supervised](04_autopilot-supervised.md) | **2つの実行モード**。レビューのタイミングを変える（**権限は同一**） | 0.x |
-| 5 | [Hooks](05_hooks.md) | **イベント駆動の自動化**。v1 JSON 形式・トリガー10種 | 0.x（**1.0 で形式変更**） |
+| 5 | [Hooks](05_hooks.md) | **イベント駆動の自動化**。v1 JSON 形式・トリガー12種（Compaction の2種を含む） | 0.x（**1.0 で形式変更**） |
 | 6 | [Steering](06_steering.md) | **持続的な指示**。読み込みタイミング4種・スラッシュコマンドの実体 | 0.1 |
 | 7 | [Custom Agents](07_custom-agents.md) | **専用エージェント**。Markdown 1枚にプロンプト・ツール・MCP・権限 | **1.0** |
 | 8 | [MCP](08_mcp.md) | **外部ツールの接続**。プロンプト・リソーステンプレート・elicitation | 0.1 |

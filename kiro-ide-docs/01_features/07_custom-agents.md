@@ -2,7 +2,7 @@
 
 **目的に特化したエージェントを Markdown ファイル1枚で作り、チームで共有できます。1.0 で導入されました。**
 
-- **一次情報**: [Custom agents](https://kiro.dev/docs/custom-agents/)（公式ページ更新日: 2026-08-04）・[Creating custom agents](https://kiro.dev/docs/custom-agents/creating/)
+- **一次情報**: [Custom agents](https://kiro.dev/docs/custom-agents/)（公式ページ更新日: 2026-08-04）・[Creating custom agents](https://kiro.dev/docs/custom-agents/creating/)・[Agent configuration reference](https://kiro.dev/docs/custom-agents/configuration-reference/)（公式ページ更新日: 2026-11-06。§7.1 の `file://` リソースは、この更新版で確認）
 - **ファイルの置き場所**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#6-カスタムエージェント--kiroagentsmd)
 - **導入バージョン**: **1.0**（2026-06-25）
 
@@ -216,6 +216,24 @@ MCP の詳細は [08_mcp.md](08_mcp.md) を参照してください。
 
 > **信頼していないワークスペースでは、ワークスペースのカスタムエージェント（`.kiro/agents/`）は読み込まれません**（1.2.4。[04_reference/03_permissions.md](../04_reference/03_permissions.md#72-信頼していないワークスペースworkspace-trust)）。
 > また、`.kiro/agents/` と `~/.kiro/agents/` へのエージェントの書き込みは常に確認が求められます。
+
+
+### 7.1 `file://` リソースの上限と、サブエージェントでの扱い（1.4.86 で追加）
+
+**エージェントの `resources` に `file://` で書いたファイルは、エージェントの開始時にコンテキストへ直接読み込まれます。** 1.4.86 以降の IDE には、読み込みの上限があります（公式 [Agent configuration reference](https://kiro.dev/docs/custom-agents/configuration-reference/#file-resources)・公式ページ更新日: 2026-11-06・[1.4.86](../02_update/01_changelog.md#v1-4-86)）。
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 件数と合計 | `file://` のリソースは最大 **32 ファイル**、合計 **100,000 文字** |
+| 1ファイル | **1 MiB** かつ **50,000 文字**まで |
+| 1 MiB を超えるファイル | 読み込まない。代わりにファイル名を示す目印が入る |
+| 50,000 文字を超えるファイル | 収まるように切り詰め、末尾に切り詰めたことを示す目印が付く |
+| 32 件または 100,000 文字に達したとき | 収まらない最初のファイルで止まり、残りのリソースを読み込まない。残りを読み込まなかったことを説明する目印が入る |
+| 目印の役割 | どの目印も、続きを見るにはファイルを直接読むようエージェントに伝える |
+
+**サブエージェントとして動くカスタムエージェント**が自分の `file://` リソースを宣言しているときは、親エージェントの `file://` リソースの代わりに、その宣言したファイルを読み込みます。`file://` リソースを宣言しないサブエージェントは、これまでどおり親エージェントの `file://` リソースを引き継ぎます。
+
+> 公式は、同じ上限を Kiro CLI 3.1.0 以降にも書いています（数値は同じ）。本サイトは IDE を扱うため、CLI の記述は取り上げません。
 
 ---
 

@@ -2,7 +2,7 @@
 
 **エージェントに何を許すかを決める仕組みの辞書です。**
 
-- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-10-20）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。`sandbox_network` の項目）
+- **一次情報**: [Permissions](https://kiro.dev/docs/permissions/)（公式ページ更新日: 2026-11-13。§1.1 の `evaluate` は、この更新版で確認。ほかの節は 2026-10-20 の版で確認）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。`sandbox_network` の項目）
 - **収録件数**: capability **15種**
 - **導入バージョン**: **1.0**（0.x から更新する場合は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md) を参照）
 
@@ -29,6 +29,8 @@
 **`deny` > `ask` > `allow`**（制限が強いほうが勝つ）
 
 **より緩いルールが、より厳しいルールを上書きすることはできません。**
+
+> **公式の効果の一覧には、4つ目の `evaluate` があります（Approve for me の導入に伴うもの）。** 公式 [Permissions](https://kiro.dev/docs/permissions/) の効果の一覧は、`evaluate` を「Kiro が操作を判断する、最も弱い効果。`approve-for-me` のプリセットが加え、信頼の分類器が使えるときだけ有効」と説明し、優先順位を **`deny` > `ask` > `allow` > `evaluate`** と書いています。あなたが書く `effect` の値は、上の表の3つです。`evaluate` を使う Approve for me の使い方は [01_features/03_permissions.md の §11](../01_features/03_permissions.md#11-approve-for-me14154-で追加)（[1.4.154](../02_update/01_changelog.md#v1-4-154)）を参照してください。`permissions.yaml` の `effect` に `evaluate` を直接書く方法は、公式に書き方の例がなく、本サイトでは未確認です（公式は、ユーザーとワークスペースの両スコープが `deny`・`ask`・`allow`・`evaluate` のすべてに対応すると書いています）。
 
 > **例外は `sandbox_network` のホスト規則です。** `sandbox_network` は deny-overrides を使わず、**規則を順に適用して、最初に一致した規則が決めます**（§3・§5.4）。
 

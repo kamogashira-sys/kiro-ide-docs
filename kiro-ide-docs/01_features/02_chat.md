@@ -3,8 +3,8 @@
 **自然言語で Kiro に指示する、すべての入口になる機能です。**
 
 - **一次情報**: [Chat](https://kiro.dev/docs/ide/chat/)（公式ページ更新日: 2026-09-30）・[Setup & First Run（セッションの始め方。旧 Vibe vs Spec sessions ページはここに統合され、二択ピッカー自体も廃止）](https://kiro.dev/docs/ide/setup/)（更新日: 2026-09-30）・[Subagents](https://kiro.dev/docs/custom-agents/subagents/)・[Summarization](https://kiro.dev/docs/compaction/)・[Checkpoints](https://kiro.dev/docs/checkpoints/)・[Export sessions](https://kiro.dev/docs/ide/chat/chat-export/)・[Dockable chat](https://kiro.dev/docs/ide/chat/chat-in-editor/)（公式ページ更新日: 2026-10-13）・[Slash commands](https://kiro.dev/docs/ide/chat/slash-commands/)（公式ページ更新日: 2026-10-13）
-- **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-24）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-10-20）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-10-21）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
-- **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-10-29。§16.2 のバッジの説明は、この更新版で確認）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-24）の該当節
+- **1.1 以降の追加分の一次情報**: [Agent Artifacts](https://kiro.dev/docs/ide/chat/artifacts/)（公式ページ更新日: 2026-09-30）・[Workflows](https://kiro.dev/docs/workflows/)（公式ページ更新日: 2026-10-24）・[Run and manage workflows](https://kiro.dev/docs/workflows/manage/)（公式ページ更新日: 2026-11-13。§13.9 は、この更新版で確認。ほかの節は 2026-10-20 の版で確認）・[Author workflows](https://kiro.dev/docs/workflows/authoring/)（公式ページ更新日: 2026-10-21）・[Terminal integration](https://kiro.dev/docs/ide/chat/terminal/)（公式ページ更新日: 2026-09-24）
+- **1.4 で追加された Memory の一次情報**: [Memory](https://kiro.dev/docs/memory/)（公式ページ更新日: 2026-11-17。§16.2 の並べ替えと絞り込み、§16.4 のサブエージェントからの参照は、この更新版で確認。§16.2 のバッジの説明は、2026-10-29 の更新版で確認）。モデルのフォールバック通知は [Models](https://kiro.dev/docs/models/)（公式ページ更新日: 2026-10-24）の該当節
 
 > **これは何か**: コードについて質問する・複雑なロジックの説明を求める・新機能を生成する・厄介な問題をデバッグする・
 > 繰り返し作業を自動化する — これらを**プロジェクトの文脈を保ったまま**自然言語で行えます。
@@ -144,6 +144,10 @@ Kiro は会話中の**過去のメッセージすべて**をコンテキスト�
 
 > **1.1 での改善**: 要約した会話は、システム指示と要約から組み立て直されるようになり、その後のターンが適切なコンテキストを保つようになりました（[1.1.14](../02_update/01_changelog.md#v1-1-14)）。
 
+> **1.4.178 での変更（要約のあとのスキルとステアリング）**: 要約のあと、Kiro は、読み込み済みのスキルとステアリングファイルのうち要約が落としたものをエージェントに伝え、エージェントは、あなたが求めたものを読み込み直します。30,000 文字以上のスキルやステアリングファイルは、要約のあとに余裕があれば、短縮したプレビューではなく全文で読み込まれます（公式 [Compaction](https://kiro.dev/docs/compaction/#whats-preserved-vs-summarized)・[1.4.178](../02_update/01_changelog.md#v1-4-178)）。1.4.178 の changelog は、会話にすでにあるスキルは重ねて追加されないとも書いています。公式 Compaction ページには、この点の記述がありません。
+>
+> **1.4.121 での変更（要約の前後のフック）**: 要約の前後にフックを実行できます（[05_hooks.md の §2.2](05_hooks.md#22-compaction-のフック14121-で追加)・[1.4.121](../02_update/01_changelog.md#v1-4-121)）。
+
 > **長い作業では要約が起きることを前提に**してください。重要な決定事項は spec やステアリングファイルに
 > 書き出しておくと、要約で失われません。
 
@@ -198,6 +202,7 @@ Kiro は会話中の**過去のメッセージすべて**をコンテキスト�
 | **MCP サーバ** | ✅ メインエージェントと**まったく同じように動く** |
 | **Specs** | ❌ **アクセスできない** |
 | **Hooks** | ❌ **発火しない** |
+| **Memory**（1.4.121 以降） | 🔎 親のセッションで使えるローカルのメモリを**読める**。メモリの追加・変更・削除はできない（公式 [Memory](https://kiro.dev/docs/memory/)・[1.4.121](../02_update/01_changelog.md#v1-4-121)。[§16](#16-memory140-で追加)） |
 
 ### 7.4 カスタムサブエージェント
 
@@ -469,7 +474,7 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 | ステップを開く | ステップを選ぶと専用の **Workflow step** タブが開く。ステップ・エージェント・モデル・effort・アクティビティと、**Message this step's agent** 欄を持ち、実行中も親チャットの横に置いておける |
 | 親チャットへのステップ通知（1.3.11） | ステップからのメッセージは、親チャットで**まず1行の状態行**（**Info**・**Completed**・**Needs input**・**Failed**）として表示される。行を展開すると全文が読める。行には、ステップ名・（異なる場合は）エージェント名・実行名・時刻も表示される。行から操作できる場合がある（**Info**／**Completed** は、Kiro がソースのセッションを把握しているときに **Open step session**。**Needs input** は **Answer** に続けてステップ名、**Failed** は **Open** に続けてステップ名で、どちらも実行中のステップセッションがある行のみ）。完了や停止といった実行の結果の行は1行のままで、展開できない |
 | 入力待ち | 入力が必要な実行は **Needs you** 状態になる。止まっているステップを選んで直接答えるか、通知行の **Answer** を選ぶか、親チャットのメインエージェントに答えを渡してもらう |
-| **操作** | **Pause**（次のノードの区切りで協調的に一時停止）・**Resume**（一時停止した実行を再開）・**Stop**（実行中の作業を中断し、実行を `aborted` にする） |
+| **操作** | **Pause**（次のノードの区切りで協調的に一時停止）・**Resume**（一時停止した実行を再開）・**Stop**（実行中の作業を中断し、実行を `aborted` にする）。ループが上限で止まったときは **Add loops** も使える（[§13.9](#139-workflow-タブと実行の管理1486-以降で追加)） |
 | Retry | **現在の IDE の UI には Retry がない**。完了・失敗した後にもう一度実行するときは、ワークスペースを確認したうえで新しい実行として始める |
 | 空の **Workflows**／**Artifacts** ビュー（1.3.0） | 空のビューに、そこに何が入るかと最初の項目の追加のしかたを表示する |
 | 実行一覧の表示（1.3.0） | 実行中の Workflow は終了した実行より上に並び、実行が一時停止または入力待ちになっても行が飛び回らない。年齢ラベルは一覧を開いている間も更新され、展開できる行にはシェブロンが付く。実行中の Workflow が1つだけなら展開された状態で開く |
@@ -565,6 +570,51 @@ Workflows は IDE・CLI・Web で共通の機能です（レシピは3つのク�
 
 > 公式 Workflows ページ（2026-10-24）には、委譲の振る舞いを状況別にまとめた表もあります（**Only when asked** が既定。Workflows が無効なメインセッションでは現在のセッションで作業し、直接のサブエージェントを使える、など）。Kiro CLI 2.34 以降にも同様の設定（**Workflow use**）がありますが、本サイトは IDE を扱うため、CLI 側の記述は取り上げません。
 
+### 13.9 Workflow タブと実行の管理（1.4.86 以降で追加）
+
+**実行を専用のタブで開き、追跡し、一覧から探す操作が、1.4.86 から 1.4.178 にかけて加わりました。**（公式 [Run and manage workflows](https://kiro.dev/docs/workflows/manage/#find-and-inspect-a-run)・[1.4.86](../02_update/01_changelog.md#v1-4-86)・[1.4.121](../02_update/01_changelog.md#v1-4-121)・[1.4.154](../02_update/01_changelog.md#v1-4-154)・[1.4.178](../02_update/01_changelog.md#v1-4-178)）
+
+**実行を Workflow タブで開く**（Workflows を有効にしているとき）:
+
+| 項目 | 内容（公式） |
+|------|------------|
+| 開き方（1.4.86 以降） | 親チャットの実行カードで **Open run** を選ぶ。実行が専用の **Workflow** タブで開き、ステップのツリーが、選択したステップのトランスクリプトの横に並ぶ。タブのヘッダーに **Pause**・**Resume**・**Stop** が表示される |
+| タブのタイトルと保持 | タイトルは **Workflow:** に続けて実行名。タブはウィンドウの再読み込み後も開いたままで、ステップのツリーを置いた位置を覚える |
+| **Created by:**（1.4.178 以降） | 実行を起動したチャットの名前をヘッダーに表示する。名前を選ぶと、そのチャットが開く |
+| **Go to active**（1.4.178 以降） | 実行中・一時停止中・入力待ちのステップのうち、最も古いものを選ぶ |
+| **Follow**（1.4.178 以降） | オンにすると、アクティブなステップを選んだままにし、ステップが終わるたびに次のステップへ移る。自分でステップを選ぶと Follow はオフになる |
+| ステップのタイトル（1.4.178 以降） | カーソルを合わせると、状態と、分かる場合はエージェント・モデル・effort が1行で表示される |
+| ツリーの幅（1.4.178 以降） | 端をドラッグするか、**Resize workflow steps** にフォーカスして Left Arrow・Right Arrow を押す。Home で最小、End で最大の幅になる |
+
+**実行の一覧と実行カード**:
+
+| 項目 | 内容 |
+|------|------|
+| 検索（1.4.121 以降。公式） | **Search workflows** 欄に入力すると、名前・状態・記録された所要時間で実行を絞り込める。**Clear search** を選ぶか Escape を押すと、全件に戻る |
+| 状態ごとのグループ（公式・1.4.154） | 一覧は状態ごとにグループ化され、**Needs you** が先頭に並ぶ。実行がある状態のグループだけが表示される。1.4.154 の changelog は、グループを **Needs you**・**Running**・**Paused**・**Failed**・**Stopped**・**Completed** と示し、一時停止中の実行のカードに進捗が表示されると書いている |
+| **Add loops**（公式・1.4.154） | ワークフローのループが上限で一時停止したとき、ステップのツリーと親チャットに **Add loops** が表示される。追加するループの回数を入力して確認すると、実行が続き、親チャットにはその操作があなたのメッセージとして表示される。**Resume** はループを追加しないため、同じ上限に達してまた一時停止する |
+| 実行の状態 `paused` の3通り（公式） | 下の表のとおり、対応が異なる3通りがある。ノードには `pending`（未実行）と `skipped`（実行されなかった）の状態もある |
+
+**`paused` の3通り**（公式 [Understand run status](https://kiro.dev/docs/workflows/manage/#understand-run-status)）:
+
+| `paused` の種類 | 状態の意味 | 次の操作（公式） |
+|----------------|-----------|---------------|
+| `paused` · needs input | ステップが `send_message` を severity `warning` で呼び、あなたを待っている | **Reply in the paused step**（ステップ自身のセッションに返信する）か **Stop**。ステップが `success` を知らせると実行が `running` に戻り、`error` を知らせると `failed` になる。もう一度尋ねると `paused` のまま |
+| `paused` · at a boundary | 要求した一時停止が、安全なノードの区切りで効いた | **Resume** か **Stop** |
+| `paused` · iteration cap | 繰り返しが `maxIterations` に達し、`onMaxIterations: "pause"` が指定されている | **Add loops**（IDE。Web は **Run N more**、CLI 3.2.0 以降は **Run 1 more iteration**）で反復を追加する。**Resume** は反復を追加しないため、同じ上限でまた一時停止する。または **Stop**、残りの計画を改める |
+
+**公式ページに記述がなく、changelog に基づくもの**（公式 Run and manage workflows には、次の表示の記述が見つからず、各版の changelog に基づきます）:
+
+| 項目 | 内容 |
+|------|------|
+| コンパクトな実行カード（1.4.121） | Workflow Runs ビュー・チャット・セッションヘッダーのドロップダウンの実行カードが、記録された所要時間を示す共通のコンパクトな表示になった。**Pause**・**Resume**・**Stop** はカードにカーソルを合わせるかフォーカスしたときに表示され、カードからステップも開ける。Recipes ビューは、実行に広い場所を割くため小さい状態で始まる |
+| 起動に失敗したとき（1.4.121） | ワークフローの起動に失敗すると、カードが **Starting workflow** のタイトルだけでなく、その理由も表示する |
+| 一時停止した実行（1.4.121） | 一時停止した実行に **Needs you** が表示されず、止まったステップが **Waiting for you** と表示されない。承認や質問を待つステップは、これまでどおり表示される |
+| 計画の判断の表示（1.4.154） | ワークフローの設計中は、実行が **Creating your workflow** と表示される。計画を却下すると、チャットに **Workflow plan rejected**（または依頼した変更）が表示され、実行カードは、実行が再び始まるまで **Plan rejected** または **Changes requested** と表示される |
+| 独自のラベル（1.4.154） | 独自のラベルで起動した実行が、レシピ名ではなくそのラベルをすぐに表示する |
+
+> Agent Focus の実行の進捗バーからステップを開く動作は [09_agent-focus-mode.md](09_agent-focus-mode.md) を参照してください。
+
 ---
 
 ## 14. ターミナルコマンドのタイムアウト（1.1.70 で追加）
@@ -630,11 +680,12 @@ IDE では**1つのユーザー設定**で Memory を制御します。**既定�
 | type | メモリが持つ情報の種類。多くは **Preference** か **Fact**。IDE が名前を付けられない種類は **Other** と表示される |
 | location | メモリが適用される場所。**Global** またはリポジトリ名 |
 | 行の内容 | タイトル・作成からの経過時間・1行の要約・type・location |
-| 検索と絞り込み | **Search memories...** にタイトルまたは要約を入力して絞り込む。**All memories** から TYPE または LOCATION で絞り込める。フッターに保存されているメモリの件数を表示する（絞り込み中は「3 of 12 memories」のように表示） |
+| 検索・並べ替え・絞り込み | **Search memories...** にタイトルまたは要約を入力して絞り込む。**Sort** を選ぶと、作成日の新しい順または古い順に並べ替えられる。**Filter** を選ぶと、**Type** と **Applies to**（**Global** またはリポジトリ）で絞り込める。**Clear filters** を選ぶと、すべてのメモリが再び表示される。フッターに保存されているメモリの件数を表示する（絞り込み中は「3 of 12 memories」のように表示）。本サイトの 1.4.62 対応版までの本ページは、**All memories** から TYPE または LOCATION で絞り込めると書いていた（[1.4.154](../02_update/01_changelog.md#v1-4-154)） |
 | 開く | 行を選ぶと、メモリがエディタタブで開く。type・location・作成時刻・**Summary**・**Content** と、**Refresh**・**Delete** のボタンが表示される |
 | バッジの説明 | タブで type または location のバッジにカーソルを合わせる（またはフォーカスする）と、意味が表示される。type は **Preference**＝「How you like Kiro to work.」、**Fact**＝「Something true about this repository.」、**Other**＝「Not a preference or a fact.」。location は **Global**＝「Used in every workspace.」、リポジトリのメモリは「Used only in」に続けてリポジトリ名（1.4.51 以降。[1.4.51](../02_update/01_changelog.md#v1-4-51)） |
 | 削除 | 行を右クリックして **Delete** を選ぶか、タブの **Delete** を選ぶ。削除の前に確認が表示される |
 | 再読み込み | ビューのタイトルバーの **Refresh Memories** |
+| Memory の設定ボタン（1.4.154） | ビューのタイトルバーの **Refresh** の隣に移った（1.4.154 の changelog。公式 Memory ページには、この配置の記述がない） |
 
 **Use only** のときでも、Memory ビューからメモリを削除できます。メモリの内容を直したいときはチャットで Kiro に頼みます。Kiro が変更できるのは、**Use and learn** または **Use but don't learn** で、信頼したワークスペースの場合だけです。
 
@@ -650,6 +701,10 @@ Kiro がメモリを使うと、チャットはその動作を折りたためる
 | コンテキスト使用量 | メモリがコンテキストを使うと、チャット入力欄のコンテキスト使用量の表示から開く **Context Usage** の **Steering files** の次に **Memory** の行が現れる |
 
 > 1.4.10 では、メモリを一覧するよう頼んだとき、セッションに読み込まれていないメモリだけが一覧される問題が修正されました（[1.4.10](../02_update/01_changelog.md#v1-4-10)）。
+
+### 16.4 サブエージェントからの参照（1.4.121 で追加）
+
+Kiro が起動するサブエージェントは、親のセッションで使えるローカルのメモリを**読めます**。メモリの追加・変更・削除はできません（公式 [Memory](https://kiro.dev/docs/memory/)・[1.4.121](../02_update/01_changelog.md#v1-4-121)）。サブエージェント一般の動作は [§7](#7-サブエージェント並列実行と委譲) を参照してください。
 
 ---
 

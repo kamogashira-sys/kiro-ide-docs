@@ -2,7 +2,7 @@
 
 **ファイル保存やツール呼び出しなどのイベントで、自動的に処理を走らせる仕組みです。**
 
-- **一次情報**: [Hooks](https://kiro.dev/docs/hooks/)（公式ページ更新日: 2026-10-10）・[Hook types](https://kiro.dev/docs/hooks/types/)（公式ページ更新日: 2026-10-10）・[Hook actions](https://kiro.dev/docs/hooks/actions/)・[Hook management](https://kiro.dev/docs/hooks/management/)（公式ページ更新日: 2026-08-21）・[What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（公式ページ更新日: 2026-08-21）
+- **一次情報**: [Hooks](https://kiro.dev/docs/hooks/)（公式ページ更新日: 2026-10-10）・[Hook types](https://kiro.dev/docs/hooks/types/)（公式ページ更新日: 2026-11-17。§2 の Pre Compaction・Post Compaction とトリガーの対応表は、この更新版で確認。ほかの節は 2026-10-10 の版で確認）・[Hook actions](https://kiro.dev/docs/hooks/actions/)・[Hook management](https://kiro.dev/docs/hooks/management/)（公式ページ更新日: 2026-08-21）・[What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（公式ページ更新日: 2026-08-21）
 - **ファイル形式**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#5-フック--kirohooksjson)
 - **1.0 で形式が変わりました**（`.hook` → **v1 JSON**）。移行は [02_update/03_migration-to-1.0.md](../02_update/03_migration-to-1.0.md)
 
@@ -15,7 +15,7 @@
 > | 公式ページ（更新日） | 現行の記述 |
 > |-------------------|-----------|
 > | [Hooks](https://kiro.dev/docs/hooks/)（2026-10-10） | トリガーの一覧は載せず、[Hook types](https://kiro.dev/docs/hooks/types/) を「the authoritative trigger list」（権威ある一覧）と案内している。以前の版にあった「Manual hooks from earlier IDE versions have been replaced by manual steering files.」の文は、現行ページに見当たらない |
-> | [Hook types](https://kiro.dev/docs/hooks/types/)（2026-10-10） | 「Availability by surface」の表で、IDE の対応は Prompt Submit・Agent Stop・Session Start・Pre Tool Use・Post Tool Use・File Create・File Save・File Delete・Pre Task Execution・Post Task Execution の**10種**。Manual は CLI V3 が一覧に載せるだけ（`/hooks` に実行の操作なし）で、IDE は「Legacy manual Hooks (IDE only)」として別に扱う |
+> | [Hook types](https://kiro.dev/docs/hooks/types/)（2026-11-17） | 「Availability by surface」の表で、IDE の対応は Prompt Submit・Agent Stop・Session Start・Pre Compaction・Post Compaction・Pre Tool Use・Post Tool Use・File Create・File Save・File Delete・Pre Task Execution・Post Task Execution の**12種**（Pre Compaction・Post Compaction は 1.4.121 で加わった。2026-10-10 の版は、この2種を除く10種）。Manual は CLI V3 が一覧に載せるだけ（`/hooks` に実行の操作なし）で、IDE は「Legacy manual Hooks (IDE only)」として別に扱う |
 > | [Hook management](https://kiro.dev/docs/hooks/management/)（2026-08-21） | 「Run legacy manual hooks」節。IDE 0.x で作った manual フックは legacy ラベル付きで Agent Hooks パネルに残り、有効なら `▷`（Quick run）または Hook view の `Start Hook` で実行できる |
 >
 > **この3ページと [What's new in IDE 1.0: Hooks](https://kiro.dev/docs/ide/whats-new-v1/hooks/)（2026-08-21）は一致して、`userTriggered` に v1 のトリガー相当がなく、IDE では manual トリガーのフックを新規作成できない（新しいオンデマンドの作業には manual ステアリングファイルを使う）と説明しています。**
@@ -28,7 +28,7 @@
 > | 「Current format (1.0)」 | `when`／`then` を使う JSON 例を v1 形式として掲載。Hooks ページと What's new in IDE 1.0 の `trigger`／`matcher`／`action`（PascalCase）とは、スキーマの記述が異なる |
 > | 「Legacy manual Hooks in 1.0」 | 既存の `userTriggered` フックは legacy ラベル付きで残り実行できる。1.0 では新規作成できない（上の3ページと一致） |
 >
-> **本ページのトリガー一覧（第2節）は、Hook types の IDE 対応（10種）と What's new in IDE 1.0 の表に従って、v1 JSON の `trigger` フィールドの値のみを記載しています。**
+> **本ページのトリガー一覧（第2節）は、Hook types の IDE 対応（12種）と What's new in IDE 1.0 の表に従っています。表に載せるのは、v1 JSON の `trigger` フィールドの値が確認できる10種です。Compaction の2種は、公式が v1 JSON の値を示していないため、§2.2 に分けて書いています。**
 > **manual トリガーは v1 JSON にありません。** 新規のオンデマンド実行には manual ステアリングファイルを使います（[06_steering.md](06_steering.md)）。
 > IDE 0.x で作った manual フックは、legacy として残り、有効なものは実行できます（第5節）。
 
@@ -61,9 +61,9 @@
 
 ---
 
-## 2. トリガーの一覧（10種）
+## 2. トリガーの一覧（12種）
 
-**v1 JSON の `trigger` フィールドに書く値**です。
+**v1 JSON の `trigger` フィールドに書く値**です（下の表の10種）。IDE の対応は、これに [§2.2 の Compaction の2種](#22-compaction-のフック14121-で追加)を加えた12種です。
 
 | トリガー | 発火するとき | `matcher` の対象 | **ブロックできるか** |
 |---------|------------|---------------|-----------------|
@@ -78,7 +78,7 @@
 | **`PostFileSave`** | **エージェントが**ファイルを保存した後 | ファイルパス（正規表現） | ❌ |
 | `PostFileDelete` | **エージェントが**ファイルを削除した後 | ファイルパス（正規表現） | ❌ |
 
-**ブロックできるのは3種のみ**（`PreToolUse`・`PreTaskExec`・`UserPromptSubmit`）です。事前に止められるトリガーだけがブロック可能という素直な設計になっています。
+**上の表でブロックできるのは3種のみ**（`PreToolUse`・`PreTaskExec`・`UserPromptSubmit`）です。事前に止められるトリガーだけがブロック可能という素直な設計になっています。このほか、Pre Compaction は compaction を中止できます（§2.2）。
 
 > **ファイル系トリガーは「エージェントによる」変更で発火します。** 1.0.116（2026-07-09）で
 > 「エージェントが書き込み・作成・削除したときにも発火する」ようになりました。
@@ -121,6 +121,21 @@
 >
 > **使えるツール名は Kiro に聞けます**（公式の案内）。
 
+### 2.2 Compaction のフック（1.4.121 で追加）
+
+**Kiro が会話を自動で要約（compaction）する前後に、フックを実行できます。** Hook エディタのトリガー一覧に、**Compaction Hooks** のグループが加わりました（公式 [Hook types](https://kiro.dev/docs/hooks/types/#pre-compaction)・[1.4.121](../02_update/01_changelog.md#v1-4-121)）。IDE の compaction は自動で、セッションがモデルのコンテキストの上限に近づいたときに実行されます（[02_chat.md の §6](02_chat.md#6-コンテキストウィンドウと自動要約)）。どちらのトリガーも `matcher` を取りません。
+
+| トリガー | 発火するとき | 終了コードと出力（公式） |
+|---------|------------|---------------------|
+| **Pre Compaction** | 要約を書く**前** | **`0`**: compaction は続く。コマンドの標準出力は、要約を作る側への指針として渡される。**`2`**: compaction を中止する。`stderr` が理由として表示され、コンテキストがほぼいっぱいでない限り、compaction せずにターンが続く |
+| **Post Compaction** | 要約が古い履歴に置き換わった**後** | フックの出力が会話に追加される。要約が省いた内容を、エージェントが保持できる |
+
+**公式の記述の形**: Hook types ページは、Pre Compaction に **Exit Code Behavior:**（終了コードごとの挙動。上の表）と **Use Cases:**（用途。下の例）を載せ、Post Compaction には **Use Cases:** を載せています。IDE の compaction は自動のみで、手動で起動する `/compact` はありません（公式 [Compaction](https://kiro.dev/docs/compaction/)）。Kiro CLI 3.1.0 以降の V3 では、`/compact` の実行・自動要約の開始・コンテキストあふれからの復旧・別のモデルへの引き継ぎのときにも、compaction のフックが走ります（本サイトは IDE を扱うため、CLI の詳細は扱いません）。
+
+**用途の例**（公式）: Pre Compaction は、古い履歴が要約される前に作業のスナップショットを保存する、Kiro の外で管理しているタスクが未完了のうちは compaction を断る。Post Compaction は、compaction の後にタスク固有の指針を戻す、要約を保管してレビューできるようにする、長いセッションをいつ compaction したか・要約が何を残したかを記録する。
+
+> ⚠ **v1 JSON の `trigger` の値は未確認です。** 公式 Hook types ページは、IDE については Hook エディタのトリガー一覧のグループ名（**Compaction Hooks**）と表示名（**Pre Compaction**・**Post Compaction**）だけを示し、`.kiro/hooks/*.json` に書く値を示していません。`PreCompact`・`PostCompact` は、同ページが Kiro CLI 3.1.0 以降の V3 のトリガー名として示すものです。IDE の JSON の値として使えるかは確認できていないため、IDE ではエディタの一覧から選んでください。
+
 ---
 
 ## 3. アクションの2種類
@@ -133,6 +148,8 @@
 
 > **`UserPromptSubmit` トリガーの場合、このアクションは「Add to prompt」と呼ばれます。**
 > フックに書いたプロンプトが**ユーザーのプロンプトに追記され**、結合されたプロンプトがエージェントに送られます。
+>
+> **1.4.178 以降、Prompt Submit のフックがプロンプトに追加した指示は、ウィンドウを再読み込みしても、そのプロンプトに残ります**（[1.4.178](../02_update/01_changelog.md#v1-4-178)。公式 Hook types ページには、この点の記述が見つからず、changelog に基づきます）。
 
 ### 3.2 Shell Command（シェルコマンド）
 
@@ -141,13 +158,15 @@
 | 終了コード | 挙動 |
 |----------|------|
 | **`0`**（成功） | **`stdout` の出力がエージェントのコンテキストに追加される** |
-| **`2`** | **実行をブロックする**（`PreToolUse`・`UserPromptSubmit`・`PreTaskExec` のみ）。**`stderr` がエージェントに返される** |
+| **`2`** | **実行をブロックする**（`PreToolUse`・`UserPromptSubmit`・`PreTaskExec` のみ。Pre Compaction は compaction を中止する。§2.2）。**`stderr` がエージェントに返される** |
 | **その他** | **利用者に警告が表示される。ツールの実行は続行される** |
 
 タイムアウトを指定できます。**既定は 60 秒**、**`0` で無効化**できます。
 
 > **終了コード `2` が特別**です。「失敗したら止まる」ではなく「**`2` を返したときだけ止まる**」という設計です。
 > それ以外の非ゼロは警告どまりで処理は進みます。
+
+> **1.4.121 以降、`PreToolUse` のフックが終了コード `2` で終わると、`stderr` に何も書かなくてもツール呼び出しをブロックします**（[1.4.121](../02_update/01_changelog.md#v1-4-121)）。公式 Hook types ページには、この点の記述がなく、1.4.121 の changelog に基づきます。
 
 ### 3.3 どちらを使うか（公式の指針）
 
@@ -318,6 +337,8 @@ Kiro パネルの **Agent Hooks** セクションから操作します。
 | `PostFileDelete` | 関連ファイルを片付ける／他ファイルの import 参照を更新する |
 | `PreTaskExec` | タスク実行前に**セットアップスクリプトや環境準備**を走らせる／**前提条件が満たされているか検証する**／タスク開始を記録する |
 | `PostTaskExec` | **タスク完了後にテストを走らせて正しさを検証する**／変更ファイルにリント・整形をかける／完了分のドキュメントを生成する／外部システムに完了を通知する |
+| Pre Compaction（§2.2） | 古い履歴が要約される前に**作業のスナップショットを保存する**／Kiro の外で管理しているタスクが未完了のうちは **compaction を断る** |
+| Post Compaction（§2.2） | compaction の後に**タスク固有の指針を戻す**／要約を**保管してレビューできるようにする**／長いセッションをいつ compaction したか、要約が何を残したかを記録する |
 
 ---
 

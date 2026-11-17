@@ -2,7 +2,7 @@
 
 **エージェントの変更をいつレビューするかを決める2つのモードです。**
 
-- **一次情報**: [Autopilot](https://kiro.dev/docs/ide/chat/autopilot/)（公式ページ更新日: 2026-05-14）・[Privacy and security（Autopilot versus supervised mode）](https://kiro.dev/docs/privacy-and-security/#autopilot-versus-supervised-mode)
+- **一次情報**: [Permission modes（旧 Autopilot。URL は `/docs/ide/chat/autopilot/` のまま）](https://kiro.dev/docs/ide/chat/autopilot/)（公式ページ更新日: 2026-11-10。§2 の権限モードのメニューは、この更新版で確認。ほかの節は 2026-05-14 の版で確認）・[Privacy and security（Autopilot versus supervised mode）](https://kiro.dev/docs/privacy-and-security/#autopilot-versus-supervised-mode)
 
 > ⚠️ **最初に押さえること**: **Supervised モードはセキュリティ機構ではありません**（公式が警告として明記）。
 > **両モードでエージェントの権限は同一**で、違いは**レビューのタイミング**だけです。
@@ -36,6 +36,8 @@
 ## 2. 切り替え方
 
 **チャット画面の autopilot スイッチで、いつでも切り替えられます。** タスクに応じて適切な制御水準を選べます。
+
+> **1.4.154 以降、Approve for me を使えるチャットでは、スイッチが権限モードのメニューに替わります。** メニューは **Supervised**・**Accept file changes**・**Approve for me** の3つで、**Accept file changes** は以前の **Autopilot** と同じ動作です（公式 [Permission modes](https://kiro.dev/docs/ide/chat/autopilot/)・[Permissions](https://kiro.dev/docs/permissions/#permission-modes)）。Approve for me を使えないチャットと、1.4.154 より前の版には、これまでどおり Autopilot のスイッチが表示され、**Supervised** と **Accept file changes**（Autopilot）を切り替えます。新しいチャットの開始時のモードは **Settings → Agent → Agent Autonomy**（設定キー `kiroAgent.agentAutonomy`）で決めます。使い方は [03_permissions.md の §11](03_permissions.md#11-approve-for-me14154-で追加)（[1.4.154](../02_update/01_changelog.md#v1-4-154)）を参照してください。本ページの「Autopilot」は、このメニューの **Accept file changes** を指します。
 
 ---
 
