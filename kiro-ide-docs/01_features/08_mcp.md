@@ -2,7 +2,7 @@
 
 **外部のサーバに接続して、ツール・プロンプト・リソースを Kiro に追加する仕組みです。**
 
-- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-10-02）・[Tool Search](https://kiro.dev/docs/mcp/tool-search/)（公式ページ更新日: 2026-10-15）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15）・[Configuration](https://kiro.dev/docs/mcp/configuration/)・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
+- **一次情報**: [MCP](https://kiro.dev/docs/mcp/)（公式ページ更新日: 2026-10-02）・[Tool Search](https://kiro.dev/docs/mcp/tool-search/)（公式ページ更新日: 2026-10-15）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15）・[Configuration](https://kiro.dev/docs/mcp/configuration/)（公式ページ更新日: 2026-11-17。§2.7 は、この更新版で確認）・[Tools](https://kiro.dev/docs/mcp/usage/)・[Best practices（security）](https://kiro.dev/docs/mcp/security/)
 - **設定ファイル**: [04_reference/01_kiro-directory.md](../04_reference/01_kiro-directory.md#8-mcp-サーバ定義--kirosettingsmcpjson)
 
 > **これは何か**: MCP は Kiro が外部サーバと通信して、専門的なツール・プロンプト・リソースにアクセスするためのプロトコルです。
@@ -175,6 +175,27 @@ Dynamic Client Registrationを使えない環境では、ホストしたClient I
 
 > ⚠️ **API キーを設定ファイルに直接書かないでください**（公式のセキュリティ指針）。
 > 環境変数として渡します。**`mcp.json` はバージョン管理に入る可能性がある**ためです。
+
+### 2.7 oauth ブロックなしのサインイン（1.4.178 で追加）
+
+**リモートサーバの OAuth サインインで Kiro がどのクライアントとして認証するかは、`oauth` の設定によって決まります。** 1.4.178 では、条件を満たすサーバなら `oauth` ブロックを書かずに追加できるようになりました（公式 [MCP Configuration](https://kiro.dev/docs/mcp/configuration/#how-it-works)・[1.4.178](../02_update/01_changelog.md#v1-4-178)）。
+
+| 設定の状態（公式の表記） | Kiro の動作（公式） |
+|----------------------|------------------|
+| **No clientId or clientMetadataUrl set** | サーバに Dynamic Client Registration（DCR）を試みる。DCR が失敗したら、既定のクライアント構成に切り替える。**1.4.178 以降**は、認可サーバが Client ID Metadata Documents に対応し、登録エンドポイントを提供しないとき、Kiro が自分でホストする文書でサインインする |
+| **clientId set (without clientSecret)** | DCR を省き、登録済みのクライアント ID を使う公開 OAuth クライアントとして認証する |
+| **clientId and clientSecret both set (CLI only)** | 公式は CLI のみと書いている。DCR を省き、シークレットをトークンエンドポイントに送る機密クライアントとして認証する。本ページの §2.4 の表に `clientSecret` の項目はない |
+| **clientMetadataUrl set (without clientId)** | DCR を省き、メタデータ文書の URL をクライアントの識別として示す（認可サーバが対応するとき）。§2.5 を参照 |
+
+**oauth ブロックなしでサインインできる条件**（1.4.178 以降。公式 Client ID Metadata Documents の節）は、次の3つがすべて成り立つことです。
+
+- 認可サーバが Client ID Metadata Documents に対応している
+- 認可サーバが登録エンドポイントを提供していない（DCR を提供するサーバは、これまでどおり DCR を使い続ける）
+- 認可サーバが `localhost` のコールバックの**任意のポート**を受け付ける
+
+このとき Kiro は、自分でホストする文書 `https://kiro.dev/oauth/client-metadata.json` でサインインします。文書のリダイレクト URI は、ポートなしの `http://localhost/oauth/callback` と `http://127.0.0.1/oauth/callback` です。ポートを厳密に照合するサーバは、Kiro のコールバックが使うランダムなポートを拒否します。設定した `clientId` または `clientMetadataUrl` は、これまでどおり優先されます。公式は例として Tableau のホスト型 MCP を挙げています。
+
+**自前の ID プロバイダー（IdP）を使う場合**（公式の同じ節）: MCP サーバは、RFC 8414 の well-known URL で認可サーバのメタデータを提供し、IdP の JWKS に照らして Bearer トークンを検証する必要があります。パスのない発行者 `https://auth.example.com` のメタデータは `https://auth.example.com/.well-known/oauth-authorization-server` にあります。パスを含む発行者 `https://auth.example.com/tenant1` では、well-known のサフィックスがパスの前に入り、`https://auth.example.com/.well-known/oauth-authorization-server/tenant1` になります。
 
 ---
 

@@ -3,7 +3,7 @@
 **エージェントに何がどこまで許されるか・ネットワークで許可すべき URL・データがどこに保存されるかを扱います。**
 
 - **一次情報**: [Privacy and security](https://kiro.dev/docs/privacy-and-security/)・[Configuring a firewall, proxy server, or data perimeter](https://kiro.dev/docs/privacy-and-security/firewalls/)（公式ページ更新日: 2026-10-16。第4節）・[Data protection](https://kiro.dev/docs/privacy-and-security/data-protection/)・[Code references](https://kiro.dev/docs/privacy-and-security/code-references/)
-- **追記分の一次情報**: [Web tools](https://kiro.dev/docs/tools/web/)（公式ページ更新日: 2026-10-09。第8節）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。第7.2節）・公式 changelog [1.2.37](https://kiro.dev/changelog/ide/1-2/)・[1.2.56](https://kiro.dev/changelog/ide/1-2-56/)・[1.4.5](https://kiro.dev/changelog/ide/1-4/)（第5.6節・第8節）
+- **追記分の一次情報**: [Web tools](https://kiro.dev/docs/tools/web/)（公式ページ更新日: 2026-10-09。第8節）・[Local command sandbox](https://kiro.dev/docs/sandbox/)（公式ページ更新日: 2026-10-15。第7.2節）・公式 changelog [1.2.37](https://kiro.dev/changelog/ide/1-2/)・[1.2.56](https://kiro.dev/changelog/ide/1-2-56/)・[1.4.5](https://kiro.dev/changelog/ide/1-4/)（第5.6節・第8節）・[1.4.121](https://kiro.dev/changelog/ide/1-4-121/)・[1.4.154](https://kiro.dev/changelog/ide/1-4-154/)（第5.5節・第8.3節）
 
 > **本ページの範囲**: これらの公式ページは **IDE/CLI 共有**ですが、内容は URL ツリーごとに描画が変わります。
 > 本ページの記述は **IDE ツリー（`/docs/privacy-and-security/...`）の表示内容**に基づいています。
@@ -316,6 +316,8 @@ Kiro は Amazon Bedrock を基盤とし、**リージョン間推論**でトラ�
 > OpenAI の GPT モデルでは、分類器がフラグを立てたトラフィックが**最大30日間**保持されます
 > （保持先は推論が行われたリージョン）。
 
+> **1.4.154 以降、Content Collection for Service Improvement の設定を変えると、ウィンドウを再読み込みしなくても、すぐにチャットに適用されます**（[1.4.154](../02_update/01_changelog.md#v1-4-154)）。この動作は、公式の Privacy and security ページ（2026-08-04）に記述が見つからず、changelog に基づきます。
+
 **収集されるテレメトリの種類**:
 
 | 種別 | 内容 |
@@ -425,6 +427,13 @@ Web ツールは組織側で無効化できます（[04_enterprise.md](04_enterp
 | コンテンツタイプ | text/HTML のみ |
 
 取得のモードは `selective`（既定。検索語に一致した箇所の周辺を最大 8,000 文字）・`truncated`（先頭 8,000 文字）・`full`（全体。最大 10 MB）です。特定の内容を求めないときは `truncated` になります。
+
+**1.4.121・1.4.154 での変更**（公式 Web tools ページ（2026-10-09）には記述が見つからず、各版の changelog に基づきます）:
+
+| 版 | 内容（changelog） |
+|----|------------------|
+| [1.4.121](../02_update/01_changelog.md#v1-4-121) | Kiro は Web ページを取得するとき、サイトに Markdown または HTML を求める。Markdown を提供するサイトでは、コードブロックとリンクが保たれる |
+| [1.4.154](../02_update/01_changelog.md#v1-4-154) | 10 MB の取得上限より大きいページを、ネットワークエラーではなく「大きすぎる」と報告する。ページのダウンロードも2回ではなく1回になる |
 
 ### 8.4 エージェントごとに無効にする
 
