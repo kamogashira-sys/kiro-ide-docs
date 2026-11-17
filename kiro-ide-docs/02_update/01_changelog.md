@@ -215,7 +215,7 @@ Kiro が会話を compaction する前後にフックを実行できる、Pre Co
 - **ワークフローの実行を専用のタブで開く**: Workflows をオンにしているとき、チャットの実行カードで **Open run** を選ぶ。実行が **Workflow** タブで開き、ステップのツリーが、選択したステップのトランスクリプトの横に並び、ヘッダーに **Pause**・**Resume**・**Stop** が表示される
 - **About の Kiro Agent のバージョン**: About ダイアログが、ビルド日の下に Kiro Agent のバージョンを表示する
 
-> ワークフローの Workflow タブは [チャットの Workflow タブと実行の管理](../01_features/02_chat.md#139-workflow-タブと実行の管理1486-以降で追加)、Agent Focus の修正は [Agent Focus Mode のプロジェクトとセッションの扱い](../01_features/09_agent-focus-mode.md#15-プロジェクトとセッションの扱いの修正1486-以降) を参照してください。
+> ワークフローの Workflow タブは [チャットの Workflow タブと実行の管理](../01_features/02_chat.md#139-workflow-タブと実行の管理1486-以降で追加)、Agent Focus の修正は [Agent Focus Mode のプロジェクトとセッションの扱い](../01_features/09_agent-focus-mode.md#15-プロジェクトとセッションの扱いの修正1486-以降) 、サブエージェントの `file://` リソースは [カスタムエージェントの `file://` リソース](../01_features/07_custom-agents.md#71-file-リソースの上限とサブエージェントでの扱い1486-で追加) を参照してください。
 
 ### 修正
 
