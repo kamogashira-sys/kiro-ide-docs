@@ -1182,7 +1182,7 @@ Kiro IDE の一般提供（GA）版です。**エージェントがアクセス�
 - 保存した瞬間にセレクターへ現れる
 - **会話履歴を失わずにセッション中でエージェントを切り替えられる**
 
-> Kiro CLI 版の対応ページは [Agent configuration（CLI v3）](https://kiro.dev/docs/cli/v3/agent-config) です。
+> Kiro CLI 版との共通ページは [Agent configuration reference](https://kiro.dev/docs/custom-agents/configuration-reference/) です（旧 `docs/cli/v3/agent-config` の移転先）。
 
 ### Hooks（フック）
 

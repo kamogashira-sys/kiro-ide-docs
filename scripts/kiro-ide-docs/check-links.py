@@ -63,11 +63,16 @@ CHANGELOG_RE = re.compile(r'^https://kiro\.dev/changelog/[^\s]*$')
 CLI_DOCS_RE = re.compile(r'^https://kiro\.dev/docs/cli/([^\s#?]*)')
 # IDE 1.0 の GA 機能に対応する CLI ページは v3。非 v3 は 2.x 系の別仕様なので誤リンクを弾く。
 # hooks は特に別物（IDE: .kiro/hooks/*.json ／ CLI 非 v3: stdin JSON のライフサイクルフック）。
-CLI_V3_REQUIRED = ("permissions", "agent-config", "hooks")
+CLI_V3_REQUIRED = ("permissions", "hooks")
 # custom-agents は `docs/cli/` 配下のどちらの形（v3あり・v3なし）も誤り。
 # 2026-08 の公式再構成で `docs/cli/v3/custom-agents/` は404、`docs/cli/custom-agents/` は
 # 共通ページ `docs/custom-agents/` への移転スタブになった。正は共通ページのみ。
 CLI_CUSTOM_AGENTS_FORBIDDEN = re.compile(r'^https://kiro\.dev/docs/cli/(?:v3/)?custom-agents(?:/|$)')
+
+
+# agent-config は `docs/cli/` 配下のどちらの形も誤り。`docs/cli/v3/agent-config/` は
+# 共通ページ `docs/custom-agents/configuration-reference/` への移転スタブ、`docs/cli/agent-config/` は 404（実測）。
+CLI_AGENT_CONFIG_FORBIDDEN = re.compile(r'^https://kiro\.dev/docs/cli/(?:v3/)?agent-config(?:/|$)')
 
 
 def repo_root():
@@ -135,6 +140,10 @@ def check_kiro_url(url):
         return ("Kiro CLI 版の 'custom-agents' は `docs/cli/` 配下ではなく共通ページ "
                 "`docs/custom-agents` を指すこと（`docs/cli/v3/custom-agents` は404、"
                 "`docs/cli/custom-agents` は移転スタブ）")
+    if CLI_AGENT_CONFIG_FORBIDDEN.match(url):
+        return ("Kiro CLI 版の 'agent-config' は `docs/cli/` 配下ではなく共通ページ "
+                "`docs/custom-agents/configuration-reference` を指すこと（`docs/cli/v3/agent-config` は移転スタブ、"
+                "`docs/cli/agent-config` は404）")
     m = CLI_DOCS_RE.match(url)
     if m:
         rest = m.group(1).rstrip("/")
