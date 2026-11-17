@@ -221,6 +221,27 @@ def new_section(title):
     return {"title": title, "items": [], "groups": []}
 
 
+def patch_date_prop(node, table, depth=0):
+    """新形式のパッチ見出しから、日付コンポーネントの `date`（ISO 形式）を返す。
+
+    見出しは `<strong>版</strong>` と、`{"date": "2026-11-10"}` を持つコンポーネントの組。
+    コンポーネントが遅延参照（`$L50`）のときは、行の表（table）をたどる（深さは5まで）。
+    見つからなければ None。
+    """
+    if isinstance(node, str) and node.startswith("$L") and depth < 5:
+        return patch_date_prop(table.get(node[2:]), table, depth + 1)
+    if isinstance(node, list):
+        if len(node) == 4 and node[0] == "$" and isinstance(node[3], dict):
+            d = node[3].get("date")
+            if isinstance(d, str) and re.match(r'^\d{4}-\d{2}-\d{2}$', d):
+                return d
+        for x in node:
+            r = patch_date_prop(x, table, depth)
+            if r:
+                return r
+    return None
+
+
 def walk(node, table, acc):
     """見出し・アコーディオン・箇条書き・段落・パッチ本体を出現順に収集する。"""
     if node is None or isinstance(node, (int, float, bool)):
@@ -308,9 +329,13 @@ def walk(node, table, acc):
             if cur is not None:
                 # パッチ見出し: <p><strong>0.8.206</strong><span> | Jan 28, 2026</span></p>
                 m = re.match(r'^(\d+\.\d+\.\d+)\s*\|\s*(.+)$', t)
+                iso = patch_date_prop(kids, table) if re.match(r'^\d+\.\d+\.\d+$', t) else None
                 if m:
                     cur["date"] = m.group(2).strip()
                     cur["date_iso"] = to_iso(cur["date"])
+                elif iso:
+                    # 新形式: <p><strong>1.4.154</strong><日付コンポーネント date="2026-11-10"/></p>
+                    cur["date"] = cur["date_iso"] = iso
                 elif cur["sections"]:
                     sec = cur["sections"][-1]
                     if only_strong:
@@ -395,14 +420,14 @@ def extract(path):
     return result
 
 
-PATCH_HEADING_RE = re.compile(r'^\d+\.\d+\.\d+\s*\|')
+PATCH_HEADING_RE = re.compile(r'^\d+\.\d+\.\d+(?:\s*\||$)')   # 旧形式「版 | 日付」と、新形式（版だけ）
 SERIES_SLUG_RE = re.compile(r'^\d+-\d+$')
 
 
 def items(entries):
     """1コンテナ（ページ本文か1パッチ）の entries から項目の配列を作る（設計の規則 R0〜R7）。
 
-    - R0 `<details>` の中は捨てる。R1 パッチの見出し段落（`X.Y.Z | 日付`）は捨てる
+    - R0 `<details>` の中は捨てる。R1 パッチの見出し段落（`X.Y.Z | 日付`、または版だけの新形式）は捨てる
     - R2 見出しの無い段落は概要。ほかに項目が無いときだけ概要を1項目にする
     - R3 段落を1つ以上含む節は、節全体を1項目にする（題＝節の見出し）
     - R4・R5 `li` だけの節と節に属さない `li` は、`li` 1つを1項目にする
